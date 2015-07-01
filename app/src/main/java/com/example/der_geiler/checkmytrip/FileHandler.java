@@ -17,6 +17,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import 
 
 /**
  * Created by der_geiler on 18-05-2015.
@@ -150,6 +151,17 @@ public class FileHandler extends Activity
         String fullPath = "unCategorized/" + fileName;
         //File file = new File(unCategorizedPath, fileName);
 
+        Gson gson = new Gson();
+
+        FileOutputStream outputStream;
+        try {
+            outputStream = openFileOutput(fullPath, Context.MODE_PRIVATE);
+            outputStream.write(s.getBytes());
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        /*
         try
         {
             //File file = new File();
@@ -161,7 +173,7 @@ public class FileHandler extends Activity
         } catch (IOException e) {
             e = e;
         }
-
+*/
        LoadTrips(unCategorized);
         /*
         if(file.exists())
