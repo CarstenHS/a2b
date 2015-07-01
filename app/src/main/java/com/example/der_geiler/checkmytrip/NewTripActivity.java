@@ -16,6 +16,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -232,7 +233,13 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
     {
         int id = item.getItemId();
         FileHandler fileHandler = FileHandler.GetInstance();
-        fileHandler.SaveTrip(((Globals)this.getApplication()).GetCurrentTrip());
+        try
+        {
+            fileHandler.SaveTrip(((Globals)this.getApplication()).GetCurrentTrip());
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+        }
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;

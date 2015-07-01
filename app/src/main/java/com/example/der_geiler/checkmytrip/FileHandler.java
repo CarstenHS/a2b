@@ -8,6 +8,8 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
@@ -17,7 +19,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import 
 
 /**
  * Created by der_geiler on 18-05-2015.
@@ -139,7 +140,7 @@ public class FileHandler extends Activity
         return success;
     }
 
-    public void SaveTrip(Trip trip)
+    public void SaveTrip(Trip trip) throws IOException
     {
         if(DirectoryExist(unCategorized) == false)
         {
@@ -149,13 +150,31 @@ public class FileHandler extends Activity
         String fileName = filePrefix + String.valueOf(trip.GetTimeStart().getTime()) + fileExtension;
 
         String fullPath = "unCategorized/" + fileName;
-        //File file = new File(unCategorizedPath, fileName);
+        File file = new File(unCategorizedPath, fileName);
+        if(file.exists() == false)
+        {
+            try {
+                file.createNewFile();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        File files = new File(unCategorizedPath + "/");
+        File[] filez = files.listFiles();
 
         Gson gson = new Gson();
+        String s = gson.toJson(trip);
+        file.setWritable(true);
+        boolean b = file.canWrite();
+
+        List<String> l = GetDirectories();
+
+        String ss = file.getAbsolutePath();
 
         FileOutputStream outputStream;
         try {
-            outputStream = openFileOutput(fullPath, Context.MODE_PRIVATE);
+            outputStream = openFileOutput(file.getAbsolutePath(), Context.MODE_PRIVATE);
             outputStream.write(s.getBytes());
             outputStream.close();
         } catch (Exception e) {
