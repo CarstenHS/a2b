@@ -16,6 +16,9 @@ import android.widget.TextView;
 
 public class MainActivity extends Activity
 {
+    static final private String strNewTrip = "New trip";
+    static final private String strCurrentTrip = "Current trip";
+
     private class uiAction
     {
         public int lastAction = 0;
@@ -29,7 +32,8 @@ public class MainActivity extends Activity
     {
         switch (act)
         {
-            case "New trip":
+            case strNewTrip:
+            case strCurrentTrip:    /* fall-through */
             {
                 Intent i = new Intent(MainActivity.this, NewTripActivity.class);
                 startActivity(i);
@@ -100,16 +104,55 @@ public class MainActivity extends Activity
         }
     }
 
+    private void setNewTripText()
+    {
+        TextView tv = (TextView) findViewById(R.id.NewTripView);
+        if(((Globals)this.getApplication()).GetCurrentTrip() != null)
+        {
+            tv.setText(strCurrentTrip);
+        }
+        else
+        {
+            tv.setText(strNewTrip);
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setNewTripText();
         FileHandler fileHandler = FileHandler.GetInstance();
         fileHandler.Init(getApplicationContext());
         touchRect = new Rect();
         lastUiAction = new uiAction();
         setUiActions();
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onRestart()
+    {
+        super.onRestart();
+    }
+
+    @Override
+    protected void onStop()
+    {
+        super.onStop();
+    }
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+        setNewTripText();
     }
 
 
