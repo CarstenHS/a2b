@@ -27,12 +27,11 @@ public class FileHandler extends Activity
 {
     private static FileHandler instance;
 
-    final String filePrefix = "a2b_";
+    final String filePrefix = "";
     final String fileExtension = ".a2b";
     private String dataDir = null;
     private Context context = null;
-    private final String unCategorized = "Uncategorized";
-    private String unCategorizedPath = null;
+    private final String dirUnCategorized = "Uncategorized";
 
     public static FileHandler GetInstance()
     {
@@ -45,7 +44,6 @@ public class FileHandler extends Activity
     public void Init(Context context)
     {
         dataDir = context.getFilesDir().toString() + "/";// file.getPath();
-        unCategorizedPath = dataDir + unCategorized + "/";
         this.context = context;
     }
 
@@ -142,15 +140,11 @@ public class FileHandler extends Activity
 
     public void SaveTrip(Trip trip) throws IOException
     {
-        if(DirectoryExist(unCategorized) == false)
-        {
-            File folder = new File(unCategorizedPath);
-            folder.mkdir();
-        }
+        //if(DirectoryExist(dirUnCategorized) == false)<
+        File folder = context.getDir(dirUnCategorized, Context.MODE_PRIVATE);
         String fileName = filePrefix + String.valueOf(trip.GetTimeStart().getTime()) + fileExtension;
 
-        String fullPath = "unCategorized/" + fileName;
-        File file = new File(unCategorizedPath, fileName);
+        File file = new File(folder, fileName);
         if(file.exists() == false)
         {
             try {
@@ -160,40 +154,23 @@ public class FileHandler extends Activity
             }
         }
 
-        File files = new File(unCategorizedPath + "/");
-        File[] filez = files.listFiles();
-
         Gson gson = new Gson();
         String s = gson.toJson(trip);
         file.setWritable(true);
-        boolean b = file.canWrite();
+//        File files = context.getDir(dirUnCategorized, Context.MODE_PRIVATE);
+//        File[] filez = files.listFiles();
+//        boolean b = file.canWrite();
+//        List<String> l = GetDirectories();
 
-        List<String> l = GetDirectories();
-
-        String ss = file.getAbsolutePath();
-
-        FileOutputStream outputStream;
+        FileOutputStream outputStream = new FileOutputStream(file);
         try {
-            outputStream = openFileOutput(file.getAbsolutePath(), Context.MODE_PRIVATE);
             outputStream.write(s.getBytes());
             outputStream.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        /*
-        try
-        {
-            //File file = new File();
-            FileOutputStream fos = context.openFileOutput(fileName, Context.MODE_PRIVATE);
-            ObjectOutputStream os = new ObjectOutputStream(fos);
-            os.writeObject(trip);
-            os.close();
-            fos.close();
-        } catch (IOException e) {
-            e = e;
-        }
-*/
-       LoadTrips(unCategorized);
+
+       LoadTrips(dirUnCategorized);
         /*
         if(file.exists())
         {
