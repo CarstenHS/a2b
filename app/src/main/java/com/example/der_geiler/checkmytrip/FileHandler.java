@@ -62,9 +62,9 @@ public class FileHandler extends Activity
         }
     }
 */
-    public List<String> LoadTrips(String group)
+    public List<String> LoadTrips(String groupPath)
     {
-        File file = new File(dataDir + group + "//");
+        File file = new File(groupPath);
         File[] files = file.listFiles();
 
         List<String> fileNames = new ArrayList<>();
@@ -170,7 +170,7 @@ public class FileHandler extends Activity
             e.printStackTrace();
         }
 
-       LoadTrips(dirUnCategorized);
+       LoadTrips(folder.getAbsolutePath());
         /*
         if(file.exists())
         {

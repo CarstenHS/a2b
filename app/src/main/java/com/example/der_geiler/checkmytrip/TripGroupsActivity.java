@@ -19,7 +19,6 @@ import android.widget.EditText;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,13 +33,6 @@ public class TripGroupsActivity extends Activity
     final CharSequence[] groupProps = {"Delete", "noget1", "noget2"};
     uiAction lastUiAction = null;
     Rect touchRect = null;
-    private final int ACTION_LONG_CSV = 111;
-
-    private class uiAction
-    {
-        public int lastAction = 0;
-        public View view;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -180,7 +172,7 @@ public class TripGroupsActivity extends Activity
                         final String group = ((TextView) v).getText().toString();
                         builder.setTitle(group);
                         lastUiAction.view.setBackgroundColor(Color.parseColor("#b0b0b0"));
-                        lastUiAction.lastAction = ACTION_LONG_CSV;
+                        lastUiAction.lastAction = uiAction.ACTION_LONG_CSV;
                         builder.setItems(groupProps, new DialogInterface.OnClickListener()
                                 {
                                     public void onClick(DialogInterface dialog, int which)
