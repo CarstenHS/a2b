@@ -43,7 +43,7 @@ public class FileHandler extends Activity
 
     public void Init(Context context)
     {
-        dataDir = context.getFilesDir().toString() + "/";// file.getPath();
+        dataDir = context.getFilesDir().getParent();
         this.context = context;
     }
 
@@ -64,8 +64,9 @@ public class FileHandler extends Activity
 */
     public List<String> LoadTrips(String groupPath)
     {
-        File file = new File(groupPath);
-        File[] files = file.listFiles();
+        //File file = new File(groupPath);
+        File folder = context.getDir(groupPath, Context.MODE_PRIVATE);
+        File[] files = folder.listFiles();
 
         List<String> fileNames = new ArrayList<>();
 
@@ -89,7 +90,7 @@ public class FileHandler extends Activity
 
     public void DeleteGroup(String group)
     {
-        File dir = new File(dataDir + group);
+        File dir = context.getDir(group, Context.MODE_PRIVATE);
         DeleteRecursive(dir);
     }
 
@@ -109,7 +110,8 @@ public class FileHandler extends Activity
 
         for (File file : directories)
         {
-            dirs.add(file.getName());
+            if(file.getName().substring(0,4).equals("app_"))
+                dirs.add(file.getName().substring(4));
         }
 
         return dirs;
@@ -140,7 +142,6 @@ public class FileHandler extends Activity
 
     public void SaveTrip(Trip trip) throws IOException
     {
-        //if(DirectoryExist(dirUnCategorized) == false)<
         File folder = context.getDir(dirUnCategorized, Context.MODE_PRIVATE);
         String fileName = filePrefix + String.valueOf(trip.GetTimeStart().getTime()) + fileExtension;
 
