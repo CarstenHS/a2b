@@ -31,6 +31,8 @@ public class TripsActivity extends Activity
     uiAction lastUiAction = null;
     Rect touchRect = null;
     final CharSequence[] groupProps = {"Delete", "noget1", "noget2"};
+    String selectedGroup;
+    String selectedTrip;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -43,7 +45,8 @@ public class TripsActivity extends Activity
         Intent intent = getIntent();
         if (null != intent)
         {
-            ShowTrips(intent.getStringExtra("group"));
+            selectedGroup = intent.getStringExtra("group");
+            ShowTrips(selectedGroup);
         }
         lastUiAction = new uiAction();
         touchRect = new Rect();
@@ -80,20 +83,22 @@ public class TripsActivity extends Activity
             public void onClick(DialogInterface dialog, int which)
             {
                 //TODO: Delete trip instead of: fileHandler.DeleteGroup(group);
-                //ShowTripGroups();
+                fileHandler.deleteTrip(selectedGroup, selectedTrip);
+                ShowTrips(selectedGroup);
             }
         });
         alert.show();
     }
 
-    private void setTouchActions(TextView tv)
+    private void setTouchActions(TextView tv, String grp)
     {
+        final String group = grp;
         tv.setOnTouchListener(new View.OnTouchListener()
         {
             @Override
             public boolean onTouch(View v, MotionEvent event)
             {
-                final String pressedTrip = ((TextView) v).getText().toString();
+                selectedTrip = ((TextView) v).getText().toString();
 
                 int action = event.getAction();
                 switch (action)
@@ -116,9 +121,12 @@ public class TripsActivity extends Activity
                         if (lastUiAction.lastAction == MotionEvent.ACTION_DOWN)
                         {
                             lastUiAction.view.setBackgroundColor(Color.parseColor("#b0b0b0"));
-                            Intent i = new Intent(getApplicationContext(), TripsActivity.class);
-                            i.putExtra("group", pressedTrip);
+                            /*
+                            Intent i = new Intent(getApplicationContext(), FileHandler.class);
+                            i.putExtra("trip", pressedTrip);
+                            i.putExtra("group", group);
                             startActivity(i);
+                            */
                         }
                         break;
                     }
@@ -200,7 +208,7 @@ public class TripsActivity extends Activity
                 params.setMargins(px, px, px, px);
                 tv.setLayoutParams(params);
 
-                setTouchActions(tv);
+                setTouchActions(tv, group);
 
                 tr.addView(tv);
                 tripsTableLayout.addView(tr, new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.MATCH_PARENT));

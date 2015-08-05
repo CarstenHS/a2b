@@ -94,6 +94,16 @@ public class FileHandler extends Activity
         DeleteRecursive(dir);
     }
 
+    public void deleteTrip(String group, String trip)
+    {
+        File folder = context.getDir(group, Context.MODE_PRIVATE);
+        File file = new File(folder, trip);
+        if(file.exists() == true)
+        {
+            file.delete();
+        }
+    }
+
     public List<String> GetDirectories()
     {
         File myDirectory = new File(dataDir);
