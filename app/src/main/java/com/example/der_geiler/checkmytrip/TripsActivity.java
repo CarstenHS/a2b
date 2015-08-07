@@ -127,6 +127,7 @@ public class TripsActivity extends Activity
                             i.putExtra("group", group);
                             startActivity(i);
                             */
+                            fileHandler.LoadTrip(selectedGroup, selectedTrip);
                         }
                         break;
                     }

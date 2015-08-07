@@ -10,11 +10,14 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
@@ -47,21 +50,46 @@ public class FileHandler extends Activity
         this.context = context;
     }
 
-    /*
-    public ArrayList<String> LoadTripObjects(String group)
+
+    public void LoadTrip(String group, String trip)
     {
-        try
+        File folder = context.getDir(group, Context.MODE_PRIVATE);
+        File file = new File(folder, trip);
+        if(file.exists() == true)
         {
-            FileInputStream fis = openFileInput(dataDir + group);
-            ObjectInputStream is = new ObjectInputStream(fis);
-            Trip trip = (Trip) is.readObject();
-            is.close();
-            fis.close();
-        }catch (IOException | ClassNotFoundException e)
-        {
+            FileInputStream fis = null;
+            try
+            {
+                fis = new FileInputStream(file);
+                        //context.openFileInput(file.getAbsolutePath());
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+            InputStreamReader isr = new InputStreamReader(fis);
+            BufferedReader bufferedReader = new BufferedReader(isr);
+            StringBuilder sb = new StringBuilder();
+            String line;
+
+            try
+            {
+                while ((line = bufferedReader.readLine()) != null)
+                {
+                    sb.append(line);
+                }
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+
+            String json = sb.toString();
+            Gson gson = new Gson();
+            Trip t = gson.fromJson(json, Trip.class);
         }
     }
-*/
+
     public List<String> LoadTrips(String groupPath)
     {
         //File file = new File(groupPath);
@@ -158,9 +186,12 @@ public class FileHandler extends Activity
         File file = new File(folder, fileName);
         if(file.exists() == false)
         {
-            try {
+            try
+            {
                 file.createNewFile();
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 e.printStackTrace();
             }
         }
@@ -168,38 +199,18 @@ public class FileHandler extends Activity
         Gson gson = new Gson();
         String s = gson.toJson(trip);
         file.setWritable(true);
-//        File files = context.getDir(dirUnCategorized, Context.MODE_PRIVATE);
-//        File[] filez = files.listFiles();
-//        boolean b = file.canWrite();
-//        List<String> l = GetDirectories();
 
         FileOutputStream outputStream = new FileOutputStream(file);
-        try {
+        try
+        {
             outputStream.write(s.getBytes());
             outputStream.close();
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             e.printStackTrace();
         }
 
-       LoadTrips(folder.getAbsolutePath());
-        /*
-        if(file.exists())
-        {
-            try
-            {
-                //File file = new File();
-                FileOutputStream fos = context.openFileOutput(fileName, Context.MODE_PRIVATE);
-                ObjectOutputStream os = new ObjectOutputStream(fos);
-                os.writeObject(trip);
-                os.close();
-                fos.close();
-            } catch (IOException e) {
-            }
-        }
-        else
-        {
-
-        }
-        */
+       LoadTrips(dirUnCategorized);
     }
 }
