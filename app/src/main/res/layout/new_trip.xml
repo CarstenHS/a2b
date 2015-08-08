@@ -1,19 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:id="@+id/map"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:name="com.google.android.gms.maps.MapFragment"
-              tools:layout="@layout/new_trip">
-
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/map"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:name="com.google.android.gms.maps.MapFragment"
+            tools:layout="@layout/new_trip">
 
     <RelativeLayout
         android:id="@+id/InnerRelativeLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentBottom="true" >
-
 
         <!--android:background="#66000000"-->
         <TableLayout

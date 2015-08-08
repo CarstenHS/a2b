@@ -32,6 +32,7 @@ public class Trip
     {
         distance += dist;
     }
+    public List<A2BMarker> getA2bMarkers() {return A2BMarkers;}
 
     static final int DIST_UNIT_KILOMETERS = 0;  //TODO: use ones from globals
     static final int DIST_UNIT_MILES = 1;       //TODO: use ones from globals

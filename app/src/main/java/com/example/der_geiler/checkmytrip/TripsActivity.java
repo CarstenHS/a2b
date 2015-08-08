@@ -121,13 +121,11 @@ public class TripsActivity extends Activity
                         if (lastUiAction.lastAction == MotionEvent.ACTION_DOWN)
                         {
                             lastUiAction.view.setBackgroundColor(Color.parseColor("#b0b0b0"));
-                            /*
-                            Intent i = new Intent(getApplicationContext(), FileHandler.class);
-                            i.putExtra("trip", pressedTrip);
-                            i.putExtra("group", group);
+
+                            Intent i = new Intent(getApplicationContext(), StaticMapActivity.class);
+                            i.putExtra("trip", selectedTrip);
+                            i.putExtra("group", selectedGroup);
                             startActivity(i);
-                            */
-                            fileHandler.LoadTrip(selectedGroup, selectedTrip);
                         }
                         break;
                     }

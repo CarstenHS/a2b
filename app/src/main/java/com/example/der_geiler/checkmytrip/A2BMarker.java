@@ -14,11 +14,11 @@ public class A2BMarker
     private double lon;
     public Date date;
 
-    A2BMarker(Date d)
+    A2BMarker(Date d, double lat, double lon)
     {
         date = d;
-        lat = 0;
-        lon = 0;
+        this.lat = lat;
+        this.lon = lon;
     }
 
     A2BMarker(double lat, double lon)

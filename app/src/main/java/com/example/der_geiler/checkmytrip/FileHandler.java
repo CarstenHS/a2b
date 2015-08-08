@@ -2,24 +2,14 @@ package com.example.der_geiler.checkmytrip;
 
 import android.app.Activity;
 import android.content.Context;
-import android.util.TypedValue;
-import android.view.View;
-import android.widget.TableLayout;
-import android.widget.TableRow;
-import android.widget.TextView;
-
 import com.google.gson.Gson;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,18 +40,17 @@ public class FileHandler extends Activity
         this.context = context;
     }
 
-
-    public void LoadTrip(String group, String trip)
+    public Trip LoadTrip(String strGroup, String strTrip)
     {
-        File folder = context.getDir(group, Context.MODE_PRIVATE);
-        File file = new File(folder, trip);
+        File folder = context.getDir(strGroup, Context.MODE_PRIVATE);
+        File file = new File(folder, strTrip);
+        Trip trip = null;
         if(file.exists() == true)
         {
             FileInputStream fis = null;
             try
             {
                 fis = new FileInputStream(file);
-                        //context.openFileInput(file.getAbsolutePath());
             }
             catch (Exception e)
             {
@@ -86,8 +75,9 @@ public class FileHandler extends Activity
 
             String json = sb.toString();
             Gson gson = new Gson();
-            Trip t = gson.fromJson(json, Trip.class);
+            trip = gson.fromJson(json, Trip.class);
         }
+        return trip;
     }
 
     public List<String> LoadTrips(String groupPath)
@@ -105,7 +95,8 @@ public class FileHandler extends Activity
         return fileNames;
     }
 
-    private void DeleteRecursive(File fileOrDirectory) {
+    private void DeleteRecursive(File fileOrDirectory)
+    {
         if (fileOrDirectory.isDirectory())
             for (File child : fileOrDirectory.listFiles())
             {

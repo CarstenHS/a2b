@@ -33,7 +33,7 @@
 
         <activity
             android:name=".NewTripActivity"
-            android:label="Current" >
+            android:label="Current trip" >
         </activity>
 
         <activity
@@ -44,6 +44,10 @@
         <activity
             android:name=".TripsActivity"
             android:label="Trips" >
+        </activity>
+
+        <activity
+            android:name=".StaticMapActivity">
         </activity>
 
         <activity

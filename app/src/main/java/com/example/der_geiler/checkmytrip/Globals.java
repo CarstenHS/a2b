@@ -91,8 +91,10 @@ public class Globals extends Application implements
     public LatLng UpdateLocation()
     {
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        currentTrip.A2BMarkers.add(new A2BMarker(new Date()));
-        currentLatLongs.add(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()));
+        double lat = mLastLocation.getLatitude();
+        double lon = mLastLocation.getLongitude();
+        currentTrip.A2BMarkers.add(new A2BMarker(new Date(), lat, lon));
+        currentLatLongs.add(new LatLng(lat, lon));
         return currentLatLongs.get(currentLatLongs.size()-1);
     }
 

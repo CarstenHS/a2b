@@ -41,7 +41,6 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
     private void EndTrip()
     {
         Trip currentTrip = ((Globals)this.getApplication()).GetCurrentTrip();
-
     }
 
     public void UpdateUIElement(final int element, final String text)
@@ -222,7 +221,8 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
@@ -242,7 +242,8 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
             e.printStackTrace();
         }
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_settings)
+        {
             return true;
         }
 
