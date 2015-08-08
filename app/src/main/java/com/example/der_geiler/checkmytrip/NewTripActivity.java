@@ -4,14 +4,21 @@ package com.example.der_geiler.checkmytrip;
  * Created by der_geiler on 11-04-2015.
 */
 
+import android.app.PendingIntent;
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.google.android.gms.location.Geofence;
+import com.google.android.gms.location.GeofencingRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.*;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -29,6 +36,54 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
     public static final int UI_ELEMENT_SPEED = 0;
     public static final int UI_ELEMENT_DISTANCE = 1;
     private Globals globals = null;
+    private PendingIntent mGeofencePendingIntent = null;
+
+    /************* GEOFENCING *****************/
+
+    private GeofencingRequest getGeofencingRequest(Geofence g)
+    {
+        GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
+        builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
+        builder.addGeofence(g);
+        return builder.build();
+    }
+
+    private void createGeofence(double lat, double lon)
+    {
+        String id = "1";
+        float radiusInMeters = 100;
+        int expirationInMilliSecs = 0;
+        Geofence g = new Geofence.Builder()
+                .setRequestId(id)
+                .setCircularRegion(lat, lon, radiusInMeters)
+                .setExpirationDuration(expirationInMilliSecs)
+                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT)
+                .build();
+    }
+
+    private PendingIntent getGeofencePendingIntent()
+    {
+        // Reuse the PendingIntent if we already have it.
+        if (mGeofencePendingIntent != null) {
+            return mGeofencePendingIntent;
+        }
+        Intent intent = new Intent(this, GeofenceTransitionsIntentService.class);
+        // We use FLAG_UPDATE_CURRENT so that we get the same pending intent back when
+        // calling addGeofences() and removeGeofences().
+        return PendingIntent.getService(this, 0, intent, PendingIntent.
+                FLAG_UPDATE_CURRENT);
+    }
+
+    private void stopGeofence()
+    {
+        LocationServices.GeofencingApi.removeGeofences(
+                mGoogleApiClient,
+                // This is the same pending intent that was used in addGeofences().
+                getGeofencePendingIntent()
+        ).setResultCallback(this); // Result processed in onResult().
+    }
+
+    /************* GEOFNCING END *****************/
 
     public void SetMap(LatLng ll)
     {
@@ -159,6 +214,23 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
             AddMarkerUI(ll, i);
             ++i;
         }
+
+        // TODO: Get from somewhere
+        boolean useGeofence = true;
+
+        if(useGeofence)
+        {
+            map.addCircle(new CircleOptions()
+                    .center(new LatLng(55.6563766,12.6124786)).radius(100)
+                    .fillColor(Color.parseColor("#B2A9F6")));
+
+            LocationServices.GeofencingApi.addGeofences(
+                    mGoogleApiClient,
+                    getGeofencingRequest(),
+                    getGeofencePendingIntent()
+            ).setResultCallback(this);
+        }
+
     }
 
     private void InitMap()

@@ -1,6 +1,7 @@
 package com.example.der_geiler.checkmytrip;
 
 import android.app.Activity;
+import android.app.PendingIntent;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -13,6 +14,12 @@ import android.view.View;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+
+import com.google.android.gms.location.Geofence;
+import com.google.android.gms.location.GeofencingRequest;
+
+// https://developers.google.com/android/reference/com/google/android/gms/location/Geofence.Builder
+// https://developer.android.com/training/location/geofencing.html#HandleGeofenceTransitions
 
 public class MainActivity extends Activity
 {
@@ -128,6 +135,8 @@ public class MainActivity extends Activity
         touchRect = new Rect();
         lastUiAction = new uiAction();
         setUiActions();
+        // Augustagade: 55.6563766,12.6124786
+        createGeofence(55.6563766,12.6124786);
     }
 
     @Override
