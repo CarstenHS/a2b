@@ -28,41 +28,27 @@ public class StaticMapActivity extends FragmentActivity implements OnMapReadyCal
     int MAX_ZOOM = 15;
     private Trip trip;
 
-    public void AddMarkerUI(final LatLng ll, final int num)
-    {
-        runOnUiThread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                AddMarkerToMap(ll, num);
-                //CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(ll, MAX_ZOOM);
-                //map.animateCamera(cameraUpdate);
-                //UpdateBounds();
-            }
-        });
-    }
+
 
     public void AddMarkerToMap(LatLng ll, int num)
     {
         SimpleDateFormat fmt = new SimpleDateFormat("HH:mm");
-        Trip currentTrip = ((Globals)this.getApplication()).GetCurrentTrip();
         if((num == 0))
         {
             Marker marker = map.addMarker(new MarkerOptions()
                     .position(ll)
                     .title("Start")
-                    .snippet(fmt.format(currentTrip.A2BMarkers.get(num).date))
+                    .snippet(fmt.format(trip.A2BMarkers.get(num).date))
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
 
             marker.showInfoWindow();
         }
-        else if(num == currentTrip.A2BMarkers.size() - 1)
+        else if(num == trip.A2BMarkers.size() - 1)
         {
             Marker marker = map.addMarker(new MarkerOptions()
                     .position(ll)
                     .title("End")
-                    .snippet(fmt.format(currentTrip.A2BMarkers.get(num).date))
+                    .snippet(fmt.format(trip.A2BMarkers.get(num).date))
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
 
             marker.showInfoWindow();
@@ -71,7 +57,7 @@ public class StaticMapActivity extends FragmentActivity implements OnMapReadyCal
         {
             Marker marker = map.addMarker(new MarkerOptions()
                     .position(ll)
-                    .title(fmt.format(currentTrip.A2BMarkers.get(num).date))
+                    .title(fmt.format(trip.A2BMarkers.get(num).date))
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
         }
     }
@@ -89,29 +75,36 @@ public class StaticMapActivity extends FragmentActivity implements OnMapReadyCal
             }
 
             LatLngBounds bounds = builder.build();
-            cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 50);
+            cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 200);
         }
         else
         {
             cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(a2bMarkers.get(0).GetLat(), a2bMarkers.get(0).GetLon()), MAX_ZOOM);
         }
-        map.animateCamera(cameraUpdate);
+        try
+        {
+            map.moveCamera(cameraUpdate);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 
     public void onMapReady(GoogleMap map)
     {
         this.map = map;
         UpdateBounds();
-        /*
-        this.map = map;
+        List<A2BMarker> A2BMarkers = trip.getA2bMarkers();
         int i = 0;
-        List<A2BMarker> a2bMarkers = trip.getA2bMarkers();
-        for(A2BMarker mkr : a2bMarkers)
+        for(A2BMarker mkr : A2BMarkers)
         {
-            AddMarkerToMap(new LatLng(), i);
+            LatLng ll = new LatLng(mkr.GetLat(), mkr.GetLon());
+            AddMarkerToMap(ll, i);
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(ll, MAX_ZOOM);
+            map.animateCamera(cameraUpdate);
             ++i;
         }
-        */
     }
 
     @Override
