@@ -3,6 +3,8 @@ package com.example.der_geiler.checkmytrip;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.widget.TextView;
+
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -27,8 +29,6 @@ public class StaticMapActivity extends FragmentActivity implements OnMapReadyCal
     public GoogleMap map;
     int MAX_ZOOM = 15;
     private Trip trip;
-
-
 
     public void AddMarkerToMap(LatLng ll, int num)
     {
@@ -96,6 +96,13 @@ public class StaticMapActivity extends FragmentActivity implements OnMapReadyCal
         this.map = map;
         UpdateBounds();
         List<A2BMarker> A2BMarkers = trip.getA2bMarkers();
+
+        String dist = trip.GetDistance();
+        ((TextView) findViewById(R.id.distance)).setText(dist);
+
+        String duration = ((Globals)this.getApplication()).ExtractDurationFromTicks(trip.getTicks());
+        ((TextView) findViewById(R.id.duration)).setText(duration);
+
         int i = 0;
         for(A2BMarker mkr : A2BMarkers)
         {

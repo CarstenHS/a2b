@@ -49,6 +49,31 @@ public class Globals extends Application implements
         public Date lastDate;
     }
 
+    public String ExtractDurationFromTicks(int ticks)
+    {
+        String hours = null;
+        String mins = null;
+        String secs = null;
+        int unit = 60*60;
+
+        int temp = ticks / unit;
+        hours  = (temp != 0) ? String.format("%02d", temp) : "00";
+
+        ticks -= temp*unit;
+
+        unit = 60;
+        temp = (ticks / unit);
+        mins = (temp != 0) ? String.format("%02d", temp) : "00";
+
+        ticks -= temp*unit;
+
+        unit = 1;
+        temp = ticks / unit;
+        secs = (temp != 0) ? String.format("%02d", temp) : "00";
+
+        return hours + ":" + mins + ":" + secs;
+    }
+
     public void setCurrentTrip(Trip trip)
     {
         if(currentTrip == null)
@@ -128,7 +153,7 @@ public class Globals extends Application implements
             }
             if (mapActivity != null)
             {
-                mapActivity.UpdateUIElement(NewTripActivity.UI_ELEMENT_DISTANCE, currentTrip.GetDistance(distUnit));
+                mapActivity.UpdateUIElement(NewTripActivity.UI_ELEMENT_DISTANCE, currentTrip.GetDistance());
                 mapActivity.UpdateUIElement(NewTripActivity.UI_ELEMENT_SPEED, ConvertSpeed(speed));
             }
         }

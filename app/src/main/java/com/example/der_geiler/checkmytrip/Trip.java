@@ -14,8 +14,9 @@ public class Trip
 {
     public List<A2BMarker> A2BMarkers;
     private Date timeStart;
-    private static int ticks = 0;
+    private int ticks = 0;
     private float distance;
+    private int unit = DIST_UNIT_KILOMETERS;
 
     Trip()
     {
@@ -37,7 +38,11 @@ public class Trip
     static final int DIST_UNIT_KILOMETERS = 0;  //TODO: use ones from globals
     static final int DIST_UNIT_MILES = 1;       //TODO: use ones from globals
 
-    public String GetDistance(int unit)
+    public void setUnit(int unit){this.unit = unit;}
+
+    public int getTicks(){return ticks;}
+
+    public String GetDistance()
     {
         String dist;
         if(unit == DIST_UNIT_KILOMETERS)

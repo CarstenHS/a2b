@@ -28,6 +28,7 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
     int MAX_ZOOM = 15;
     public static final int UI_ELEMENT_SPEED = 0;
     public static final int UI_ELEMENT_DISTANCE = 1;
+    private Globals globals = null;
 
     public void SetMap(LatLng ll)
     {
@@ -78,32 +79,6 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
         });
     }
 
-    private String ExtractDurationFromTicks(int ticks)
-    {
-        String hours = null;
-        String mins = null;
-        String secs = null;
-        int unit = 60*60;
-
-        int temp = ticks / unit;
-        hours  = (temp != 0) ? String.format("%02d", temp) : "00";
-
-        ticks -= temp*unit;
-
-        unit = 60;
-        temp = (ticks / unit);
-        mins = (temp != 0) ? String.format("%02d", temp) : "00";
-
-        ticks -= temp*unit;
-
-        unit = 1;
-        temp = ticks / unit;
-        secs = (temp != 0) ? String.format("%02d", temp) : "00";
-
-        String retval = hours + ":" + mins + ":" + secs;
-        return retval;
-    }
-
     public void TickUI(final int ticks)
     {
         runOnUiThread(new Runnable()
@@ -112,7 +87,7 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
             public void run()
             {
                 TextView tv = (TextView) findViewById(R.id.duration);
-                tv.setText(ExtractDurationFromTicks(ticks));
+                tv.setText(globals.ExtractDurationFromTicks(ticks));
             }
         });
     }
@@ -120,7 +95,7 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
     public void AddMarkerToMap(LatLng ll, int num)
     {
         SimpleDateFormat fmt = new SimpleDateFormat("HH:mm");
-        Trip currentTrip = ((Globals)this.getApplication()).GetCurrentTrip();
+        Trip currentTrip = globals.GetCurrentTrip();
         if((num == 0))
         {
             Marker marker = map.addMarker(new MarkerOptions()
@@ -178,7 +153,7 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
     {
         this.map = map;
         int i = 0;
-        List<LatLng> lls = ((Globals)this.getApplication()).GetLatLngs();
+        List<LatLng> lls = globals.GetLatLngs();
         for(LatLng ll : lls)
         {
             AddMarkerUI(ll, i);
@@ -189,17 +164,16 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
     private void InitMap()
     {
         ((Globals)this.getApplication()).SetMapVisible(this);
-        Trip currentTrip = ((Globals)this.getApplication()).GetCurrentTrip();
+        Trip currentTrip = globals.GetCurrentTrip();
         if(currentTrip == null)
         {
             currentTrip = new Trip();
-            ((Globals)this.getApplication()).StartApi();
+            globals.StartApi();
             currentTrip.A2BMarkers = new ArrayList<A2BMarker>();
             currentTrip.SetTimeStart(new Date());
             Date d = new Date();
-            ((Globals)this.getApplication()).setCurrentTrip(currentTrip);
-        }
-        else
+            globals.setCurrentTrip(currentTrip);
+        } else
         {
             ((MapFragment)getFragmentManager().findFragmentById(R.id.map)).getMapAsync(this);
         }
@@ -210,13 +184,14 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.new_trip);
+        globals = ((Globals)this.getApplication());
         InitMap();
     }
 
     @Override
     protected void onPause()
     {
-        ((Globals)this.getApplication()).SetMapVisible(null);
+        globals.SetMapVisible(null);
         super.onPause();
     }
 
