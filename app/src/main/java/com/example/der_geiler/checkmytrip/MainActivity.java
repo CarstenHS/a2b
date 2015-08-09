@@ -43,6 +43,7 @@ public class MainActivity extends Activity
             case strCurrentTrip:    /* fall-through */
             {
                 Intent i = new Intent(MainActivity.this, NewTripActivity.class);
+                i.putExtra("class", MainActivity.class.getPackage().getName() + "." + this.getClass().getSimpleName());
                 startActivity(i);
                 break;
             }
@@ -135,8 +136,6 @@ public class MainActivity extends Activity
         touchRect = new Rect();
         lastUiAction = new uiAction();
         setUiActions();
-        // Augustagade: 55.6563766,12.6124786
-        createGeofence(55.6563766,12.6124786);
     }
 
     @Override

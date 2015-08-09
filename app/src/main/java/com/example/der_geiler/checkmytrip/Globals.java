@@ -2,6 +2,8 @@ package com.example.der_geiler.checkmytrip;
 
 
 import android.app.Application;
+import android.app.PendingIntent;
+import android.content.Intent;
 import android.location.Location;
 /*
 import android.location.LocationListener;
@@ -108,11 +110,6 @@ public class Globals extends Application implements
         mapActivity = activity;
     }
 
-    public void StartApi()
-    {
-        buildGoogleApiClient();
-    }
-
     public LatLng UpdateLocation()
     {
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
@@ -123,7 +120,7 @@ public class Globals extends Application implements
         return currentLatLongs.get(currentLatLongs.size()-1);
     }
 
-    protected synchronized void buildGoogleApiClient()
+    protected synchronized GoogleApiClient buildGoogleApiClient()
     {
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
@@ -137,6 +134,7 @@ public class Globals extends Application implements
         locationRequest.setInterval(5000);
         locationRequest.setFastestInterval(3000);
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        return mGoogleApiClient;
     }
 
     @Override

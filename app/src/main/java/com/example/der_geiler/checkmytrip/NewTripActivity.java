@@ -13,6 +13,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.Result;
+import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationServices;
@@ -29,7 +32,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class NewTripActivity extends FragmentActivity implements OnMapReadyCallback
+public class NewTripActivity extends FragmentActivity implements OnMapReadyCallback, ResultCallback
 {
     public GoogleMap map;
     int MAX_ZOOM = 15;
@@ -37,8 +40,15 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
     public static final int UI_ELEMENT_DISTANCE = 1;
     private Globals globals = null;
     private PendingIntent mGeofencePendingIntent = null;
+    private GoogleApiClient mGoogleApiClient = null;
 
     /************* GEOFENCING *****************/
+
+    @Override
+    public void onResult(Result result)
+    {
+        result = result;
+    }
 
     private GeofencingRequest getGeofencingRequest(Geofence g)
     {
@@ -48,7 +58,7 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
         return builder.build();
     }
 
-    private void createGeofence(double lat, double lon)
+    private Geofence createGeofence(double lat, double lon)
     {
         String id = "1";
         float radiusInMeters = 100;
@@ -59,6 +69,7 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
                 .setExpirationDuration(expirationInMilliSecs)
                 .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT)
                 .build();
+        return g;
     }
 
     private PendingIntent getGeofencePendingIntent()
@@ -224,9 +235,10 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
                     .center(new LatLng(55.6563766,12.6124786)).radius(100)
                     .fillColor(Color.parseColor("#B2A9F6")));
 
+            // Augustagade: 55.6563766,12.6124786
             LocationServices.GeofencingApi.addGeofences(
                     mGoogleApiClient,
-                    getGeofencingRequest(),
+                    getGeofencingRequest(createGeofence(55.6563766,12.6124786)),
                     getGeofencePendingIntent()
             ).setResultCallback(this);
         }
@@ -240,12 +252,14 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
         if(currentTrip == null)
         {
             currentTrip = new Trip();
-            globals.StartApi();
+            //globals.StartApi();
+            mGoogleApiClient = globals.buildGoogleApiClient();
             currentTrip.A2BMarkers = new ArrayList<A2BMarker>();
             currentTrip.SetTimeStart(new Date());
             Date d = new Date();
             globals.setCurrentTrip(currentTrip);
-        } else
+        }
+        else
         {
             ((MapFragment)getFragmentManager().findFragmentById(R.id.map)).getMapAsync(this);
         }
