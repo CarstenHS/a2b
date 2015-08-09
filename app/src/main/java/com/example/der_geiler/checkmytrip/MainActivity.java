@@ -2,8 +2,10 @@ package com.example.der_geiler.checkmytrip;
 
 import android.app.Activity;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;

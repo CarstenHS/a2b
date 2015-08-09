@@ -4,6 +4,7 @@ package com.example.der_geiler.checkmytrip;
 import android.app.Application;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.graphics.Color;
 import android.location.Location;
 /*
 import android.location.LocationListener;
@@ -11,7 +12,11 @@ import android.location.LocationListener;
 import android.os.Bundle;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.Result;
+import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.*;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
@@ -24,7 +29,7 @@ import java.util.Date;
  * Created by der_geiler on 13-05-2015.
  */
 public class Globals extends Application implements
-        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, ResultCallback
 {
     private Trip currentTrip = null;
     public Timer TripTimer;
@@ -41,9 +46,86 @@ public class Globals extends Application implements
     static final int SPEED_UNIT_MPH = 2;
     static final int DIST_UNIT_KILOMETERS = 0;
     static final int DIST_UNIT_MILES = 1;
-
+    private PendingIntent mGeofencePendingIntent = null;
     public int distUnit = DIST_UNIT_KILOMETERS;
     private int speedUnit = SPEED_UNIT_KPH;
+    private GoogleMap map;
+
+    /************* GEOFENCING *****************/
+
+    @Override
+    public void onResult(Result result)
+    {
+        result = result;
+    }
+
+    private GeofencingRequest getGeofencingRequest(Geofence g)
+    {
+        GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
+        builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
+        builder.addGeofence(g);
+        return builder.build();
+    }
+
+    private Geofence createGeofence(double lat, double lon)
+    {
+        String id = "1";
+        float radiusInMeters = 50;
+        Geofence g = new Geofence.Builder()
+                .setRequestId(id)
+                .setCircularRegion(lat, lon, radiusInMeters)
+                .setExpirationDuration(Geofence.NEVER_EXPIRE)
+                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT)
+                .build();
+        return g;
+    }
+
+    private PendingIntent getGeofencePendingIntent()
+    {
+        // Reuse the PendingIntent if we already have it.
+        if (mGeofencePendingIntent != null) {
+            return mGeofencePendingIntent;
+        }
+        Intent intent = new Intent(this, GeofenceTransitionsIntentService.class);
+        // We use FLAG_UPDATE_CURRENT so that we get the same pending intent back when
+        // calling addGeofences() and removeGeofences().
+        return PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+    }
+
+    private void stopGeofence()
+    {
+        LocationServices.GeofencingApi.removeGeofences(mGoogleApiClient,
+                // This is the same pending intent that was used in addGeofences().
+                getGeofencePendingIntent()
+        ).setResultCallback(this); // Result processed in onResult().
+    }
+
+    public void createGeofence()
+    {
+        // TODO: Get from somewhere
+        boolean useGeofence = true;
+        if(useGeofence)
+        {
+            map.addCircle(new CircleOptions()
+                    .center(new LatLng(55.6563766, 12.6124786)).radius(50)
+                    .fillColor(Color.parseColor("#B2A9F6")));
+
+            // Augustagade: 55.6563766,12.6124786
+            LocationServices.GeofencingApi.addGeofences(
+                    mGoogleApiClient,
+                    getGeofencingRequest(createGeofence(55.6563766, 12.6124786)),
+                    getGeofencePendingIntent()
+            ).setResultCallback(this);
+        }
+        else
+        {
+            map.addCircle(new CircleOptions()
+                    .center(new LatLng(55.6563766, 12.6124786)).radius(50)
+                    .fillColor(Color.parseColor("#B2A9F6")));
+        }
+    }
+
+    /************* GEOFENCING END *****************/
 
     private class a2bLoc
     {
@@ -200,13 +282,14 @@ public class Globals extends Application implements
         }
         StartTimers();
         LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, createLocationReq(), this);
+        map = mapActivity.getMap();
+        createGeofence();
     }
 
     @Override
     public void onConnectionSuspended(int cause)
     {
-        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
-                mGoogleApiClient);
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
     }
 
     @Override

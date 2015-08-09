@@ -3,6 +3,7 @@ package com.example.der_geiler.checkmytrip;
 import android.app.IntentService;
 import android.content.Intent;
 import android.content.Context;
+import android.media.MediaPlayer;
 import android.util.Log;
 
 import com.google.android.gms.location.Geofence;
@@ -35,6 +36,29 @@ public class GeofenceTransitionsIntentService extends IntentService
         if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER ||
             geofenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT)
         {
+            MediaPlayer mp;
+            int id = R.raw.out;
+
+            if(geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER)
+                id = R.raw.out;
+            else if(geofenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT)
+                id = R.raw.in;
+            mp = MediaPlayer.create(this.getApplicationContext(), id);
+            mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener()
+            {
+
+                @Override
+                public void onCompletion(MediaPlayer mp)
+                {
+                    // TODO Auto-generated method stub
+                    mp.reset();
+                    mp.release();
+                    mp = null;
+                }
+
+            });
+            mp.start();
+
             // Get the geofences that were triggered. A single event can trigger
             // multiple geofences.
             List triggeringGeofences = geofencingEvent.getTriggeringGeofences();
