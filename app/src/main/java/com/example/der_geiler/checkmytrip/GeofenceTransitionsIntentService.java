@@ -19,9 +19,12 @@ public class GeofenceTransitionsIntentService extends IntentService
         GeofencingEvent geofencingEvent = GeofencingEvent.fromIntent(intent);
         if (geofencingEvent.hasError())
         {
+            /*
             String errorMessage = GeofenceErrorMessages.getErrorString(this,
                     geofencingEvent.getErrorCode());
             Log.e(TAG, errorMessage);
+            */
+            Log.e("geoFenceCSV", "hasError");
             return;
         }
 
@@ -37,20 +40,26 @@ public class GeofenceTransitionsIntentService extends IntentService
             List triggeringGeofences = geofencingEvent.getTriggeringGeofences();
 
             // Get the transition details as a String.
+            /*
             String geofenceTransitionDetails = getGeofenceTransitionDetails(
                     this,
                     geofenceTransition,
                     triggeringGeofences
             );
+            */
+            Log.e("geoFenceCSV", String.valueOf(geofenceTransition));
 
-            // Send notification and log the transition details.
-            sendNotification(geofenceTransitionDetails);
+                    // Send notification and log the transition details.
+            /*
+                    sendNotification(geofenceTransitionDetails);
             Log.i(TAG, geofenceTransitionDetails);
+            */
         }
         else
         {
             // Log the error.
-            Log.e(TAG, getString(R.string.geofence_transition_invalid_type, geofenceTransition));
+            //Log.e(TAG, getString(R.string.geofence_transition_invalid_type, geofenceTransition));
+            Log.e("geoFenceCSV", "Wrong type");
         }
     }
 }

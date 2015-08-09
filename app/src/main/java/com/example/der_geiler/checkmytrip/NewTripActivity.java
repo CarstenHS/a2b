@@ -25,7 +25,6 @@ import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -227,7 +226,7 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
         }
 
         // TODO: Get from somewhere
-        boolean useGeofence = true;
+        boolean useGeofence = false;
 
         if(useGeofence)
         {
@@ -242,7 +241,12 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
                     getGeofencePendingIntent()
             ).setResultCallback(this);
         }
-
+        else
+        {
+            map.addCircle(new CircleOptions()
+                    .center(new LatLng(55.6563766,12.6124786)).radius(100)
+                    .fillColor(Color.parseColor("#B2A9F6")));
+        }
     }
 
     private void InitMap()
