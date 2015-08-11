@@ -215,6 +215,7 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
         try
         {
             fileHandler.SaveTrip(((Globals)this.getApplication()).GetCurrentTrip());
+            System.exit(0);
         }
         catch (IOException e)
         {

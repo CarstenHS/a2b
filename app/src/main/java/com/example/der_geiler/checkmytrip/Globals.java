@@ -59,24 +59,28 @@ public class Globals extends Application implements
         result = result;
     }
 
-    private GeofencingRequest getGeofencingRequest(Geofence g)
+    private GeofencingRequest getGeofencingRequest(List<Geofence> geofences)
     {
         GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
         builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
-        builder.addGeofence(g);
+        builder.addGeofences(geofences);
         return builder.build();
     }
 
-    private Geofence createGeofence(double lat, double lon)
+    private Geofence createGeofence(double lat, double lon, String id)
     {
-        String id = "1";
-        float radiusInMeters = 50;
+        float radiusInMeters = 100;
         Geofence g = new Geofence.Builder()
                 .setRequestId(id)
                 .setCircularRegion(lat, lon, radiusInMeters)
                 .setExpirationDuration(Geofence.NEVER_EXPIRE)
                 .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT)
                 .build();
+
+        map.addCircle(new CircleOptions()
+                .center(new LatLng(lat, lon)).radius(radiusInMeters)
+                .fillColor(Color.parseColor("#B2A9F6")));
+
         return g;
     }
 
@@ -106,21 +110,25 @@ public class Globals extends Application implements
         boolean useGeofence = true;
         if(useGeofence)
         {
-            map.addCircle(new CircleOptions()
-                    .center(new LatLng(55.6563766, 12.6124786)).radius(50)
-                    .fillColor(Color.parseColor("#B2A9F6")));
+            List<Geofence> geofences = new ArrayList<>();
 
-            // Augustagade: 55.6563766,12.6124786
+            geofences.add(createGeofence(55.6563766, 12.6124786, "hjem"));
+            geofences.add(createGeofence(55.722849, 12.4238959, "techpeople"));
+
             LocationServices.GeofencingApi.addGeofences(
                     mGoogleApiClient,
-                    getGeofencingRequest(createGeofence(55.6563766, 12.6124786)),
+                    getGeofencingRequest(geofences),
                     getGeofencePendingIntent()
             ).setResultCallback(this);
         }
         else
         {
             map.addCircle(new CircleOptions()
-                    .center(new LatLng(55.6563766, 12.6124786)).radius(50)
+                    .center(new LatLng(55.6563766, 12.6124786)).radius(100)
+                    .fillColor(Color.parseColor("#B2A9F6")));
+
+            map.addCircle(new CircleOptions()
+                    .center(new LatLng(55.722849, 12.4238959)).radius(100)
                     .fillColor(Color.parseColor("#B2A9F6")));
         }
     }

@@ -9,6 +9,7 @@ import android.util.Log;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingEvent;
 
+import java.io.IOException;
 import java.util.List;
 
 public class GeofenceTransitionsIntentService extends IntentService
@@ -40,9 +41,22 @@ public class GeofenceTransitionsIntentService extends IntentService
             int id = R.raw.out;
 
             if(geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER)
-                id = R.raw.out;
+            {
+                try
+                {
+                    FileHandler.GetInstance().SaveTrip(((Globals) this.getApplication()).GetCurrentTrip());
+                    System.exit(0);
+                }
+                catch (IOException e)
+                {
+                    e.printStackTrace();
+                }
+            }
             else if(geofenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT)
+            {
                 id = R.raw.in;
+                //Start
+            }
             mp = MediaPlayer.create(this.getApplicationContext(), id);
             mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener()
             {
