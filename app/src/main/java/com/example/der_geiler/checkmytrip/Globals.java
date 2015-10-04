@@ -50,13 +50,36 @@ public class Globals extends Application implements
     public int distUnit = DIST_UNIT_KILOMETERS;
     private int speedUnit = SPEED_UNIT_KPH;
     private GoogleMap map;
+    private List<A2BGeofence> a2BGeofences;
 
     /* General todos:
-    todo: redraw fences on change
-
+    todo: persist geofences
+    todo: better save names
+    todo: auto-filtering of trips
      */
     /************* GEOFENCING *****************/
 
+    public class A2BGeofence
+    {
+        private double lat;
+        private double lon;
+        private String name;
+
+        A2BGeofence(double lat, double lon, String name)
+        {
+            this.lat = lat;
+            this.lon = lon;
+            this.name = name;
+        }
+    }
+
+    public void drawGeofences()
+    {
+        for (A2BGeofence gf : a2BGeofences)
+        {
+            drawGeofence(gf.lat, gf.lon);
+        }
+    }
     @Override
     public void onResult(Result result)
     {
@@ -71,6 +94,13 @@ public class Globals extends Application implements
         return builder.build();
     }
 
+    private void drawGeofence(double lat, double lon)
+    {
+        map.addCircle(new CircleOptions()
+                .center(new LatLng(lat, lon)).radius(100)
+                .fillColor(Color.parseColor("#B2A9F6")));
+    }
+    /*
     private Geofence createGeofence(double lat, double lon, String id)
     {
         float radiusInMeters = 100;
@@ -81,9 +111,22 @@ public class Globals extends Application implements
                 .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT)
                 .build();
 
-        map.addCircle(new CircleOptions()
-                .center(new LatLng(lat, lon)).radius(radiusInMeters)
-                .fillColor(Color.parseColor("#B2A9F6")));
+        drawGeofence(lat, lon);
+
+        return g;
+    }
+*/
+    private Geofence createGeofence(A2BGeofence a2bGeofence)
+    {
+        float radiusInMeters = 100;
+        Geofence g = new Geofence.Builder()
+                .setRequestId(a2bGeofence.name)
+                .setCircularRegion(a2bGeofence.lat, a2bGeofence.lon, radiusInMeters)
+                .setExpirationDuration(Geofence.NEVER_EXPIRE)
+                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT)
+                .build();
+
+        drawGeofence(a2bGeofence.lat, a2bGeofence.lon);
 
         return g;
     }
@@ -109,16 +152,20 @@ public class Globals extends Application implements
         ).setResultCallback(this); // Result processed in onResult().
     }
 
-    public void createGeofence()
+    public void initGeofences()
     {
-        // TODO: Get from somewhere
+        a2BGeofences = new ArrayList<>();
+        a2BGeofences.add(new A2BGeofence(55.6563766, 12.6124786, "hjem"));
+        a2BGeofences.add(new A2BGeofence(55.722849, 12.4238959, "techpeople"));
         boolean useGeofence = true;
+
         if(useGeofence)
         {
             List<Geofence> geofences = new ArrayList<>();
-
-            geofences.add(createGeofence(55.6563766, 12.6124786, "hjem"));
-            geofences.add(createGeofence(55.722849, 12.4238959, "techpeople"));
+            for (A2BGeofence gf : a2BGeofences)
+            {
+                geofences.add(createGeofence(gf));
+            }
 
             LocationServices.GeofencingApi.addGeofences(
                     mGoogleApiClient,
@@ -127,15 +174,7 @@ public class Globals extends Application implements
             ).setResultCallback(this);
         }
         else
-        {
-            map.addCircle(new CircleOptions()
-                    .center(new LatLng(55.6563766, 12.6124786)).radius(100)
-                    .fillColor(Color.parseColor("#B2A9F6")));
-
-            map.addCircle(new CircleOptions()
-                    .center(new LatLng(55.722849, 12.4238959)).radius(100)
-                    .fillColor(Color.parseColor("#B2A9F6")));
-        }
+            drawGeofences();
     }
 
     /************* GEOFENCING END *****************/
@@ -296,7 +335,7 @@ public class Globals extends Application implements
         StartTimers();
         LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, createLocationReq(), this);
         map = mapActivity.getMap();
-        createGeofence();
+        initGeofences();
     }
 
     @Override

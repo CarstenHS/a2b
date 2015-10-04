@@ -128,30 +128,6 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
         }
     }
 
-    /*
-    public void UpdateBounds()
-    {
-        Trip currentTrip = ((Globals)this.getApplication()).GetCurrentTrip();
-
-        CameraUpdate cameraUpdate;
-        if(currentTrip.A2BMarkers.size() > 1)
-        {
-            LatLngBounds.Builder builder = new LatLngBounds.Builder();
-            for (A2BMarker marker : currentTrip.A2BMarkers)
-            {
-                builder.include(marker.ll);
-            }
-
-            LatLngBounds bounds = builder.build();
-            cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 50);
-        }
-        else
-        {
-            cameraUpdate = CameraUpdateFactory.newLatLngZoom(currentTrip.A2BMarkers.get(0).ll, MAX_ZOOM);
-        }
-        map.animateCamera(cameraUpdate);
-    }
-*/
     public void onMapReady(GoogleMap map)
     {
         this.map = map;
@@ -162,6 +138,7 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
             AddMarkerUI(ll, i);
             ++i;
         }
+        ((Globals)this.getApplication()).drawGeofences();
     }
 
     private void InitMap()
@@ -254,4 +231,29 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
         InitMap();
         super.onResume();
     }
+
+    /*
+    public void UpdateBounds()
+    {
+        Trip currentTrip = ((Globals)this.getApplication()).GetCurrentTrip();
+
+        CameraUpdate cameraUpdate;
+        if(currentTrip.A2BMarkers.size() > 1)
+        {
+            LatLngBounds.Builder builder = new LatLngBounds.Builder();
+            for (A2BMarker marker : currentTrip.A2BMarkers)
+            {
+                builder.include(marker.ll);
+            }
+
+            LatLngBounds bounds = builder.build();
+            cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 50);
+        }
+        else
+        {
+            cameraUpdate = CameraUpdateFactory.newLatLngZoom(currentTrip.A2BMarkers.get(0).ll, MAX_ZOOM);
+        }
+        map.animateCamera(cameraUpdate);
+    }
+*/
 }
