@@ -45,6 +45,7 @@ public class GeofenceTransitionsIntentService extends IntentService
                 try
                 {
                     FileHandler.GetInstance().SaveTrip(((Globals) this.getApplication()).GetCurrentTrip());
+                    ((Globals) this.getApplication()).cleanUp();
                     System.exit(0);
                 }
                 catch (IOException e)

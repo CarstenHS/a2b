@@ -51,6 +51,10 @@ public class Globals extends Application implements
     private int speedUnit = SPEED_UNIT_KPH;
     private GoogleMap map;
 
+    /* General todos:
+    todo: redraw fences on change
+
+     */
     /************* GEOFENCING *****************/
 
     @Override
@@ -62,7 +66,7 @@ public class Globals extends Application implements
     private GeofencingRequest getGeofencingRequest(List<Geofence> geofences)
     {
         GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
-        builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
+        builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_DWELL);
         builder.addGeofences(geofences);
         return builder.build();
     }
@@ -87,7 +91,8 @@ public class Globals extends Application implements
     private PendingIntent getGeofencePendingIntent()
     {
         // Reuse the PendingIntent if we already have it.
-        if (mGeofencePendingIntent != null) {
+        if (mGeofencePendingIntent != null)
+        {
             return mGeofencePendingIntent;
         }
         Intent intent = new Intent(this, GeofenceTransitionsIntentService.class);
@@ -96,7 +101,7 @@ public class Globals extends Application implements
         return PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
-    private void stopGeofence()
+    private void stopGeofences()
     {
         LocationServices.GeofencingApi.removeGeofences(mGoogleApiClient,
                 // This is the same pending intent that was used in addGeofences().
@@ -330,6 +335,14 @@ public class Globals extends Application implements
                 mapActivity.TickUI(ticks);
             }
         }
+    }
+
+    public void cleanUp()
+    {
+        TripTimer.cancel();
+        durationTimer.cancel();
+        stopGeofences();
+        LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
     }
 
 }
