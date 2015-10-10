@@ -4,9 +4,12 @@ package com.example.der_geiler.checkmytrip;
  * Created by der_geiler on 11-04-2015.
 */
 
+import android.app.Application;
+import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -14,6 +17,7 @@ import android.widget.TextView;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.*;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -138,7 +142,7 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
             AddMarkerUI(ll, i);
             ++i;
         }
-        ((Globals)this.getApplication()).drawGeofences();
+        ((Globals) this.getApplication()).drawGeofences();
     }
 
     private void InitMap()

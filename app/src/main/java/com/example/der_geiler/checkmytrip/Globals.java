@@ -75,9 +75,12 @@ public class Globals extends Application implements
 
     public void drawGeofences()
     {
-        for (A2BGeofence gf : a2BGeofences)
+        if(a2BGeofences != null)
         {
-            drawGeofence(gf.lat, gf.lon);
+            for (A2BGeofence gf : a2BGeofences)
+            {
+                drawGeofence(gf.lat, gf.lon);
+            }
         }
     }
     @Override
@@ -155,7 +158,7 @@ public class Globals extends Application implements
     public void initGeofences()
     {
         a2BGeofences = new ArrayList<>();
-        a2BGeofences.add(new A2BGeofence(55.6563766, 12.6124786, "hjem"));
+        a2BGeofences.add(new A2BGeofence(55.648609, 12.6212916, "hjem"));
         a2BGeofences.add(new A2BGeofence(55.722849, 12.4238959, "techpeople"));
         boolean useGeofence = true;
 
