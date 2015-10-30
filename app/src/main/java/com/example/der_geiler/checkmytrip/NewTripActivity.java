@@ -161,9 +161,7 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
             globals.setCurrentTrip(currentTrip);
         }
         else
-        {
             ((MapFragment)getFragmentManager().findFragmentById(R.id.map)).getMapAsync(this);
-        }
     }
 
     @Override
@@ -206,9 +204,7 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
         }
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings)
-        {
             return true;
-        }
 
         return super.onOptionsItemSelected(item);
     }

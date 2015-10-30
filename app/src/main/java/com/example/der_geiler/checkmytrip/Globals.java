@@ -55,7 +55,7 @@ public class Globals extends Application implements
     private List<A2BGeofence> a2BGeofences;
 
     /* General todos:
-    todo: persist geofences
+    todo: persist/create/manage geofences
     todo: better save names
     todo: auto-filtering of trips
      */

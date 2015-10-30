@@ -1,11 +1,8 @@
 package com.example.der_geiler.checkmytrip;
 
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-
-import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
+import android.text.format.*;
 
 /**
  * Created by der_geiler on 03-05-2015.
@@ -13,7 +10,7 @@ import java.util.List;
 public class Trip
 {
     public List<A2BMarker> A2BMarkers;
-    private Date timeStart;
+    private Date dateStart, dateEnd;
     private int ticks = 0;
     private float distance;
     private int unit = DIST_UNIT_KILOMETERS;
@@ -23,8 +20,14 @@ public class Trip
         distance = 0;
     }
 
-    public Date GetTimeStart() {return timeStart;}
-    public void SetTimeStart(Date start) {timeStart = start;}
+    public Date GetTimeStart() {return dateStart;}
+    public void SetTimeStart(Date start) {dateStart = start;}
+    public String SetTimeEnd()
+    {
+        this.dateEnd = new Date();
+        DateFormat df = new DateFormat();
+        return df.format("yyyy-MM-dd@HH:mm", this.dateEnd).toString();
+    }
     public int IncTick()
     {
         return ++ticks;

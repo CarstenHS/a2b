@@ -172,19 +172,14 @@ public class FileHandler extends Activity
     public void SaveTrip(Trip trip) throws IOException
     {
         File folder = context.getDir(dirUnCategorized, Context.MODE_PRIVATE);
-        String fileName = filePrefix + String.valueOf(trip.GetTimeStart().getTime()) + fileExtension;
+        //String fileName = filePrefix + String.valueOf(trip.GetTimeStart().getTime()) + fileExtension;
+        String fileName = filePrefix + trip.SetTimeEnd();
 
         File file = new File(folder, fileName);
         if(file.exists() == false)
         {
-            try
-            {
-                file.createNewFile();
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
+            try{ file.createNewFile();}
+            catch (Exception e) {e.printStackTrace();}
         }
 
         Gson gson = new Gson();
@@ -197,11 +192,8 @@ public class FileHandler extends Activity
             outputStream.write(s.getBytes());
             outputStream.close();
         }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
+        catch (Exception e){e.printStackTrace();}
 
-       LoadTrips(dirUnCategorized);
+        LoadTrips(dirUnCategorized);
     }
 }
