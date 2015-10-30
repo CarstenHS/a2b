@@ -10,6 +10,8 @@ import android.location.Location;
 import android.location.LocationListener;
 */
 import android.os.Bundle;
+import android.util.Log;
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Result;
@@ -88,6 +90,8 @@ public class Globals extends Application implements
     {
         result = result;
     }
+
+    public void setMap(GoogleMap map){this.map = map;}
 
     private GeofencingRequest getGeofencingRequest(List<Geofence> geofences)
     {

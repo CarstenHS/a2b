@@ -135,6 +135,7 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
     public void onMapReady(GoogleMap map)
     {
         this.map = map;
+        ((Globals) this.getApplication()).setMap(map);
         int i = 0;
         List<LatLng> lls = globals.GetLatLngs();
         for(LatLng ll : lls)
@@ -142,6 +143,7 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
             AddMarkerUI(ll, i);
             ++i;
         }
+        Log.d("CSV","onMapReady");
         ((Globals) this.getApplication()).drawGeofences();
     }
 
