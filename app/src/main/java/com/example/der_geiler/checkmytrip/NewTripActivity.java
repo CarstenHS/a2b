@@ -4,19 +4,26 @@ package com.example.der_geiler.checkmytrip;
  * Created by der_geiler on 11-04-2015.
 */
 
+import android.app.AlertDialog;
 import android.app.Application;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.*;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -27,7 +34,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class NewTripActivity extends FragmentActivity implements OnMapReadyCallback
+public class NewTripActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener
 {
     public GoogleMap map;
     int MAX_ZOOM = 15;
@@ -135,6 +142,7 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
     public void onMapReady(GoogleMap map)
     {
         this.map = map;
+        this.map.setOnMapLongClickListener(this);
         ((Globals) this.getApplication()).setMap(map);
         int i = 0;
         List<LatLng> lls = globals.GetLatLngs();
@@ -143,7 +151,6 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
             AddMarkerUI(ll, i);
             ++i;
         }
-        Log.d("CSV","onMapReady");
         ((Globals) this.getApplication()).drawGeofences();
     }
 
@@ -232,6 +239,43 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
     {
         InitMap();
         super.onResume();
+    }
+
+    @Override
+    public void onMapLongClick(LatLng latLng)
+    {
+        final Circle circle = ((Globals) this.getApplication()).drawGeofence(latLng.latitude, latLng.longitude);
+
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setTitle("Create and name Start or End point at this location:");
+        final EditText input = new EditText(this);
+        alert.setView(input);
+
+        alert.setOnDismissListener(new DialogInterface.OnDismissListener()
+        {
+            @Override
+            public void onDismiss(DialogInterface dialog)
+            {
+                circle.remove();
+            }
+        });
+        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener()
+        {
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
+                circle.remove();
+            }
+        });
+        alert.setPositiveButton("OK", new DialogInterface.OnClickListener()
+        {
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
+
+            }
+        });
+        alert.show();
     }
 
     /*

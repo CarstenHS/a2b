@@ -18,6 +18,7 @@ import com.google.android.gms.common.api.Result;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.*;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 
@@ -56,7 +57,6 @@ public class Globals extends Application implements
 
     /* General todos:
     todo: persist/create/manage geofences
-    todo: better save names
     todo: auto-filtering of trips
      */
     /************* GEOFENCING *****************/
@@ -80,9 +80,7 @@ public class Globals extends Application implements
         if(a2BGeofences != null)
         {
             for (A2BGeofence gf : a2BGeofences)
-            {
                 drawGeofence(gf.lat, gf.lon);
-            }
         }
     }
     @Override
@@ -101,9 +99,9 @@ public class Globals extends Application implements
         return builder.build();
     }
 
-    private void drawGeofence(double lat, double lon)
+    public Circle drawGeofence(double lat, double lon)
     {
-        map.addCircle(new CircleOptions()
+        return map.addCircle(new CircleOptions()
                 .center(new LatLng(lat, lon)).radius(100)
                 .fillColor(Color.parseColor("#B2A9F6")));
     }
