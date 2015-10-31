@@ -41,6 +41,7 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
     public static final int UI_ELEMENT_SPEED = 0;
     public static final int UI_ELEMENT_DISTANCE = 1;
     private Globals globals = null;
+    private boolean removeGeoCircle = true;
 
     public void SetMap(LatLng ll)
     {
@@ -256,8 +257,8 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
     @Override
     public void onMapLongClick(final LatLng latLng)
     {
+        removeGeoCircle = true;
         final Circle circle = globals.drawGeofence(latLng.latitude, latLng.longitude);
-
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setTitle("Create and name Start or End point at this location:");
         final EditText input = new EditText(this);
@@ -268,7 +269,8 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
             @Override
             public void onDismiss(DialogInterface dialog)
             {
-                circle.remove();
+                if(removeGeoCircle == true)
+                    circle.remove();
             }
         });
         alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener()
@@ -286,6 +288,8 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
             {
                 if (globals.saveGeofence(latLng, input.getText().toString()) != Globals.RES_OK)
                     showDialogSaveFail();
+                else
+                    removeGeoCircle = false;
             }
         });
         alert.show();

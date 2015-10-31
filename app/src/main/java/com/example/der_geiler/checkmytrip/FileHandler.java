@@ -3,6 +3,8 @@ package com.example.der_geiler.checkmytrip;
 import android.app.Activity;
 import android.content.Context;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
@@ -12,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.lang.reflect.Type;
 
 /**
  * Created by der_geiler on 18-05-2015.
@@ -219,5 +222,46 @@ public class FileHandler extends Activity
             outputStream.close();
         }
         catch (Exception e){e.printStackTrace();}
+    }
+
+    public List<Globals.A2BGeofence> LoadGeofences()
+    {
+        String filename = strGeofences + fileExtension;
+        File file = new File(context.getFilesDir(), filename);
+        List<Globals.A2BGeofence> geofences = null;
+        if(file.exists() == true)
+        {
+            FileInputStream fis = null;
+            try
+            {
+                fis = new FileInputStream(file);
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+            InputStreamReader isr = new InputStreamReader(fis);
+            BufferedReader bufferedReader = new BufferedReader(isr);
+            StringBuilder sb = new StringBuilder();
+            String line;
+
+            try
+            {
+                while ((line = bufferedReader.readLine()) != null)
+                {
+                    sb.append(line);
+                }
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+
+            String json = sb.toString();
+            Type listType = new TypeToken<ArrayList<Globals.A2BGeofence>>() {}.getType();
+            Gson gson = new Gson();
+            geofences = gson.fromJson(json, listType);
+        }
+        return geofences;
     }
 }

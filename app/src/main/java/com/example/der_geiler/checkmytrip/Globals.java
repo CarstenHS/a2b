@@ -162,12 +162,17 @@ public class Globals extends Application implements
 
     public void initGeofences()
     {
-        a2BGeofences = new ArrayList<>();
+        /*
         a2BGeofences.add(new A2BGeofence(55.648609, 12.6212916, "hjem"));
         a2BGeofences.add(new A2BGeofence(55.722849, 12.4238959, "techpeople"));
-        boolean useGeofence = true;
+        */
+        FileHandler fileHandler = FileHandler.GetInstance();
 
-        if(useGeofence)
+        a2BGeofences = fileHandler.LoadGeofences();
+        if(a2BGeofences == null)
+            a2BGeofences = new ArrayList<>();
+
+        if(a2BGeofences.size() != 0)
         {
             List<Geofence> geofences = new ArrayList<>();
             for (A2BGeofence gf : a2BGeofences)
@@ -187,7 +192,7 @@ public class Globals extends Application implements
 
     public int saveGeofence(LatLng ll, String name)
     {
-        if(name.equals(null))
+        if(name.equals(""))
             return RES_EMPTY;
         if(a2BGeofences != null)
         {
@@ -196,7 +201,7 @@ public class Globals extends Application implements
                     return RES_EXISTS;
         }
         a2BGeofences.add(new A2BGeofence(ll.latitude, ll.longitude, name));
-
+        FileHandler.GetInstance().SaveGeofences(a2BGeofences);
         return RES_OK;
     }
     /************* GEOFENCING END *****************/
