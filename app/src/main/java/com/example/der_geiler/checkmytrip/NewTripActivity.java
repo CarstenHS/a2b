@@ -55,7 +55,7 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
 
     private void EndTrip()
     {
-        Trip currentTrip = ((Globals)this.getApplication()).GetCurrentTrip();
+        Trip currentTrip = globals.GetCurrentTrip();
     }
 
     public void UpdateUIElement(final int element, final String text)
@@ -143,7 +143,7 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
     {
         this.map = map;
         this.map.setOnMapLongClickListener(this);
-        ((Globals) this.getApplication()).setMap(map);
+        globals.setMap(map);
         int i = 0;
         List<LatLng> lls = globals.GetLatLngs();
         for(LatLng ll : lls)
@@ -151,12 +151,12 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
             AddMarkerUI(ll, i);
             ++i;
         }
-        ((Globals) this.getApplication()).drawGeofences();
+        globals.drawGeofences();
     }
 
     private void InitMap()
     {
-        ((Globals)this.getApplication()).SetMapVisible(this);
+        globals.SetMapVisible(this);
         Trip currentTrip = globals.GetCurrentTrip();
         if(currentTrip == null)
         {
@@ -202,7 +202,7 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
         FileHandler fileHandler = FileHandler.GetInstance();
         try
         {
-            fileHandler.SaveTrip(((Globals)this.getApplication()).GetCurrentTrip());
+            fileHandler.SaveTrip(globals.GetCurrentTrip());
             System.exit(0);
         }
         catch (IOException e)
@@ -241,10 +241,22 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
         super.onResume();
     }
 
-    @Override
-    public void onMapLongClick(LatLng latLng)
+    void showDialogSaveFail()
     {
-        final Circle circle = ((Globals) this.getApplication()).drawGeofence(latLng.latitude, latLng.longitude);
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setTitle("Name already exist or is empty please choose another.");
+        alert.setPositiveButton("OK", new DialogInterface.OnClickListener()
+        {
+            @Override
+            public void onClick(DialogInterface dialog, int which){}
+        });
+        alert.show();
+    }
+
+    @Override
+    public void onMapLongClick(final LatLng latLng)
+    {
+        final Circle circle = globals.drawGeofence(latLng.latitude, latLng.longitude);
 
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setTitle("Create and name Start or End point at this location:");
@@ -272,7 +284,8 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
             @Override
             public void onClick(DialogInterface dialog, int which)
             {
-
+                if (globals.saveGeofence(latLng, input.getText().toString()) != Globals.RES_OK)
+                    showDialogSaveFail();
             }
         });
         alert.show();

@@ -24,7 +24,8 @@ public class FileHandler extends Activity
     final String fileExtension = ".a2b";
     private String dataDir = null;
     private Context context = null;
-    private final String dirUnCategorized = "Uncategorized";
+    private final String strDirUnCategorized = "Uncategorized";
+    private final String strGeofences = "Geofences";
 
     public static FileHandler GetInstance()
     {
@@ -171,7 +172,7 @@ public class FileHandler extends Activity
 
     public void SaveTrip(Trip trip) throws IOException
     {
-        File folder = context.getDir(dirUnCategorized, Context.MODE_PRIVATE);
+        File folder = context.getDir(strDirUnCategorized, Context.MODE_PRIVATE);
         //String fileName = filePrefix + String.valueOf(trip.GetTimeStart().getTime()) + fileExtension;
         String fileName = filePrefix + trip.SetTimeEnd();
 
@@ -194,6 +195,29 @@ public class FileHandler extends Activity
         }
         catch (Exception e){e.printStackTrace();}
 
-        LoadTrips(dirUnCategorized);
+        LoadTrips(strDirUnCategorized);
+    }
+
+    public void SaveGeofences(List<Globals.A2BGeofence> geofences)
+    {
+        String filename = strGeofences + fileExtension;
+        File file = new File(context.getFilesDir(), filename);
+
+        if(file.exists() == false)
+        {
+            try{ file.createNewFile();}
+            catch (Exception e) {e.printStackTrace();}
+        }
+
+        Gson gson = new Gson();
+        String s = gson.toJson(geofences);
+        file.setWritable(true);
+        try
+        {
+            FileOutputStream outputStream = new FileOutputStream(file);
+            outputStream.write(s.getBytes());
+            outputStream.close();
+        }
+        catch (Exception e){e.printStackTrace();}
     }
 }

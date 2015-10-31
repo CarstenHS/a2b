@@ -54,6 +54,10 @@ public class Globals extends Application implements
     private int speedUnit = SPEED_UNIT_KPH;
     private GoogleMap map;
     private List<A2BGeofence> a2BGeofences;
+    public static final int RES_OK          = 0;
+    public static final int RES_EXISTS      = -1;
+    public static final int RES_INVALID     = -2;
+    public static final int RES_EMPTY       = -3;
 
     /* General todos:
     todo: persist/create/manage geofences
@@ -132,7 +136,6 @@ public class Globals extends Application implements
                 .build();
 
         drawGeofence(a2bGeofence.lat, a2bGeofence.lon);
-
         return g;
     }
 
@@ -182,6 +185,20 @@ public class Globals extends Application implements
             drawGeofences();
     }
 
+    public int saveGeofence(LatLng ll, String name)
+    {
+        if(name.equals(null))
+            return RES_EMPTY;
+        if(a2BGeofences != null)
+        {
+            for (A2BGeofence gf : a2BGeofences)
+                if(name.equals(gf.name))
+                    return RES_EXISTS;
+        }
+        a2BGeofences.add(new A2BGeofence(ll.latitude, ll.longitude, name));
+
+        return RES_OK;
+    }
     /************* GEOFENCING END *****************/
 
     private class a2bLoc
