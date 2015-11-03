@@ -201,7 +201,7 @@ public class FileHandler extends Activity
         LoadTrips(strDirUnCategorized);
     }
 
-    public void SaveGeofences(List<A2BGeofencePersist> gfsPersist)
+    public void SaveGeofences(List<A2BGeofence> gfsPersist)
     {
         String filename = strGeofences + fileExtension;
         File file = new File(context.getFilesDir(), filename);
@@ -224,11 +224,11 @@ public class FileHandler extends Activity
         catch (Exception e){e.printStackTrace();}
     }
 
-    public List<A2BGeofencePersist> LoadGeofences()
+    public List<A2BGeofence> LoadGeofences()
     {
         String filename = strGeofences + fileExtension;
         File file = new File(context.getFilesDir(), filename);
-        List<A2BGeofencePersist> gfPersist = null;
+        List<A2BGeofence> gfPersist = null;
         if(file.exists() == true)
         {
             FileInputStream fis = null;
@@ -258,7 +258,7 @@ public class FileHandler extends Activity
             }
 
             String json = sb.toString();
-            Type listType = new TypeToken<ArrayList<A2BGeofencePersist>>() {}.getType();
+            Type listType = new TypeToken<ArrayList<A2BGeofence>>() {}.getType();
             Gson gson = new Gson();
             gfPersist = gson.fromJson(json, listType);
         }

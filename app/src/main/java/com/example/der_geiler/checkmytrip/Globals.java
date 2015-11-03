@@ -4,7 +4,6 @@ package com.example.der_geiler.checkmytrip;
 import android.app.Application;
 import android.app.PendingIntent;
 import android.content.Intent;
-import android.graphics.Color;
 import android.location.Location;
 /*
 import android.location.LocationListener;
@@ -53,8 +52,8 @@ public final class Globals extends Application implements
     public int distUnit = DIST_UNIT_KILOMETERS;
     private int speedUnit = SPEED_UNIT_KPH;
     private GoogleMap map;
-    private static List<A2BGeofence> a2BGeofencesSuper;
-    static public List<A2BGeofencePersist> a2BGeofencesPersist; // only for referencing from filehandler
+    private static List<A2BGeofence> a2BGeofences;
+    static public List<A2BCircle> circles;
     public static final int RES_OK          = 0;
     public static final int RES_EXISTS      = -1;
     public static final int RES_INVALID     = -2;
@@ -69,22 +68,22 @@ public final class Globals extends Application implements
      */
     /************* GEOFENCING *****************/
 
-    List<A2BGeofencePersist> getGetFencesPersist()
+    List<A2BGeofence> getGetFencesPersist()
     {
-        List<A2BGeofencePersist> geofences = new ArrayList<>();
-        for (Iterator<A2BGeofence> iter = a2BGeofencesSuper.iterator(); iter.hasNext(); )
+        List<A2BGeofence> geofences = new ArrayList<>();
+        for (Iterator<A2BGeofence> iter = a2BGeofences.iterator(); iter.hasNext(); )
         {
-             geofences.add((A2BGeofencePersist) iter.next());
+             geofences.add((A2BGeofence) iter.next());
         }
         return geofences;
     }
 
-    public void drawGeofences()
+    public void createAndDrawGeofenceCircles()
     {
-        if(a2BGeofencesSuper != null && a2BGeofencesSuper.size() != 0)
+        if(a2BGeofences != null && a2BGeofences.size() != 0)
         {
-            for (A2BGeofence gf : a2BGeofencesSuper)
-                createAndDrawGeofenceCircle(gf.getLat(), gf.getLon());
+            for (A2BGeofence gf : a2BGeofences)
+                circles.add(new A2BCircle(createAndDrawGeofenceCircle(gf.getLat(), gf.getLon()), gf.getName()));
         }
     }
     @Override
@@ -110,7 +109,7 @@ public final class Globals extends Application implements
                 .fillColor(COLOR_BASIC_GEOFENCE));
     }
 
-    private Geofence createMapGeofence(A2BGeofencePersist a2bGeofence)
+    private Geofence createMapGeofence(A2BGeofence a2bGeofence)
     {
         Geofence g = new Geofence.Builder()
                 .setRequestId(a2bGeofence.name)
@@ -142,29 +141,16 @@ public final class Globals extends Application implements
         ).setResultCallback(this); // Result processed in onResult().
     }
 
-    public void populateGeofenceSuper(List<A2BGeofencePersist> persistFences)
-    {
-        for (A2BGeofencePersist gfPsersist : persistFences)
-        {
-            Circle c = createAndDrawGeofenceCircle(gfPsersist.getLat(), gfPsersist.getLon());
-            a2BGeofencesSuper.add(new A2BGeofence(gfPsersist.getLat(), gfPsersist.getLon(), gfPsersist.getName(), c));
-        }
-    }
-
     public void initGeofences()
     {
         FileHandler fileHandler = FileHandler.GetInstance();
-        List<A2BGeofencePersist> tempA2BGeofencesPersist;
+        a2BGeofences = fileHandler.LoadGeofences();
 
-        tempA2BGeofencesPersist = fileHandler.LoadGeofences();
-
-        a2BGeofencesSuper = new ArrayList<>();
-
-        if(tempA2BGeofencesPersist.size() != 0)
+        if(a2BGeofences.size() != 0)
         {
             List<Geofence> mapGeofences = new ArrayList<>();
 
-            for (A2BGeofencePersist gf : tempA2BGeofencesPersist)
+            for (A2BGeofence gf : a2BGeofences)
                 mapGeofences.add(createMapGeofence(gf));
             LocationServices.GeofencingApi.addGeofences(
                     mGoogleApiClient,
@@ -172,13 +158,13 @@ public final class Globals extends Application implements
                     getGeofencePendingIntent()
             ).setResultCallback(this);
 
-            populateGeofenceSuper(tempA2BGeofencesPersist);
+            createAndDrawGeofenceCircles();
         }
     }
 
     public int saveGeofence(A2BGeofence a2bGf)
     {
-        a2BGeofencesSuper.add(a2bGf);
+        a2BGeofences.add(a2bGf);
         FileHandler.GetInstance().SaveGeofences(getGetFencesPersist());
         return RES_OK;
     }
@@ -187,9 +173,9 @@ public final class Globals extends Application implements
     {
         if(name.equals(""))
             return RES_EMPTY;
-        if(a2BGeofencesSuper.size() != 0)
+        if(a2BGeofences.size() != 0)
         {
-            for (A2BGeofencePersist gf : a2BGeofencesSuper)
+            for (A2BGeofence gf : a2BGeofences)
                 if(name.equals(gf.name))
                     return RES_EXISTS;
         }
@@ -199,9 +185,9 @@ public final class Globals extends Application implements
     public static A2BGeofence anyGeofenceHit(LatLng llPress)
     {
         float results[] = new float[3];
-        if(a2BGeofencesSuper.size() != 0)
+        if(a2BGeofences.size() != 0)
         {
-            for (A2BGeofence gf : a2BGeofencesSuper)
+            for (A2BGeofence gf : a2BGeofences)
             {
                 Location.distanceBetween(llPress.latitude, llPress.longitude, gf.lat, gf.lon, results);
                 if(results[0] < GEO_FENCE_RADIUS)
@@ -211,20 +197,49 @@ public final class Globals extends Application implements
         return null;
     }
 
+    public void removeCircle(String name)
+    {
+        for (Iterator<A2BCircle> iter = circles.iterator(); iter.hasNext(); )
+        {
+            A2BCircle element = iter.next();
+            if(element.getName().equals(name))
+            {
+                element.getCircle().remove();           // remove from map
+                iter.remove();                          // remove from list circles list
+            }
+        }
+    }
+
+    public Circle getCircle(String name)
+    {
+        for (Iterator<A2BCircle> iter = circles.iterator(); iter.hasNext(); )
+        {
+            A2BCircle element = iter.next();
+            if(element.getName().equals(name))
+            {
+                return element.getCircle();
+            }
+        }
+        return null;
+    }
+
+    public void addCircle(A2BCircle c){circles.add(c);}
+
     public void removeGeofence(String name)
     {
-        for (Iterator<A2BGeofence> iter = a2BGeofencesSuper.iterator(); iter.hasNext(); )
+        for (Iterator<A2BGeofence> iter = a2BGeofences.iterator(); iter.hasNext(); )
         {
             A2BGeofence element = iter.next();
             if(element.name.equals(name))
             {
                 List<String> names = new ArrayList<>(1);
                 names.add(name);
-                element.getCircle().remove();           // remove circle itself from map
+                removeCircle(name);
                 iter.remove();                          // remove from list circles list
                 // remove from geofence framework
                 LocationServices.GeofencingApi.removeGeofences(mGoogleApiClient, names);
-                FileHandler.GetInstance().SaveGeofences(getGetFencesPersist());
+                FileHandler.GetInstance().SaveGeofences(a2BGeofences);
+                break;
             }
         }
     }
@@ -385,7 +400,10 @@ public final class Globals extends Application implements
         StartTimers();
         LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, createLocationReq(), this);
         map = mapActivity.getMap();
+        if(circles == null)
+            circles = new ArrayList<>();
         initGeofences();
+        createAndDrawGeofenceCircles();
     }
 
     @Override

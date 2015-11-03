@@ -144,7 +144,6 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
             AddMarkerUI(ll, i);
             ++i;
         }
-        globals.drawGeofences();
     }
 
     private void InitMap()
@@ -284,7 +283,8 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
                 else
                 {
                     removeGeoCircle = false;
-                    globals.saveGeofence(new A2BGeofence(latLng.latitude, latLng.longitude, name, circle));
+                    globals.addCircle(new A2BCircle(circle, name));
+                    globals.saveGeofence(new A2BGeofence(latLng.latitude, latLng.longitude, name));
                 }
             }
         });
@@ -301,7 +301,7 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
         alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener()
         {
             @Override
-            public void onClick(DialogInterface dialog, int which){gf.getCircle().setFillColor(Globals.COLOR_BASIC_GEOFENCE);}
+            public void onClick(DialogInterface dialog, int which){globals.getCircle(gf.getName()).setFillColor(Globals.COLOR_BASIC_GEOFENCE);}
         });
         alert.setPositiveButton("OK", new DialogInterface.OnClickListener()
         {
@@ -320,7 +320,7 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
         A2BGeofence hitGeofence = Globals.anyGeofenceHit(latLng);
         if(hitGeofence != null)
         {
-            hitGeofence.getCircle().setFillColor(Color.RED);
+            globals.getCircle(hitGeofence.getName()).setFillColor(Color.RED);
             ShowDialogGeofenceKill(hitGeofence);
         }
     }
