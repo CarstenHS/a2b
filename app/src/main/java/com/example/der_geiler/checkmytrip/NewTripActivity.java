@@ -5,26 +5,17 @@ package com.example.der_geiler.checkmytrip;
 */
 
 import android.app.AlertDialog;
-import android.app.Application;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
-
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.*;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.Circle;
-import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -34,7 +25,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class NewTripActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener
+public class NewTripActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener, GoogleMap.OnMapClickListener
 {
     public GoogleMap map;
     int MAX_ZOOM = 15;
@@ -144,6 +135,7 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
     {
         this.map = map;
         this.map.setOnMapLongClickListener(this);
+        this.map.setOnMapClickListener(this);
         globals.setMap(map);
         int i = 0;
         List<LatLng> lls = globals.GetLatLngs();
@@ -258,7 +250,7 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
     public void onMapLongClick(final LatLng latLng)
     {
         removeGeoCircle = true;
-        final Circle circle = globals.drawGeofence(latLng.latitude, latLng.longitude);
+        final Circle circle = globals.createAndDrawGeofenceCircle(latLng.latitude, latLng.longitude);
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setTitle("Create and name Start or End point at this location:");
         final EditText input = new EditText(this);
@@ -269,7 +261,7 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
             @Override
             public void onDismiss(DialogInterface dialog)
             {
-                if(removeGeoCircle == true)
+                if (removeGeoCircle == true)
                     circle.remove();
             }
         });
@@ -286,13 +278,51 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
             @Override
             public void onClick(DialogInterface dialog, int which)
             {
-                if (globals.saveGeofence(latLng, input.getText().toString()) != Globals.RES_OK)
+                String name = input.getText().toString();
+                if (globals.nameOk(name) != Globals.RES_OK)
                     showDialogSaveFail();
                 else
+                {
                     removeGeoCircle = false;
+                    globals.saveGeofence(new A2BGeofence(latLng.latitude, latLng.longitude, name, circle));
+                }
             }
         });
         alert.show();
+    }
+
+    private void ShowDialogGeofenceKill(final A2BGeofence gf)
+    {
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setTitle("Delete Start or End point \"" + gf.getName() + "\"?");
+        final EditText input = new EditText(this);
+        alert.setView(input);
+
+        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener()
+        {
+            @Override
+            public void onClick(DialogInterface dialog, int which){gf.getCircle().setFillColor(Globals.COLOR_BASIC_GEOFENCE);}
+        });
+        alert.setPositiveButton("OK", new DialogInterface.OnClickListener()
+        {
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
+                globals.removeGeofence(gf.getName());
+            }
+        });
+        alert.show();
+    }
+
+    @Override
+    public void onMapClick(LatLng latLng)
+    {
+        A2BGeofence hitGeofence = Globals.anyGeofenceHit(latLng);
+        if(hitGeofence != null)
+        {
+            hitGeofence.getCircle().setFillColor(Color.RED);
+            ShowDialogGeofenceKill(hitGeofence);
+        }
     }
 
     /*
