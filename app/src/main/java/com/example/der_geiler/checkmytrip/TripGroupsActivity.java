@@ -249,6 +249,9 @@ public class TripGroupsActivity extends Activity
                         builder.setCancelable(true);
                         AlertDialog ad = builder.create();
                         ad.show();
+                    } else
+                    {
+                        Globals.GetInstance(null).addDir(groupName);
                     }
                 }
                 ShowTripGroups();

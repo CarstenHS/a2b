@@ -1,7 +1,6 @@
 package com.example.der_geiler.checkmytrip;
 
 
-import android.app.Application;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -55,6 +54,7 @@ public class Globals implements
     static private GoogleMap map;
     private static List<A2BGeofence> a2BGeofences;
     static public List<A2BCircle> circles;
+    static public List<A2BdirInfo> dirEntries;
     public static final int RES_OK          = 0;
     public static final int RES_EXISTS      = -1;
     public static final int RES_INVALID     = -2;
@@ -69,13 +69,41 @@ public class Globals implements
     public static Globals GetInstance(Context c)
     {
         ctx = (c != null) ? c : ctx;
-        instance = (instance == null) ? new Globals() : instance;
+        if(instance == null)
+        {
+            dirEntries = FileHandler.GetInstance().LoadDirInfos();
+            if(dirEntries == null)
+                dirEntries = new ArrayList<>();
+            instance = new Globals();
+        }
         return instance;
     }
 
+    public void addDir(String dir)
+    {
+        dirEntries.add(new A2BdirInfo(dir));
+        FileHandler.GetInstance().SaveDirInfos(dirEntries);
+    }
+
+    public void removeDir(String name)
+    {
+        for (Iterator<A2BdirInfo> iter = dirEntries.iterator(); iter.hasNext(); )
+        {
+            A2BdirInfo element = iter.next();
+            if(element.getDir().equals(name))
+            {
+                iter.remove();                          // remove from list circles list
+                break;
+            }
+        }
+    }
+
     /* General todos:
-    todo: mark and delete geofences
     todo: auto-filtering of trips
+
+    2nd:
+        todo: Loading of types can be templates
+        todo: Removing entry in array should be template
      */
     /************* GEOFENCING *****************/
 
@@ -83,9 +111,7 @@ public class Globals implements
     {
         List<A2BGeofence> geofences = new ArrayList<>();
         for (Iterator<A2BGeofence> iter = a2BGeofences.iterator(); iter.hasNext(); )
-        {
              geofences.add((A2BGeofence) iter.next());
-        }
         return geofences;
     }
 
@@ -135,9 +161,8 @@ public class Globals implements
     {
         // Reuse the PendingIntent if we already have it.
         if (mGeofencePendingIntent != null)
-        {
             return mGeofencePendingIntent;
-        }
+
         Intent intent = new Intent(ctx, GeofenceTransitionsIntentService.class);
         // We use FLAG_UPDATE_CURRENT so that we get the same pending intent back when
         // calling addGeofences() and removeGeofences().
@@ -227,9 +252,7 @@ public class Globals implements
         {
             A2BCircle element = iter.next();
             if(element.getName().equals(name))
-            {
                 return element.getCircle();
-            }
         }
         return null;
     }
@@ -449,9 +472,7 @@ public class Globals implements
         {
             LatLng ll = UpdateLocation();
             if(mapActivity != null)
-            {
                 mapActivity.AddMarkerUI(ll, currentTrip.A2BMarkers.size() - 1);
-            }
         }
     }
 
@@ -462,9 +483,7 @@ public class Globals implements
         {
             int ticks = currentTrip.IncTick();
             if(mapActivity != null)
-            {
                 mapActivity.TickUI(ticks);
-            }
         }
     }
 

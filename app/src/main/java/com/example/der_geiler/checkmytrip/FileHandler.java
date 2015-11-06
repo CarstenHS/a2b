@@ -29,6 +29,7 @@ public class FileHandler extends Activity
     private Context context = null;
     private final String strDirUnCategorized = "Uncategorized";
     private final String strGeofences = "Geofences";
+    private final String strDirInfos = "dirInfos";
 
     public static FileHandler GetInstance()
     {
@@ -248,9 +249,7 @@ public class FileHandler extends Activity
             try
             {
                 while ((line = bufferedReader.readLine()) != null)
-                {
                     sb.append(line);
-                }
             }
             catch (IOException e)
             {
@@ -263,5 +262,67 @@ public class FileHandler extends Activity
             gfPersist = gson.fromJson(json, listType);
         }
         return gfPersist;
+    }
+
+    public List<A2BdirInfo> LoadDirInfos()
+    {
+        String filename = strDirInfos + fileExtension;
+        File file = new File(context.getFilesDir(), filename);
+        List<A2BdirInfo> dirInfos = null;
+        if(file.exists() == true)
+        {
+            FileInputStream fis = null;
+            try
+            {
+                fis = new FileInputStream(file);
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+            InputStreamReader isr = new InputStreamReader(fis);
+            BufferedReader bufferedReader = new BufferedReader(isr);
+            StringBuilder sb = new StringBuilder();
+            String line;
+
+            try
+            {
+                while ((line = bufferedReader.readLine()) != null)
+                    sb.append(line);
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+
+            String json = sb.toString();
+            Type listType = new TypeToken<ArrayList<A2BGeofence>>() {}.getType();
+            Gson gson = new Gson();
+            dirInfos = gson.fromJson(json, listType);
+        }
+        return dirInfos;
+    }
+
+    public void SaveDirInfos(List<A2BdirInfo> dirInfos)
+    {
+        String filename = strDirInfos + fileExtension;
+        File file = new File(context.getFilesDir(), filename);
+
+        if(file.exists() == false)
+        {
+            try{ file.createNewFile();}
+            catch (Exception e) {e.printStackTrace();}
+        }
+
+        Gson gson = new Gson();
+        String s = gson.toJson(dirInfos);
+        file.setWritable(true);
+        try
+        {
+            FileOutputStream outputStream = new FileOutputStream(file);
+            outputStream.write(s.getBytes());
+            outputStream.close();
+        }
+        catch (Exception e){e.printStackTrace();}
     }
 }
