@@ -44,7 +44,7 @@ public class MainActivity extends Activity
             case strNewTrip:
             case strCurrentTrip:    /* fall-through */
             {
-                Intent i = new Intent(MainActivity.this, NewTripActivity.class);
+                Intent i = new Intent(MainActivity.this, NewTripActivity.GetInstance().getClass());
                 i.putExtra("class", MainActivity.class.getPackage().getName() + "." + this.getClass().getSimpleName());
                 startActivity(i);
                 break;
@@ -117,7 +117,7 @@ public class MainActivity extends Activity
     private void setNewTripText()
     {
         TextView tv = (TextView) findViewById(R.id.NewTripView);
-        if(((Globals)this.getApplication()).GetCurrentTrip() != null)
+        if(Globals.GetCurrentTrip() != null)
         {
             tv.setText(strCurrentTrip);
         }
@@ -132,6 +132,7 @@ public class MainActivity extends Activity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        NewTripActivity.GetInstance();
         setNewTripText();
         FileHandler fileHandler = FileHandler.GetInstance();
         fileHandler.Init(getApplicationContext());

@@ -100,7 +100,7 @@ public class StaticMapActivity extends FragmentActivity implements OnMapReadyCal
         String dist = trip.GetDistance();
         ((TextView) findViewById(R.id.distance)).setText(dist);
 
-        String duration = ((Globals)this.getApplication()).ExtractDurationFromTicks(trip.getTicks());
+        String duration = Globals.GetInstance(null).ExtractDurationFromTicks(trip.getTicks());
         ((TextView) findViewById(R.id.duration)).setText(duration);
 
         int i = 0;

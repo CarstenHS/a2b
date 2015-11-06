@@ -3,6 +3,7 @@ package com.example.der_geiler.checkmytrip;
 
 import android.app.Application;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 /*
@@ -30,15 +31,15 @@ import java.util.Date;
 /**
  * Created by der_geiler on 13-05-2015.
  */
-public final class Globals extends Application implements
+public class Globals implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, ResultCallback
 {
-    private Trip currentTrip = null;
+    static private Trip currentTrip = null;
     public Timer TripTimer;
     public Timer durationTimer;
     private int SetMarkTimeoutMins = 2;
     private Location mLastLocation;
-    private GoogleApiClient mGoogleApiClient = null;
+    static private GoogleApiClient mGoogleApiClient = null;
     private NewTripActivity mapActivity = null;
     private LocationRequest locationRequest;
     private a2bLoc lastLoc;
@@ -48,10 +49,10 @@ public final class Globals extends Application implements
     static final int SPEED_UNIT_MPH = 2;
     static final int DIST_UNIT_KILOMETERS = 0;
     static final int DIST_UNIT_MILES = 1;
-    private PendingIntent mGeofencePendingIntent = null;
+    static private PendingIntent mGeofencePendingIntent = null;
     public int distUnit = DIST_UNIT_KILOMETERS;
     private int speedUnit = SPEED_UNIT_KPH;
-    private GoogleMap map;
+    static private GoogleMap map;
     private static List<A2BGeofence> a2BGeofences;
     static public List<A2BCircle> circles;
     public static final int RES_OK          = 0;
@@ -60,7 +61,17 @@ public final class Globals extends Application implements
     public static final int RES_EMPTY       = -3;
     public static final int GEO_FENCE_RADIUS = 100;
     public static final int COLOR_BASIC_GEOFENCE = 0xB2A9F6;
+    static private Context ctx = null;
             //Color.parseColor("#B2A9F6")
+
+    private static Globals instance;
+    public Globals(){}
+    public static Globals GetInstance(Context c)
+    {
+        ctx = (c != null) ? c : ctx;
+        instance = (instance == null) ? new Globals() : instance;
+        return instance;
+    }
 
     /* General todos:
     todo: mark and delete geofences
@@ -78,7 +89,7 @@ public final class Globals extends Application implements
         return geofences;
     }
 
-    public void createAndDrawGeofenceCircles()
+    static public void createAndDrawGeofenceCircles()
     {
         if(a2BGeofences != null && a2BGeofences.size() != 0)
         {
@@ -94,7 +105,7 @@ public final class Globals extends Application implements
 
     public void setMap(GoogleMap map){this.map = map;}
 
-    private GeofencingRequest getGeofencingRequest(List<Geofence> geofences)
+    static private GeofencingRequest getGeofencingRequest(List<Geofence> geofences)
     {
         GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
         builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_DWELL);
@@ -102,14 +113,14 @@ public final class Globals extends Application implements
         return builder.build();
     }
 
-    public Circle createAndDrawGeofenceCircle(double lat, double lon)
+    static public Circle createAndDrawGeofenceCircle(double lat, double lon)
     {
         return map.addCircle(new CircleOptions()
                 .center(new LatLng(lat, lon)).radius(100)
                 .fillColor(COLOR_BASIC_GEOFENCE));
     }
 
-    private Geofence createMapGeofence(A2BGeofence a2bGeofence)
+    static private Geofence createMapGeofence(A2BGeofence a2bGeofence)
     {
         Geofence g = new Geofence.Builder()
                 .setRequestId(a2bGeofence.name)
@@ -127,10 +138,10 @@ public final class Globals extends Application implements
         {
             return mGeofencePendingIntent;
         }
-        Intent intent = new Intent(this, GeofenceTransitionsIntentService.class);
+        Intent intent = new Intent(ctx, GeofenceTransitionsIntentService.class);
         // We use FLAG_UPDATE_CURRENT so that we get the same pending intent back when
         // calling addGeofences() and removeGeofences().
-        return PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        return PendingIntent.getService(ctx, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     private void stopGeofences()
@@ -283,7 +294,7 @@ public final class Globals extends Application implements
         currentTrip = trip;
     }
 
-    public Trip GetCurrentTrip()
+    static public Trip GetCurrentTrip()
     {
         return currentTrip;
     }
@@ -320,9 +331,11 @@ public final class Globals extends Application implements
         return currentLatLongs.get(currentLatLongs.size()-1);
     }
 
-    protected synchronized GoogleApiClient buildGoogleApiClient()
+    public GoogleApiClient buildGoogleApiClient()
     {
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
+        /* NO APPLICATION CONTEXT!!!!! */
+        //Context c = this.getApplicationContext();
+        mGoogleApiClient = new GoogleApiClient.Builder(ctx)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
@@ -402,8 +415,19 @@ public final class Globals extends Application implements
         map = mapActivity.getMap();
         if(circles == null)
             circles = new ArrayList<>();
-        initGeofences();
-        createAndDrawGeofenceCircles();
+
+        setGeofences();
+    }
+
+    static public boolean isGoogleApiConnectionState() {return mGoogleApiClient.isConnected();}
+
+    public void setGeofences()
+    {
+        if(mGoogleApiClient.isConnected() == true)
+        {
+            initGeofences();
+            createAndDrawGeofenceCircles();
+        }
     }
 
     @Override
@@ -451,5 +475,4 @@ public final class Globals extends Application implements
         stopGeofences();
         LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
     }
-
 }

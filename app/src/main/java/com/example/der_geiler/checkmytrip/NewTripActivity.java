@@ -5,6 +5,7 @@ package com.example.der_geiler.checkmytrip;
 */
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -33,6 +34,16 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
     public static final int UI_ELEMENT_DISTANCE = 1;
     private Globals globals = null;
     private boolean removeGeoCircle = true;
+
+    /***** SINGLETON ********/
+    public NewTripActivity(){}
+    private static NewTripActivity instance;
+    public static NewTripActivity GetInstance()
+    {
+        instance = (instance == null) ? new NewTripActivity() : instance;
+        return instance;
+    }
+    /***** SINGLETON END *****/
 
     public void SetMap(LatLng ll)
     {
@@ -144,6 +155,7 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
             AddMarkerUI(ll, i);
             ++i;
         }
+        Globals.GetInstance(this.getApplicationContext()).setGeofences();  // Must call this way to avoid non-static error
     }
 
     private void InitMap()
@@ -168,7 +180,7 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.new_trip);
-        globals = ((Globals)this.getApplication());
+        globals = Globals.GetInstance(this.getApplicationContext());
         InitMap();
     }
 
