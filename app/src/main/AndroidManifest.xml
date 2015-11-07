@@ -48,6 +48,9 @@
             android:name=".DirectoryGeoActivity">
         </activity>
         <activity
+            android:name=".StaticMapActivity">
+        </activity>
+        <activity
             android:name=".SplashActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"

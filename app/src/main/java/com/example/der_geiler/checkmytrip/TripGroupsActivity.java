@@ -182,7 +182,7 @@ public class TripGroupsActivity extends Activity
                                         else
                                         {
                                             Intent i = new Intent(getApplicationContext(), DirectoryGeoActivity.class);
-                                            //i.putExtra("class", MainActivity.class.getPackage().getName() + "." + this.getClass().getSimpleName());
+                                            i.putExtra("dir", group);
                                             startActivity(i);
                                         }
                                     }

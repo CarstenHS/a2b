@@ -1,6 +1,7 @@
 package com.example.der_geiler.checkmytrip;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TableLayout;
 
@@ -37,6 +38,12 @@ public class DirectoryGeoActivity extends Activity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.directory_geo);
+        Intent intent = getIntent();
+        if (null != intent)
+        {
+            String dir  = intent.getStringExtra("dir");
+            this.setTitle(dir);
+        }
         //TableLayout = (TableLayout) findViewById(R.id.tripGroupsTableLayout);
     }
 }
