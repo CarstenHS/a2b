@@ -30,7 +30,7 @@ public class TripGroupsActivity extends Activity
     private FileHandler fileHandler = null;
     private TableLayout tripGroupsTableLayout = null;
     private Context context;
-    final CharSequence[] groupProps = {"Delete", "noget1", "noget2"};
+    final CharSequence[] groupProps = {"Delete", "Edit Start/End point"};
     uiAction lastUiAction = null;
     Rect touchRect = null;
 
@@ -180,9 +180,11 @@ public class TripGroupsActivity extends Activity
                                         if (which == 0)
                                             SetDeleteAlert(group);
                                         else
-                                            which = 2;
-                                        // The 'which' argument contains the index position
-                                        // of the selected item
+                                        {
+                                            Intent i = new Intent(getApplicationContext(), DirectoryGeoActivity.class);
+                                            //i.putExtra("class", MainActivity.class.getPackage().getName() + "." + this.getClass().getSimpleName());
+                                            startActivity(i);
+                                        }
                                     }
                                 }
                         );
