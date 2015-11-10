@@ -88,9 +88,7 @@ public class TripGroupsActivity extends Activity
     private void ShowTripGroups()
     {
         if (tripGroupsTableLayout.getChildCount() != 0)
-        {
             tripGroupsTableLayout.removeAllViewsInLayout();
-        }
         List<String> dirs = fileHandler.GetDirectories();
         if (dirs.size() != 0)
         {
@@ -251,14 +249,13 @@ public class TripGroupsActivity extends Activity
                         builder.setCancelable(true);
                         AlertDialog ad = builder.create();
                         ad.show();
-                    } else
-                    {
-                        Globals.GetInstance(null).addDir(groupName);
                     }
+                    else
+                        Globals.GetInstance(null).addDir(groupName);
                 }
                 ShowTripGroups();
             }
         });
         alert.show();
     }
-} // TripsAtivity
+}

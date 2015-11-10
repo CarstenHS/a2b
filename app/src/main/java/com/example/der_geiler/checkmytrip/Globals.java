@@ -104,6 +104,7 @@ public class Globals implements
     2nd:
         todo: Loading of types can be templates
         todo: Removing entry in array should be template
+        todo: setTouchActions is used in dirGeo also. Could be made as lib
      */
     /************* GEOFENCING *****************/
 
