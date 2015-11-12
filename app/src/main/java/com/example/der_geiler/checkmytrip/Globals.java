@@ -74,6 +74,7 @@ public class Globals implements
             dirEntries = FileHandler.GetInstance().LoadDirInfos();
             if(dirEntries == null)
                 dirEntries = new ArrayList<>();
+            a2BGeofences = FileHandler.GetInstance().LoadGeofences();
             instance = new Globals();
         }
         return instance;
@@ -110,9 +111,13 @@ public class Globals implements
 
     List<A2BGeofence> getGetFencesPersist()
     {
-        List<A2BGeofence> geofences = new ArrayList<>();
-        for (Iterator<A2BGeofence> iter = a2BGeofences.iterator(); iter.hasNext(); )
-             geofences.add((A2BGeofence) iter.next());
+        List<A2BGeofence> geofences = null;
+        if(a2BGeofences != null)
+        {
+            geofences = new ArrayList<>();
+            for (Iterator<A2BGeofence> iter = a2BGeofences.iterator(); iter.hasNext(); )
+                geofences.add((A2BGeofence) iter.next());
+        }
         return geofences;
     }
 
@@ -180,8 +185,6 @@ public class Globals implements
 
     public void initGeofences()
     {
-        FileHandler fileHandler = FileHandler.GetInstance();
-        a2BGeofences = fileHandler.LoadGeofences();
 
         if(a2BGeofences.size() != 0)
         {

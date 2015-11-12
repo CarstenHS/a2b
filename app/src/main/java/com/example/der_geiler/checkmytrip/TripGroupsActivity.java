@@ -171,7 +171,10 @@ public class TripGroupsActivity extends Activity
                         builder.setTitle(group);
                         lastUiAction.view.setBackgroundColor(Color.parseColor("#b0b0b0"));
                         lastUiAction.lastAction = uiAction.ACTION_LONG_CSV;
-                        builder.setItems(groupProps, new DialogInterface.OnClickListener()
+                        CharSequence props[] = {"Delete"};
+                        if(Globals.GetInstance(null).getGetFencesPersist() != null)
+                            props = groupProps;
+                        builder.setItems(props , new DialogInterface.OnClickListener()
                                 {
                                     public void onClick(DialogInterface dialog, int which)
                                     {

@@ -132,10 +132,11 @@ public class MainActivity extends Activity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        NewTripActivity.GetInstance();
-        setNewTripText();
         FileHandler fileHandler = FileHandler.GetInstance();
         fileHandler.Init(getApplicationContext());
+        Globals.GetInstance(getApplicationContext());
+        NewTripActivity.GetInstance();
+        setNewTripText();
         touchRect = new Rect();
         lastUiAction = new uiAction();
         setUiActions();
