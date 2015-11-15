@@ -296,7 +296,7 @@ public class FileHandler extends Activity
             }
 
             String json = sb.toString();
-            Type listType = new TypeToken<ArrayList<A2BGeofence>>() {}.getType();
+            Type listType = new TypeToken<ArrayList<A2BdirInfo>>() {}.getType();
             Gson gson = new Gson();
             dirInfos = gson.fromJson(json, listType);
         }

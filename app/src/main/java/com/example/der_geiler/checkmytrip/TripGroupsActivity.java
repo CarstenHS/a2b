@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.Menu;
@@ -19,7 +18,7 @@ import android.widget.EditText;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-import java.util.ArrayList;
+
 import java.util.List;
 
 /**
@@ -172,7 +171,7 @@ public class TripGroupsActivity extends Activity
                         lastUiAction.view.setBackgroundColor(Color.parseColor("#b0b0b0"));
                         lastUiAction.lastAction = uiAction.ACTION_LONG_CSV;
                         CharSequence props[] = {"Delete"};
-                        if(Globals.GetInstance(null).getGetFencesPersist() != null)
+                        if(Globals.GetInstance(null).getGeoFencesPersist() != null)
                             props = groupProps;
                         builder.setItems(props , new DialogInterface.OnClickListener()
                                 {

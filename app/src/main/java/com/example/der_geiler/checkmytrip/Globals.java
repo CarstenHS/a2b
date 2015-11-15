@@ -62,7 +62,7 @@ public class Globals implements
     public static final int GEO_FENCE_RADIUS = 100;
     public static final int COLOR_BASIC_GEOFENCE = 0xB2A9F6;
     static private Context ctx = null;
-            //Color.parseColor("#B2A9F6")
+    static private FileHandler fileHandlerInstance = null;
 
     private static Globals instance;
     public Globals(){}
@@ -74,16 +74,18 @@ public class Globals implements
             dirEntries = FileHandler.GetInstance().LoadDirInfos();
             if(dirEntries == null)
                 dirEntries = new ArrayList<>();
-            a2BGeofences = FileHandler.GetInstance().LoadGeofences();
+            fileHandlerInstance = FileHandler.GetInstance();
+            a2BGeofences = fileHandlerInstance.LoadGeofences();
             instance = new Globals();
         }
         return instance;
     }
 
+    /* USE SET DIR !!!!!!!!!!!!!!!!!!!!*/
     public void addDir(String dir)
     {
         dirEntries.add(new A2BdirInfo(dir));
-        FileHandler.GetInstance().SaveDirInfos(dirEntries);
+        fileHandlerInstance.SaveDirInfos(dirEntries);
     }
 
     public void removeDir(String name)
@@ -97,6 +99,35 @@ public class Globals implements
                 break;
             }
         }
+        fileHandlerInstance.SaveDirInfos(dirEntries);
+    }
+
+    public A2BdirInfo getDir(String name)
+    {
+        if(dirEntries != null)
+        {
+            for (Iterator<A2BdirInfo> iter = dirEntries.iterator(); iter.hasNext(); )
+            {
+                A2BdirInfo element = iter.next();
+                if (element.getDir().equals(name))
+                    return element;
+            }
+        }
+        return null;
+    }
+
+    public void setDir(A2BdirInfo di)
+    {
+        A2BdirInfo diInfo = null;
+        for (Iterator<A2BdirInfo> iter = dirEntries.iterator(); iter.hasNext(); )
+        {
+            A2BdirInfo element = iter.next();
+            if(element.equals(di))
+                iter.remove();
+            break;
+        }
+        dirEntries.add(di);
+        fileHandlerInstance.SaveDirInfos(dirEntries);
     }
 
     /* General todos:
@@ -109,7 +140,7 @@ public class Globals implements
      */
     /************* GEOFENCING *****************/
 
-    List<A2BGeofence> getGetFencesPersist()
+    List<A2BGeofence> getGeoFencesPersist()
     {
         List<A2BGeofence> geofences = null;
         if(a2BGeofences != null)
@@ -205,7 +236,7 @@ public class Globals implements
     public int saveGeofence(A2BGeofence a2bGf)
     {
         a2BGeofences.add(a2bGf);
-        FileHandler.GetInstance().SaveGeofences(getGetFencesPersist());
+        FileHandler.GetInstance().SaveGeofences(getGeoFencesPersist());
         return RES_OK;
     }
 

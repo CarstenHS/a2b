@@ -6,12 +6,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Rect;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -60,11 +57,17 @@ public class DirectoryGeoActivity extends Activity
         touchRect = new Rect();
         Intent intent = getIntent();
         lastUiAction = new uiAction();
-        if (null != intent)
+
+        String dir  = intent.getStringExtra("dir");
+        this.setTitle(dir);
+
+        A2BdirInfo di = Globals.GetInstance(null).getDir(dir);
+        if(di != null)
         {
-            String dir  = intent.getStringExtra("dir");
-            this.setTitle(dir);
+            ((TextView) findViewById(R.id.endPointSub)).setText(di.getGeofenceEnd());
+            ((TextView) findViewById(R.id.startPointSub)).setText(di.getGeofenceStart());
         }
+
         LinearLayout lo = (LinearLayout) findViewById(R.id.dirGeoLayout);
         for(int i = 0; i<lo.getChildCount(); i++)
         {
@@ -98,9 +101,9 @@ public class DirectoryGeoActivity extends Activity
         return ret;
     }
 
-    private void selectGeofence(String point)
+    private void selectGeofence(final String point)
     {
-        List<A2BGeofence> geofences =  Globals.GetInstance(null).getGetFencesPersist();
+        List<A2BGeofence> geofences =  Globals.GetInstance(null).getGeoFencesPersist();
         if(geofences != null)
         {
             List<String> geoNames = new ArrayList<>();
@@ -115,8 +118,25 @@ public class DirectoryGeoActivity extends Activity
             {
                 public void onClick(DialogInterface dialog, int which)
                 {
-                    // The 'which' argument contains the index position
-                    // of the selected item
+                    TextView tv;
+                    Globals globalsInstance = Globals.GetInstance(null);
+                    String selectedGeofence = ((AlertDialog) dialog).getListView().getItemAtPosition(which).toString();
+                    A2BdirInfo di = globalsInstance.getDir(selectedGeofence);
+                    if (di == null)
+                        di = new A2BdirInfo(point);
+
+                    if (point.equals(END_GEO))
+                    {
+                        tv = (TextView) findViewById(R.id.endPointSub);
+                        di.setGeofenceEnd(selectedGeofence);
+                    }
+                    else
+                    {
+                        tv = (TextView) findViewById(R.id.startPointSub);
+                        di.setGeofenceStart(selectedGeofence);
+                    }
+                    globalsInstance.setDir(di);
+                    tv.setText(selectedGeofence);
                 }
             });
             builder.show();
