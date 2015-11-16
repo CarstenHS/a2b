@@ -320,6 +320,25 @@ public class Globals implements
             }
         }
     }
+
+    public List resolveGeoDir(String endGeo)
+    {
+        List<String> dirs = new ArrayList<>();
+        if(dirEntries != null)
+        {
+            for (Iterator<A2BdirInfo> iter = dirEntries.iterator(); iter.hasNext(); )
+            {
+                A2BdirInfo element = iter.next();
+                if (element.getGeofenceStart().equals(currentTrip.getStartGeo())
+                    &&
+                   (element.getGeofenceStart().equals(endGeo)))
+                {
+                    dirs.add(element.getDir());
+                }
+            }
+        }
+        return dirs;
+    }
     /************* GEOFENCING END *****************/
 
     private class a2bLoc

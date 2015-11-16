@@ -176,31 +176,39 @@ public class FileHandler extends Activity
         return success;
     }
 
-    public void SaveTrip(Trip trip) throws IOException
+    public void SaveTrip(List dirs, Trip trip) throws IOException
     {
-        File folder = context.getDir(strDirUnCategorized, Context.MODE_PRIVATE);
-        //String fileName = filePrefix + String.valueOf(trip.GetTimeStart().getTime()) + fileExtension;
-        String fileName = filePrefix + trip.SetTimeEnd();
-
-        File file = new File(folder, fileName);
-        if(file.exists() == false)
+        for (String dir : (List<String>)dirs)
         {
-            try{ file.createNewFile();}
-            catch (Exception e) {e.printStackTrace();}
+            File folder = context.getDir(strDirUnCategorized, Context.MODE_PRIVATE);
+            String fileName = filePrefix + trip.SetTimeEnd();
+
+            File file = new File(folder, fileName);
+            if (file.exists() == false)
+            {
+                try
+                {
+                    file.createNewFile();
+                } catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
+
+            Gson gson = new Gson();
+            String s = gson.toJson(trip);
+            file.setWritable(true);
+
+            FileOutputStream outputStream = new FileOutputStream(file);
+            try
+            {
+                outputStream.write(s.getBytes());
+                outputStream.close();
+            } catch (Exception e)
+            {
+                e.printStackTrace();
+            }
         }
-
-        Gson gson = new Gson();
-        String s = gson.toJson(trip);
-        file.setWritable(true);
-
-        FileOutputStream outputStream = new FileOutputStream(file);
-        try
-        {
-            outputStream.write(s.getBytes());
-            outputStream.close();
-        }
-        catch (Exception e){e.printStackTrace();}
-
         LoadTrips(strDirUnCategorized);
     }
 

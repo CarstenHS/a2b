@@ -40,12 +40,22 @@ public class GeofenceTransitionsIntentService extends IntentService
             MediaPlayer mp;
             int id = R.raw.out;
 
+            // Get the geofences that were triggered. A single event can trigger
+            // multiple geofences.
+            List triggeringGeofences = geofencingEvent.getTriggeringGeofences();
+            String[] triggerIds = new String[triggeringGeofences.size()];
+
+            for (int i = 0; i < triggerIds.length; i++)
+                triggerIds[i] = ((Geofence)triggeringGeofences.get(i)).getRequestId();
+
             if(geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER)
             {
                 try
                 {
-                    FileHandler.GetInstance().SaveTrip(Globals.GetInstance(null).GetCurrentTrip());
-                    Globals.GetInstance(null).cleanUp();
+                    Globals globals = Globals.GetInstance(null);
+                    List dirToSaveIn = globals.resolveGeoDir(triggerIds[0]);
+                    FileHandler.GetInstance().SaveTrip(dirToSaveIn, Globals.GetInstance(null).GetCurrentTrip());
+                    globals.cleanUp();
                     System.exit(0);
                 }
                 catch (IOException e)
@@ -55,6 +65,7 @@ public class GeofenceTransitionsIntentService extends IntentService
             }
             else if(geofenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT)
             {
+                Globals.GetInstance(null).GetCurrentTrip().setStartGeo(triggerIds[0]);
                 id = R.raw.in;
                 //Start
             }
@@ -73,10 +84,6 @@ public class GeofenceTransitionsIntentService extends IntentService
 
             });
             mp.start();
-
-            // Get the geofences that were triggered. A single event can trigger
-            // multiple geofences.
-            List triggeringGeofences = geofencingEvent.getTriggeringGeofences();
 
             // Get the transition details as a String.
             /*
