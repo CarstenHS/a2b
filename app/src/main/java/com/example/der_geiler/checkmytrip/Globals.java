@@ -72,9 +72,17 @@ public class Globals implements
         if(instance == null)
         {
             dirEntries = FileHandler.GetInstance().LoadDirInfos();
+            fileHandlerInstance = FileHandler.GetInstance();
             if(dirEntries == null)
                 dirEntries = new ArrayList<>();
-            fileHandlerInstance = FileHandler.GetInstance();
+            if(dirEntries.size() == 0)
+            {
+                A2BdirInfo di = new A2BdirInfo(FileHandler.GetInstance().getUncategorizedString());
+                di.setGeofenceStart("Not set");
+                di.setGeofenceEnd("Not set");
+                dirEntries.add(di);
+                setDir(di);
+            }
             a2BGeofences = fileHandlerInstance.LoadGeofences();
             instance = new Globals();
         }
@@ -116,7 +124,7 @@ public class Globals implements
         return null;
     }
 
-    public void setDir(A2BdirInfo di)
+    static public void setDir(A2BdirInfo di)
     {
         A2BdirInfo diInfo = null;
         for (Iterator<A2BdirInfo> iter = dirEntries.iterator(); iter.hasNext(); )

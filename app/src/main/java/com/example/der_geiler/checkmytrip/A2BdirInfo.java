@@ -6,7 +6,12 @@ package com.example.der_geiler.checkmytrip;
 public class A2BdirInfo
 {
     public A2BdirInfo(){}
-    public A2BdirInfo(String dir){this.dir = dir;}
+    public A2BdirInfo(String dir)
+    {
+        this.dir = dir;
+        this.geofenceStart = "Not set";
+        this.geofenceStop = "Not set";
+    }
     private String dir;
     private String geofenceStart;
     private String geofenceStop;

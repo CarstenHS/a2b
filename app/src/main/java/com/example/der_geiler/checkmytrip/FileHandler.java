@@ -45,6 +45,8 @@ public class FileHandler extends Activity
         this.context = context;
     }
 
+    public String getUncategorizedString(){return strDirUnCategorized;}
+
     public Trip LoadTrip(String strGroup, String strTrip)
     {
         File folder = context.getDir(strGroup, Context.MODE_PRIVATE);

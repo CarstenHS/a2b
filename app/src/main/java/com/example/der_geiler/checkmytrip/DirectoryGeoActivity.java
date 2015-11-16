@@ -25,6 +25,7 @@ public class DirectoryGeoActivity extends Activity
     private int bgColor = android.R.color.background_light;
     static final String END_GEO = "End point";
     static final String START_GEO = "Start point";
+    private String currentDir = null;
 
     @Override
     protected void onDestroy()
@@ -60,6 +61,7 @@ public class DirectoryGeoActivity extends Activity
 
         String dir  = intent.getStringExtra("dir");
         this.setTitle(dir);
+        currentDir = dir;
 
         A2BdirInfo di = Globals.GetInstance(null).getDir(dir);
         if(di != null)
@@ -121,9 +123,9 @@ public class DirectoryGeoActivity extends Activity
                     TextView tv;
                     Globals globalsInstance = Globals.GetInstance(null);
                     String selectedGeofence = ((AlertDialog) dialog).getListView().getItemAtPosition(which).toString();
-                    A2BdirInfo di = globalsInstance.getDir(selectedGeofence);
+                    A2BdirInfo di = globalsInstance.getDir(currentDir);
                     if (di == null)
-                        di = new A2BdirInfo(point);
+                        di = new A2BdirInfo(currentDir);
 
                     if (point.equals(END_GEO))
                     {
