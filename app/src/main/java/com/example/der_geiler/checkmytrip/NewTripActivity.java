@@ -5,7 +5,6 @@ package com.example.der_geiler.checkmytrip;
 */
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -204,18 +203,25 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
     {
         int id = item.getItemId();
         FileHandler fileHandler = FileHandler.GetInstance();
-        try
+        if (id == R.id.save_and_end)
         {
-            fileHandler.SaveTrip(globals.GetCurrentTrip());
-            System.exit(0);
+            try
+            {
+                fileHandler.SaveTrip(null, globals.GetCurrentTrip());
+                System.exit(0);
+            } catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+            return true;
         }
-        catch (IOException e)
+        else
         {
-            e.printStackTrace();
+            if(id == R.id.start_end_point)
+                onMapLongClick(globals.getLastLoc().getLatlng());
         }
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings)
-            return true;
+
 
         return super.onOptionsItemSelected(item);
     }
@@ -307,9 +313,6 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
     {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setTitle("Delete Start or End point \"" + gf.getName() + "\"?");
-        final EditText input = new EditText(this);
-        alert.setView(input);
-
         alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener()
         {
             @Override

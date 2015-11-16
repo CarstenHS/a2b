@@ -78,6 +78,7 @@ public class TripGroupsActivity extends Activity
             public void onClick(DialogInterface dialog, int which)
             {
                 fileHandler.DeleteGroup(group);
+                Globals.GetInstance(null).removeDir(group);
                 ShowTripGroups();
             }
         });
@@ -253,7 +254,7 @@ public class TripGroupsActivity extends Activity
                         ad.show();
                     }
                     else
-                        Globals.GetInstance(null).addDir(groupName);
+                        Globals.GetInstance(null).setDir(new A2BdirInfo(groupName));
                 }
                 ShowTripGroups();
             }

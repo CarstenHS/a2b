@@ -1,11 +1,8 @@
 package com.example.der_geiler.checkmytrip;
 
 import android.app.Activity;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Rect;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -16,9 +13,6 @@ import android.view.View;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-
-import com.google.android.gms.location.Geofence;
-import com.google.android.gms.location.GeofencingRequest;
 
 // https://developers.google.com/android/reference/com/google/android/gms/location/Geofence.Builder
 // https://developer.android.com/training/location/geofencing.html#HandleGeofenceTransitions
@@ -183,7 +177,7 @@ public class MainActivity extends Activity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.save_and_end) {
             return true;
         }
 

@@ -341,10 +341,14 @@ public class Globals implements
     }
     /************* GEOFENCING END *****************/
 
-    private class a2bLoc
+    public class a2bLoc
     {
         public Location lastLocation;
         public Date lastDate;
+        public LatLng getLatlng()
+        {
+            return new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
+        }
     }
 
     public String ExtractDurationFromTicks(int ticks)
@@ -371,6 +375,8 @@ public class Globals implements
 
         return hours + ":" + mins + ":" + secs;
     }
+
+    public a2bLoc getLastLoc(){return lastLoc;}
 
     public void setCurrentTrip(Trip trip)
     {

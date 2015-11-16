@@ -178,6 +178,12 @@ public class FileHandler extends Activity
 
     public void SaveTrip(List dirs, Trip trip) throws IOException
     {
+        if(dirs == null)    // for testing the save from options
+        {
+            dirs = new ArrayList<>();
+            dirs.add(strDirUnCategorized);
+        }
+
         for (String dir : (List<String>)dirs)
         {
             File folder = context.getDir(strDirUnCategorized, Context.MODE_PRIVATE);
