@@ -139,6 +139,7 @@ public class MainActivity extends Activity
     @Override
     protected void onDestroy()
     {
+        Globals.GetInstance(null).cleanUp();
         super.onDestroy();
     }
 

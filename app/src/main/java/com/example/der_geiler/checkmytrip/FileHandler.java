@@ -25,6 +25,8 @@ public class FileHandler extends Activity
 
     final String filePrefix = "";
     final String fileExtension = ".a2b";
+    final String strFolderPrefix = "app_";
+    final int folderPrefixSize = strFolderPrefix.length();
     private String dataDir = null;
     private Context context = null;
     private final String strDirUnCategorized = "Uncategorized";
@@ -144,10 +146,15 @@ public class FileHandler extends Activity
 
         List<String> dirs = new ArrayList<>();
 
+        String folderName;
         for (File file : directories)
         {
-            if(file.getName().substring(0,4).equals("app_"))
-                dirs.add(file.getName().substring(4));
+            folderName = file.getName();
+            if(folderName.length() >= folderPrefixSize)
+            {
+                if (folderName.substring(0, folderPrefixSize).equals(strFolderPrefix))
+                    dirs.add(file.getName().substring(folderPrefixSize));
+            }
         }
 
         return dirs;
@@ -169,8 +176,8 @@ public class FileHandler extends Activity
         boolean success = false;
         if(DirectoryExist(name) == false)
         {
-            File folder = new File(dataDir + name);
-            folder.mkdir();
+            File folder = new File(dataDir + "/" + strFolderPrefix + name);
+            boolean created = folder.mkdir();
             success = true;
         }
         return success;

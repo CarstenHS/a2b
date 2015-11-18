@@ -510,6 +510,8 @@ public class Globals implements
         setGeofences();
     }
 
+
+
     static public boolean isGoogleApiConnectionState() {return mGoogleApiClient.isConnected();}
 
     public void setGeofences()

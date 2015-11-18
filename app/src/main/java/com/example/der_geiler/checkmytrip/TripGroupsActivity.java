@@ -60,10 +60,7 @@ public class TripGroupsActivity extends Activity
     private void SetDeleteAlert(final String group)
     {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setTitle("Delete: " + group + "? (All tripGroups will be deleted!");
-        final EditText input = new EditText(this);
-        alert.setView(input);
-
+        alert.setTitle("Delete: " + group + "? (All trips will be deleted!)");
         alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener()
         {
             @Override
@@ -87,11 +84,12 @@ public class TripGroupsActivity extends Activity
 
     private void ShowTripGroups()
     {
-        if (tripGroupsTableLayout.getChildCount() != 0)
+        //if (tripGroupsTableLayout.getChildCount() != 0)
             tripGroupsTableLayout.removeAllViewsInLayout();
         List<String> dirs = fileHandler.GetDirectories();
         if (dirs.size() != 0)
         {
+            tripGroupsTableLayout.setVisibility(View.VISIBLE);
             for (String dir : dirs)
             {
                 Context context = getApplicationContext();
@@ -198,6 +196,8 @@ public class TripGroupsActivity extends Activity
                 tripGroupsTableLayout.addView(tr, new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.MATCH_PARENT));
             }
         }
+        else
+            tripGroupsTableLayout.setVisibility(View.INVISIBLE);
     }
 
     @Override
