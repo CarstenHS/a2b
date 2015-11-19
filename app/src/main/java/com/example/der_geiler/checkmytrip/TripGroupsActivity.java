@@ -29,9 +29,12 @@ public class TripGroupsActivity extends Activity
     private FileHandler fileHandler = null;
     private TableLayout tripGroupsTableLayout = null;
     private Context context;
-    final CharSequence[] groupProps = {"Delete", "Edit Start/End point"};
+    final CharSequence[] groupProps = {"Edit Start/End point", "Rename", "Delete"};
     uiAction lastUiAction = null;
     Rect touchRect = null;
+    static final int INDEX_START_END_POINT = 0;
+    static final int INDEX_RENAME = 1;
+    static final int INDEX_DELETE = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -55,6 +58,48 @@ public class TripGroupsActivity extends Activity
     private float Px2Dp(float px)
     {
         return px / context.getResources().getDisplayMetrics().density;
+    }
+
+    private void SetRenameAlert(String group)
+    {
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setTitle("Rename " + group + ":");
+        final EditText input = new EditText(this);
+        input.setText(group);
+        alert.setView(input);
+
+        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener()
+        {
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
+                //input.setText("canceled");
+            }
+        });
+        alert.setPositiveButton("OK", new DialogInterface.OnClickListener()
+        {
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
+                String groupName = input.getText().toString();
+                if (groupName.equals("") == false)
+                {
+                    /* SHOULD BE RENAMED HERE INSTEAD */
+                    if (fileHandler.CreateTripGroup(groupName) == false)
+                    {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(TripGroupsActivity.this);
+                        builder.setMessage("Group exists. Please choose another name.");
+                        builder.setCancelable(true);
+                        AlertDialog ad = builder.create();
+                        ad.show();
+                    }
+                    else
+                        Globals.GetInstance(null).setDir(new A2BdirInfo(groupName));
+                }
+                ShowTripGroups();
+            }
+        });
+        alert.show();
     }
 
     private void SetDeleteAlert(final String group)
@@ -176,13 +221,18 @@ public class TripGroupsActivity extends Activity
                                 {
                                     public void onClick(DialogInterface dialog, int which)
                                     {
-                                        if (which == 0)
-                                            SetDeleteAlert(group);
-                                        else
+                                        switch(which)
                                         {
-                                            Intent i = new Intent(getApplicationContext(), DirectoryGeoActivity.class);
-                                            i.putExtra("dir", group);
-                                            startActivity(i);
+                                            case INDEX_RENAME: SetRenameAlert(group); break;
+                                            case INDEX_DELETE: SetDeleteAlert(group); break;
+                                            case INDEX_START_END_POINT:
+                                            {
+                                                Intent i = new Intent(getApplicationContext(), DirectoryGeoActivity.class);
+                                                i.putExtra("dir", group);
+                                                startActivity(i);
+                                                break;
+                                            }
+                                            default: break;
                                         }
                                     }
                                 }
