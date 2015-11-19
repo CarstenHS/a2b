@@ -13,12 +13,14 @@ public class Trip
     private Date dateStart, dateEnd;
     private int ticks = 0;
     private float distance;
+    private float speedInMetPerSec;
     private int unit = DIST_UNIT_KILOMETERS;
     private String startGeo = null;
 
     Trip()
     {
         distance = 0;
+        speedInMetPerSec = 0;
     }
 
     public void setStartGeo(String geo){startGeo = geo;}
@@ -38,6 +40,10 @@ public class Trip
     public void UpdateDistance(float dist)
     {
         distance += dist;
+    }
+    public void UpdateSpeed(float speed)
+    {
+        speedInMetPerSec = (speed > speedInMetPerSec) ? speed : speedInMetPerSec;
     }
     public List<A2BMarker> getA2bMarkers() {return A2BMarkers;}
 
