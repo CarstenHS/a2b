@@ -4,6 +4,7 @@ package com.example.der_geiler.checkmytrip;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 /*
 import android.location.LocationListener;
@@ -63,6 +64,7 @@ public class Globals implements
     public static final int COLOR_BASIC_GEOFENCE = 0xB2A9F6;
     static private Context ctx = null;
     static private FileHandler fileHandlerInstance = null;
+    static private SQLiteHelper dbHelper = null;
 
     private static Globals instance;
     public Globals(){}
@@ -84,10 +86,13 @@ public class Globals implements
                 setDir(di);
             }
             a2BGeofences = fileHandlerInstance.LoadGeofences();
+            dbHelper = new SQLiteHelper(ctx);
             instance = new Globals();
         }
         return instance;
     }
+
+    public SQLiteDatabase getDB(){return dbHelper.getWritableDatabase();}
 
     /* USE SET DIR !!!!!!!!!!!!!!!!!!!!*/
     public void addDir(String dir)
