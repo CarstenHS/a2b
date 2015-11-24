@@ -16,9 +16,6 @@ public class SQLiteHelperThread extends AsyncTask<Object, Object, Object>
     static final int ACTION_SELECT = 1;
     static final int ACTION_DELETE = 2;
 
-    onDBCursorReadyCallback cb = null;
-    Cursor c = null;
-
     public SQLiteHelperThread(){}
 
     protected Object doInBackground(Object... objs)
@@ -29,23 +26,25 @@ public class SQLiteHelperThread extends AsyncTask<Object, Object, Object>
             case ACTION_INSERT:
             {
                 Globals.GetInstance(null).getDbHelper().insertTrip((Trip)objs[1], (String)objs[2]);
+                ((OnDBInsertDoneCallback)objs[3]).onDBInsertDone();
                 break;
             }
             case ACTION_SELECT:
             {
-                cb = (onDBCursorReadyCallback) objs[1];
-                c = Globals.GetInstance(null).getDbHelper().select((String)objs[2]);
-                cb.onDBCursorReady(c);
+                Cursor c = Globals.GetInstance(null).getDbHelper().select((String)objs[2]);
+                ((onDBCursorReadyCallback) objs[1]).onDBCursorReady(c);
                 break;
             }
             case ACTION_DELETE: Globals.GetInstance(null).getDbHelper().deleteDir((String)objs[1]); break;
             default: break;
         }
-        return c;
+        return null; // not used
     }
 
+    /*
     protected void onPostExecute(Long result)
     {
         cb.onDBCursorReady(c);
     }
+    */
 }
