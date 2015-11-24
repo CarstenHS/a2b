@@ -147,15 +147,20 @@ public class SQLiteHelper extends SQLiteOpenHelper
         // How you want the results sorted in the resulting Cursor
         String sortOrder = TripsTableEntry.COLUMN_NAME_TRIPS_DURATION + " ASC";
 
-        Cursor c = Globals.GetInstance(null).getReadableDB().query(
-                TripsTableEntry.TRIPS_TABLE_NAME,       // The table to query
-                projection,                             // The columns to return
-                selection,                              // The columns for the WHERE clause
-                selectionArgs,                          // The values for the WHERE clause
-                null,                                   // don't group the rows
-                null,                                   // don't filter by row groups
-                sortOrder                               // The sort order
-        );
+        Cursor c = null;
+        try
+        {
+            c = Globals.GetInstance(null).getReadableDB().query(
+                    TripsTableEntry.TRIPS_TABLE_NAME,       // The table to query
+                    projection,                             // The columns to return
+                    selection,                              // The columns for the WHERE clause
+                    selectionArgs,                          // The values for the WHERE clause
+                    null,                                   // don't group the rows
+                    null,                                   // don't filter by row groups
+                    sortOrder                               // The sort order
+            );
+        }
+        catch (Exception e){Log.d("CHS", e.toString() + " in select");};
 
         return c;
     }

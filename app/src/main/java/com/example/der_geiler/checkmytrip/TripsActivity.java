@@ -58,17 +58,20 @@ public class TripsActivity extends Activity implements onDBCursorReadyCallback
     @Override
     public void onDBCursorReady(Cursor c)
     {
-        c.moveToFirst();
-        long id;
-        List<String> trips = new ArrayList<>();
-
-        do
+        if(c != null && c.getCount() != 0)
         {
-            String name = Trip.convertStampToName(c.getLong(c.getColumnIndexOrThrow(TripsContract.TripsTableEntry.COLUMN_NAME_TRIPS_ID)));
-            trips.add(name);
-        }while(c.moveToNext());
+            c.moveToFirst();
+            long id;
+            List<String> trips = new ArrayList<>();
 
-        ShowTrips(trips, selectedGroup);
+            do
+            {
+                String name = Trip.convertStampToName(c.getLong(c.getColumnIndexOrThrow(TripsContract.TripsTableEntry.COLUMN_NAME_TRIPS_ID)));
+                trips.add(name);
+            } while (c.moveToNext());
+
+            ShowTrips(trips, selectedGroup);
+        }
     }
 
     private int Dp2Px(float dp)

@@ -210,8 +210,6 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
                 Trip ct = globals.GetCurrentTrip();
                 fileHandler.SaveTrip(null, ct);
                 new SQLiteHelperThread().execute(SQLiteHelperThread.ACTION_INSERT, ct, fileHandler.getUncategorizedString(), this);
-                //globals.getDbHelper().insertTrip(ct);
-                //System.exit(0);
             } catch (IOException e)
             {
                 e.printStackTrace();
