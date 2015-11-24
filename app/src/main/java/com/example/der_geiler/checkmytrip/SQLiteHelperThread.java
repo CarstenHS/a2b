@@ -28,16 +28,17 @@ public class SQLiteHelperThread extends AsyncTask<Object, Object, Object>
         {
             case ACTION_INSERT:
             {
-                Globals.GetInstance(null).getDbHelper().insertTrip((Trip) objs[1]);
+                Globals.GetInstance(null).getDbHelper().insertTrip((Trip)objs[1], (String)objs[2]);
                 break;
             }
             case ACTION_SELECT:
             {
                 cb = (onDBCursorReadyCallback) objs[1];
-                c = Globals.GetInstance(null).getDbHelper().select(null, null);
+                c = Globals.GetInstance(null).getDbHelper().select((String)objs[2]);
                 cb.onDBCursorReady(c);
                 break;
             }
+            case ACTION_DELETE: Globals.GetInstance(null).getDbHelper().deleteDir((String)objs[1]); break;
             default: break;
         }
         return c;

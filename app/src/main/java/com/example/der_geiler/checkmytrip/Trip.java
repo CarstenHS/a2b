@@ -17,6 +17,7 @@ public class Trip
     private int unit = DIST_UNIT_KILOMETERS;
     private String startGeo = null;
     private String endGeo = null;
+    private final static String strFORMAT = "yyyy-MM-dd@HH:mm";
 
     Trip()
     {
@@ -30,6 +31,7 @@ public class Trip
     public Date GetTimeStart() {return dateStart;}
     public int getTicks(){return ticks;}
     public long getStartTimestamp(){return dateStart.getTime();}
+    public long getEndTimestamp(){return dateEnd.getTime();}
     public float getTopSpeed(){return topSpeedInMetPerSec;}
     public float getDistance(){return distance;}
     public String getFormattedDistance()
@@ -59,7 +61,17 @@ public class Trip
     {
         this.dateEnd = new Date();
         DateFormat df = new DateFormat();
-        return df.format("yyyy-MM-dd@HH:mm", this.dateEnd).toString();
+        return df.format(strFORMAT, this.dateEnd).toString();
+    }
+    public String getFormattedTimeEnd()
+    {
+        DateFormat df = new DateFormat();
+        return df.format(strFORMAT, this.dateEnd).toString();
+    }
+    static public String convertStampToName(long stamp)
+    {
+        DateFormat df = new DateFormat();
+        return df.format(strFORMAT, stamp).toString();
     }
     public int IncTick()
     {

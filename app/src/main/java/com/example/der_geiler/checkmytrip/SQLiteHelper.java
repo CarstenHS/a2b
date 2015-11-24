@@ -26,7 +26,7 @@ public class SQLiteHelper extends SQLiteOpenHelper
     private static final String INT_TYPE = " INTEGER";
     private static final String COMMA_SEP = ",";
     private static final String strAND = "AND";
-    private static final String strQST = "=?";
+    private static final String strEQUALS = "=?";
     private static final String strGreaterThan = ">?";
 
     private static final String TRIPS_TABLE_CREATE =
@@ -68,38 +68,26 @@ public class SQLiteHelper extends SQLiteOpenHelper
         onUpgrade(db, oldVersion, newVersion);
     }
 
-    public void insertTrip(Trip ct)
+    public void insertTrip(Trip ct, String dir)
     {
-        Log.d("CHS", "wtfwtfwtfwtfwtfwtfw");
-        Log.d("CHS", ct.toString());
         ContentValues values = new ContentValues();
-        values.put(TripsTableEntry.COLUMN_NAME_TRIPS_ID, ct.getStartTimestamp());
+        values.put(TripsTableEntry.COLUMN_NAME_TRIPS_ID, ct.getEndTimestamp());
         values.put(TripsTableEntry.COLUMN_NAME_TRIPS_DURATION, ct.getTicks());
         values.put(TripsTableEntry.COLUMN_NAME_TRIPS_TOP_SPEED, ct.getTopSpeed());
         values.put(TripsTableEntry.COLUMN_NAME_TRIPS_START_GEO, ct.getStartGeo());
         values.put(TripsTableEntry.COLUMN_NAME_TRIPS_END_GEO, ct.getEndGeo());
         values.put(TripsTableEntry.COLUMN_NAME_TRIPS_DISTANCE, ct.getDistance());
+        values.put(TripsTableEntry.COLUMN_NAME_TRIPS_DIRECTORY, dir);
 
         long newRowId;
         newRowId = Globals.GetInstance(null).getWritableDB().insert(
                 TripsTableEntry.TRIPS_TABLE_NAME,
                 null,
                 values);
-        Log.d("CHS", "Row ID: " + String.valueOf(newRowId));
     }
 
     public Cursor select(String startGeo, String endGeo)
     {
-        // Define a projection that specifies which columns from the database
-        // you will actually use after this query.
-
-        /*
-        Example on iterating through gotten selection
-        cursor.moveToFirst();
-        long itemId = cursor.getLong(
-                cursor.getColumnIndexOrThrow(FeedEntry._ID)
-        );
-        */
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
 
         String[] projection =
@@ -109,12 +97,12 @@ public class SQLiteHelper extends SQLiteOpenHelper
         };
 
         /*
-        String selection =  TripsTableEntry.COLUMN_NAME_TRIPS_START_GEO + strQST + strAND +
-                            TripsTableEntry.COLUMN_NAME_TRIPS_END_GEO + strQST;
+        String selection =  TripsTableEntry.COLUMN_NAME_TRIPS_START_GEO + strEQUALS + strAND +
+                            TripsTableEntry.COLUMN_NAME_TRIPS_END_GEO + strEQUALS;
 */
         // String selection =  "*";  WHERE *
 
-        String selection = TripsTableEntry.COLUMN_NAME_TRIPS_DURATION + strGreaterThan;
+        String selection = TripsTableEntry.COLUMN_NAME_TRIPS_DIRECTORY + strEQUALS;
 /*
         String[] selectionArgs =
         {
@@ -129,13 +117,35 @@ public class SQLiteHelper extends SQLiteOpenHelper
 
         // How you want the results sorted in the resulting Cursor
         String sortOrder = TripsTableEntry.COLUMN_NAME_TRIPS_DURATION + " ASC";
+        Cursor c = Globals.GetInstance(null).getReadableDB().query(
+                TripsTableEntry.TRIPS_TABLE_NAME,       // The table to query
+                projection,                             // The columns to return
+                selection,                              // The columns for the WHERE clause
+                selectionArgs,                          // The values for the WHERE clause
+                null,                                   // don't group the rows
+                null,                                   // don't filter by row groups
+                sortOrder                               // The sort order
+        );
 
-        //qb.buildQuery(projection, selection, null, null, sortOrder, null);
+        return c;
+    }
 
-        /*
-        return rawQueryWithFactory(cursorFactory, sql, selectionArgs,
-                findEditTable(table), cancellationSignal);
-*/
+    public Cursor select(String dir)
+    {
+        // Define a projection that specifies which columns from the database
+        // you will actually use after this query.
+        SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
+
+        String[] projection =
+                {
+                        TripsTableEntry.COLUMN_NAME_TRIPS_ID,
+                        TripsTableEntry.COLUMN_NAME_TRIPS_DURATION
+                };
+        String selection = TripsTableEntry.COLUMN_NAME_TRIPS_DIRECTORY + strEQUALS;
+        String[] selectionArgs = dir.split(" ");
+
+        // How you want the results sorted in the resulting Cursor
+        String sortOrder = TripsTableEntry.COLUMN_NAME_TRIPS_DURATION + " ASC";
 
         Cursor c = Globals.GetInstance(null).getReadableDB().query(
                 TripsTableEntry.TRIPS_TABLE_NAME,       // The table to query
@@ -149,17 +159,17 @@ public class SQLiteHelper extends SQLiteOpenHelper
 
         return c;
     }
-/*
-    public void delete()
+
+    public void deleteDir(String dir)
     {
         // Define 'where' part of query.
-        String selection = FeedEntry.COLUMN_NAME_ENTRY_ID + " LIKE ?";
+        String selection = TripsTableEntry.COLUMN_NAME_TRIPS_DIRECTORY + " LIKE ?";
         // Specify arguments in placeholder order.
-        String[] selectionArgs = { String.valueOf(rowId) };
+        String[] selectionArgs = { dir };
         // Issue SQL statement.
-        Globals.GetInstance(null).getDB().delete(table_name, selection, selectionArgs);
+        Globals.GetInstance(null).getReadableDB().delete(TripsTableEntry.TRIPS_TABLE_NAME, selection, selectionArgs);
     }
-
+/*
     public void update()
     {
         // New value for one column

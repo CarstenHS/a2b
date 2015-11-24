@@ -48,9 +48,9 @@ public class TripsActivity extends Activity implements onDBCursorReadyCallback
         if (null != intent)
         {
             selectedGroup = intent.getStringExtra("group");
-            ShowTrips(selectedGroup);
+            //ShowTrips(selectedGroup);
         }
-        new SQLiteHelperThread().execute(SQLiteHelperThread.ACTION_SELECT, this);
+        new SQLiteHelperThread().execute(SQLiteHelperThread.ACTION_SELECT, this, selectedGroup);
         lastUiAction = new uiAction();
         touchRect = new Rect();
     }
@@ -59,7 +59,16 @@ public class TripsActivity extends Activity implements onDBCursorReadyCallback
     public void onDBCursorReady(Cursor c)
     {
         c.moveToFirst();
-        int id = c.getInt(c.getColumnIndexOrThrow(TripsContract.TripsTableEntry.COLUMN_NAME_TRIPS_ID));
+        long id;
+        List<String> trips = new ArrayList<>();
+
+        do
+        {
+            String name = Trip.convertStampToName(c.getLong(c.getColumnIndexOrThrow(TripsContract.TripsTableEntry.COLUMN_NAME_TRIPS_ID)));
+            trips.add(name);
+        }while(c.moveToNext());
+
+        ShowTrips(trips, selectedGroup);
     }
 
     private int Dp2Px(float dp)
@@ -94,7 +103,8 @@ public class TripsActivity extends Activity implements onDBCursorReadyCallback
             {
                 //TODO: Delete trip instead of: fileHandler.DeleteGroup(group);
                 fileHandler.deleteTrip(selectedGroup, selectedTrip);
-                ShowTrips(selectedGroup);
+                new SQLiteHelperThread().execute(SQLiteHelperThread.ACTION_SELECT, this, selectedGroup);
+                //ShowTrips(selectedGroup);
             }
         });
         alert.show();
@@ -184,16 +194,16 @@ public class TripsActivity extends Activity implements onDBCursorReadyCallback
         });
     }
 
-    private void ShowTrips(String group)
+    private void ShowTrips(List<String> trips, String group)
     {
         setContentView(R.layout.trips);
         tripsTableLayout = (TableLayout) findViewById(R.id.tripsTableLayout);
+        /*
         List<String> trips = new ArrayList<String>();
         if (tripsTableLayout.getChildCount() != 0)
-        {
             tripsTableLayout.removeAllViewsInLayout();
-        }
         trips = fileHandler.LoadTrips(group);
+        */
         if (trips.size() != 0)
         {
             for (String trip : trips)
