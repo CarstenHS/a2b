@@ -17,8 +17,6 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -97,7 +95,7 @@ public class StaticMapActivity extends FragmentActivity implements OnMapReadyCal
         UpdateBounds();
         List<A2BMarker> A2BMarkers = trip.getA2bMarkers();
 
-        String dist = trip.GetDistance();
+        String dist = trip.getFormattedDistance();
         ((TextView) findViewById(R.id.distance)).setText(dist);
 
         String duration = Globals.GetInstance(null).ExtractDurationFromTicks(trip.getTicks());

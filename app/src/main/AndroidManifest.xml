@@ -30,6 +30,7 @@
         <!-- Main activity -->
         <activity
             android:name=".MainActivity"
+            android:screenOrientation="portrait"
             android:label="Main" >
         </activity>
         <activity
@@ -38,10 +39,12 @@
         </activity>
         <activity
             android:name=".TripGroupsActivity"
+            android:screenOrientation="portrait"
             android:label="Trip groups" >
         </activity>
         <activity
             android:name=".TripsActivity"
+            android:screenOrientation="portrait"
             android:label="Trips" >
         </activity>
         <activity

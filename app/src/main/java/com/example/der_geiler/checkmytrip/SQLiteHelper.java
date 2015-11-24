@@ -5,8 +5,14 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.database.sqlite.SQLiteQueryBuilder;
+import android.os.Environment;
 import android.provider.BaseColumns;
+import android.util.Log;
+
 import com.example.der_geiler.checkmytrip.TripsContract.*;
+
+import java.io.File;
 
 /**
  * Created by der_geiler on 19-11-2015.
@@ -21,17 +27,18 @@ public class SQLiteHelper extends SQLiteOpenHelper
     private static final String COMMA_SEP = ",";
     private static final String strAND = "AND";
     private static final String strQST = "=?";
+    private static final String strGreaterThan = ">?";
 
     private static final String TRIPS_TABLE_CREATE =
             "CREATE TABLE " + TripsTableEntry.TRIPS_TABLE_NAME + " (" +
                     TripsTableEntry._ID + " INTEGER PRIMARY KEY, " +
-                    TripsTableEntry.COLUMN_NAME_TRIPS_ID + TEXT_TYPE + COMMA_SEP +
+                    TripsTableEntry.COLUMN_NAME_TRIPS_ID + INT_TYPE + COMMA_SEP +
                     TripsTableEntry.COLUMN_NAME_TRIPS_DURATION + INT_TYPE + COMMA_SEP +
-                    TripsTableEntry.COLUMN_NAME_TRIPS_START_TIME + INT_TYPE + COMMA_SEP +
                     TripsTableEntry.COLUMN_NAME_TRIPS_TOP_SPEED + INT_TYPE + COMMA_SEP +
+                    TripsTableEntry.COLUMN_NAME_TRIPS_DIRECTORY + TEXT_TYPE + COMMA_SEP +
                     TripsTableEntry.COLUMN_NAME_TRIPS_START_GEO + TEXT_TYPE + COMMA_SEP +
                     TripsTableEntry.COLUMN_NAME_TRIPS_END_GEO + TEXT_TYPE + COMMA_SEP +
-                    TripsTableEntry.COLUMN_NAME_TRIPS_DISTANCE + INT_TYPE + COMMA_SEP +
+                    TripsTableEntry.COLUMN_NAME_TRIPS_DISTANCE + INT_TYPE +
                     " )";
 
     private static final String SQL_DELETE_ENTRIES =
@@ -39,7 +46,11 @@ public class SQLiteHelper extends SQLiteOpenHelper
 
     public SQLiteHelper(Context context)
     {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        super(context, Environment.getExternalStorageDirectory()
+                + File.separator + DATABASE_NAME, null, DATABASE_VERSION);
+        SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(Environment.getExternalStorageDirectory()
+                + File.separator+ DATABASE_NAME,null);
+        int i = 0;
     }
     public void onCreate(SQLiteDatabase db)
     {
@@ -57,24 +68,24 @@ public class SQLiteHelper extends SQLiteOpenHelper
         onUpgrade(db, oldVersion, newVersion);
     }
 
-    public void insertTrip(String id, String startGeo, String endGeo,
-                           int duration, float speed, float distance,
-                            long timestampStart)
+    public void insertTrip(Trip ct)
     {
+        Log.d("CHS", "wtfwtfwtfwtfwtfwtfw");
+        Log.d("CHS", ct.toString());
         ContentValues values = new ContentValues();
-        values.put(TripsTableEntry.COLUMN_NAME_TRIPS_ID, id);
-        values.put(TripsTableEntry.COLUMN_NAME_TRIPS_DURATION, duration);
-        values.put(TripsTableEntry.COLUMN_NAME_TRIPS_START_TIME, timestampStart);
-        values.put(TripsTableEntry.COLUMN_NAME_TRIPS_TOP_SPEED, speed);
-        values.put(TripsTableEntry.COLUMN_NAME_TRIPS_START_GEO, startGeo);
-        values.put(TripsTableEntry.COLUMN_NAME_TRIPS_END_GEO, endGeo);
-        values.put(TripsTableEntry.COLUMN_NAME_TRIPS_DISTANCE, distance);
+        values.put(TripsTableEntry.COLUMN_NAME_TRIPS_ID, ct.getStartTimestamp());
+        values.put(TripsTableEntry.COLUMN_NAME_TRIPS_DURATION, ct.getTicks());
+        values.put(TripsTableEntry.COLUMN_NAME_TRIPS_TOP_SPEED, ct.getTopSpeed());
+        values.put(TripsTableEntry.COLUMN_NAME_TRIPS_START_GEO, ct.getStartGeo());
+        values.put(TripsTableEntry.COLUMN_NAME_TRIPS_END_GEO, ct.getEndGeo());
+        values.put(TripsTableEntry.COLUMN_NAME_TRIPS_DISTANCE, ct.getDistance());
 
         long newRowId;
-        newRowId = Globals.GetInstance(null).getDB().insert(
+        newRowId = Globals.GetInstance(null).getWritableDB().insert(
                 TripsTableEntry.TRIPS_TABLE_NAME,
                 null,
                 values);
+        Log.d("CHS", "Row ID: " + String.valueOf(newRowId));
     }
 
     public Cursor select(String startGeo, String endGeo)
@@ -89,25 +100,44 @@ public class SQLiteHelper extends SQLiteOpenHelper
                 cursor.getColumnIndexOrThrow(FeedEntry._ID)
         );
         */
+        SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
+
         String[] projection =
         {
             TripsTableEntry.COLUMN_NAME_TRIPS_ID,
             TripsTableEntry.COLUMN_NAME_TRIPS_DURATION
         };
 
+        /*
         String selection =  TripsTableEntry.COLUMN_NAME_TRIPS_START_GEO + strQST + strAND +
                             TripsTableEntry.COLUMN_NAME_TRIPS_END_GEO + strQST;
+*/
+        // String selection =  "*";  WHERE *
 
+        String selection = TripsTableEntry.COLUMN_NAME_TRIPS_DURATION + strGreaterThan;
+/*
         String[] selectionArgs =
         {
-            startGeo,
+            "0",
             endGeo
         };
+*/
+        String[] selectionArgs =
+                {
+                        "0"
+                };
 
         // How you want the results sorted in the resulting Cursor
-        String sortOrder = TripsTableEntry.COLUMN_NAME_TRIPS_DURATION + " DESC";
+        String sortOrder = TripsTableEntry.COLUMN_NAME_TRIPS_DURATION + " ASC";
 
-        Cursor c = Globals.GetInstance(null).getDB().query(
+        //qb.buildQuery(projection, selection, null, null, sortOrder, null);
+
+        /*
+        return rawQueryWithFactory(cursorFactory, sql, selectionArgs,
+                findEditTable(table), cancellationSignal);
+*/
+
+        Cursor c = Globals.GetInstance(null).getReadableDB().query(
                 TripsTableEntry.TRIPS_TABLE_NAME,       // The table to query
                 projection,                             // The columns to return
                 selection,                              // The columns for the WHERE clause
@@ -116,6 +146,7 @@ public class SQLiteHelper extends SQLiteOpenHelper
                 null,                                   // don't filter by row groups
                 sortOrder                               // The sort order
         );
+
         return c;
     }
 /*

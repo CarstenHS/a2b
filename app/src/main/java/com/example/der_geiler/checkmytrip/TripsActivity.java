@@ -5,9 +5,11 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.os.Looper;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -23,7 +25,7 @@ import java.util.List;
 /**
  * Created by der_geiler on 03-06-2015.
  */
-public class TripsActivity extends Activity
+public class TripsActivity extends Activity implements onDBCursorReadyCallback
 {
     private Context context;
     private TableLayout tripsTableLayout = null;
@@ -48,8 +50,16 @@ public class TripsActivity extends Activity
             selectedGroup = intent.getStringExtra("group");
             ShowTrips(selectedGroup);
         }
+        new SQLiteHelperThread().execute(SQLiteHelperThread.ACTION_SELECT, this);
         lastUiAction = new uiAction();
         touchRect = new Rect();
+    }
+
+    @Override
+    public void onDBCursorReady(Cursor c)
+    {
+        c.moveToFirst();
+        int id = c.getInt(c.getColumnIndexOrThrow(TripsContract.TripsTableEntry.COLUMN_NAME_TRIPS_ID));
     }
 
     private int Dp2Px(float dp)

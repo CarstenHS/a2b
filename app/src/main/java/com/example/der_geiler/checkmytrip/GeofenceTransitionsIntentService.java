@@ -53,8 +53,11 @@ public class GeofenceTransitionsIntentService extends IntentService
                 try
                 {
                     Globals globals = Globals.GetInstance(null);
-                    List dirToSaveIn = globals.resolveGeoDir(triggerIds[0]);
-                    FileHandler.GetInstance().SaveTrip(dirToSaveIn, Globals.GetInstance(null).GetCurrentTrip());
+                    List dirsToSaveIn = globals.resolveGeoDir(triggerIds[0]);
+                    Trip ct = Globals.GetInstance(null).GetCurrentTrip();
+                    ct.setEndGeo(dirsToSaveIn.get(0).toString());
+                    globals.getDbHelper().insertTrip(ct);
+                    FileHandler.GetInstance().SaveTrip(dirsToSaveIn, ct);
                     globals.cleanUp();
                     System.exit(0);
                 }

@@ -13,48 +13,26 @@ public class Trip
     private Date dateStart, dateEnd;
     private int ticks = 0;
     private float distance;
-    private float speedInMetPerSec;
+    private float topSpeedInMetPerSec;
     private int unit = DIST_UNIT_KILOMETERS;
     private String startGeo = null;
+    private String endGeo = null;
 
     Trip()
     {
         distance = 0;
-        speedInMetPerSec = 0;
+        topSpeedInMetPerSec = 0;
     }
 
-    public void setStartGeo(String geo){startGeo = geo;}
-    public String getStartGeo(){return startGeo;}
-    public Date GetTimeStart() {return dateStart;}
-    public void SetTimeStart(Date start) {dateStart = start;}
-    public String SetTimeEnd()
-    {
-        this.dateEnd = new Date();
-        DateFormat df = new DateFormat();
-        return df.format("yyyy-MM-dd@HH:mm", this.dateEnd).toString();
-    }
-    public int IncTick()
-    {
-        return ++ticks;
-    }
-    public void UpdateDistance(float dist)
-    {
-        distance += dist;
-    }
-    public void UpdateSpeed(float speed)
-    {
-        speedInMetPerSec = (speed > speedInMetPerSec) ? speed : speedInMetPerSec;
-    }
     public List<A2BMarker> getA2bMarkers() {return A2BMarkers;}
-
-    static final int DIST_UNIT_KILOMETERS = 0;  //TODO: use ones from globals
-    static final int DIST_UNIT_MILES = 1;       //TODO: use ones from globals
-
-    public void setUnit(int unit){this.unit = unit;}
-
+    public String getStartGeo(){return startGeo;}
+    public String getEndGeo(){return endGeo;}
+    public Date GetTimeStart() {return dateStart;}
     public int getTicks(){return ticks;}
-
-    public String GetDistance()
+    public long getStartTimestamp(){return dateStart.getTime();}
+    public float getTopSpeed(){return topSpeedInMetPerSec;}
+    public float getDistance(){return distance;}
+    public String getFormattedDistance()
     {
         String dist;
         if(unit == DIST_UNIT_KILOMETERS)
@@ -73,4 +51,31 @@ public class Trip
         }
         return dist;
     }
+
+    public void setStartGeo(String geo){startGeo = geo;}
+    public void setEndGeo(String geo){endGeo = geo;}
+    public void SetTimeStart(Date start) {dateStart = start;}
+    public String SetTimeEnd()
+    {
+        this.dateEnd = new Date();
+        DateFormat df = new DateFormat();
+        return df.format("yyyy-MM-dd@HH:mm", this.dateEnd).toString();
+    }
+    public int IncTick()
+    {
+        return ++ticks;
+    }
+    public void UpdateDistance(float dist)
+    {
+        distance += dist;
+    }
+    public void UpdateSpeed(float speed)
+    {
+        topSpeedInMetPerSec = (speed > topSpeedInMetPerSec) ? speed : topSpeedInMetPerSec;
+    }
+
+    static final int DIST_UNIT_KILOMETERS = 0;  //TODO: use ones from globals
+    static final int DIST_UNIT_MILES = 1;       //TODO: use ones from globals
+
+    public void setUnit(int unit){this.unit = unit;}
 }

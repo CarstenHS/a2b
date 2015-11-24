@@ -17,7 +17,7 @@ public final class TripsContract
         public static final String TRIPS_TABLE_NAME             = "tripsTable";
         public static final String COLUMN_NAME_TRIPS_ID         = "id";
         public static final String COLUMN_NAME_TRIPS_DURATION   = "duration";
-        public static final String COLUMN_NAME_TRIPS_START_TIME = "startTime";
+        public static final String COLUMN_NAME_TRIPS_DIRECTORY  = "directory";
         public static final String COLUMN_NAME_TRIPS_START_GEO  = "startGeo";
         public static final String COLUMN_NAME_TRIPS_END_GEO    = "endGeo";
         public static final String COLUMN_NAME_TRIPS_TOP_SPEED  = "topSpeed";

@@ -10,6 +10,7 @@ import android.location.Location;
 import android.location.LocationListener;
 */
 import android.os.Bundle;
+import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -92,7 +93,9 @@ public class Globals implements
         return instance;
     }
 
-    public SQLiteDatabase getDB(){return dbHelper.getWritableDatabase();}
+    public SQLiteDatabase getWritableDB(){return dbHelper.getWritableDatabase();}
+    public SQLiteDatabase getReadableDB(){return dbHelper.getReadableDatabase();}
+    public SQLiteHelper getDbHelper(){return dbHelper;}
 
     /* USE SET DIR !!!!!!!!!!!!!!!!!!!!*/
     public void addDir(String dir)
@@ -460,7 +463,7 @@ public class Globals implements
             }
             if (mapActivity != null)
             {
-                mapActivity.UpdateUIElement(NewTripActivity.UI_ELEMENT_DISTANCE, currentTrip.GetDistance());
+                mapActivity.UpdateUIElement(NewTripActivity.UI_ELEMENT_DISTANCE, currentTrip.getFormattedDistance());
                 mapActivity.UpdateUIElement(NewTripActivity.UI_ELEMENT_SPEED, ConvertSpeed(speed));
             }
         }
@@ -564,6 +567,7 @@ public class Globals implements
 
     public void cleanUp()
     {
+        Log.d("CHS", "CLEANUP!!!");
         TripTimer.cancel();
         durationTimer.cancel();
         stopGeofences();
