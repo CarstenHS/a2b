@@ -60,12 +60,12 @@ public class TripGroupsActivity extends Activity
         return px / context.getResources().getDisplayMetrics().density;
     }
 
-    private void SetRenameAlert(String group)
+    private void SetRenameAlert(final String oldGroupname)
     {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setTitle("Rename " + group + ":");
+        alert.setTitle("Rename " + oldGroupname + ":");
         final EditText input = new EditText(this);
-        input.setText(group);
+        input.setText(oldGroupname);
         alert.setView(input);
 
         alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener()
@@ -85,7 +85,7 @@ public class TripGroupsActivity extends Activity
                 if (groupName.equals("") == false)
                 {
                     /* SHOULD BE RENAMED HERE INSTEAD */
-                    if (fileHandler.CreateTripGroup(groupName) == false)
+                    if (fileHandler.RenameTripGroup(oldGroupname, groupName) == false)
                     {
                         AlertDialog.Builder builder = new AlertDialog.Builder(TripGroupsActivity.this);
                         builder.setMessage("Group exists. Please choose another name.");
@@ -94,7 +94,10 @@ public class TripGroupsActivity extends Activity
                         ad.show();
                     }
                     else
-                        Globals.GetInstance(null).setDir(new A2BdirInfo(groupName));
+                    {
+                        Globals.GetInstance(null).renameDir(new A2BdirInfo(groupName));
+                        new SQLiteHelperThread().execute(SQLiteHelperThread.ACTION_UPDATE, oldGroupname, groupName);
+                    }
                 }
                 ShowTripGroups();
             }

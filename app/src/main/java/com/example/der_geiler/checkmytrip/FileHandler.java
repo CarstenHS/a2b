@@ -156,7 +156,6 @@ public class FileHandler extends Activity
                     dirs.add(file.getName().substring(folderPrefixSize));
             }
         }
-
         return dirs;
     }
 
@@ -178,6 +177,19 @@ public class FileHandler extends Activity
         {
             File folder = new File(dataDir + "/" + strFolderPrefix + name);
             boolean created = folder.mkdir();
+            success = true;
+        }
+        return success;
+    }
+
+    public boolean RenameTripGroup(String oldName, String newName)
+    {
+        boolean success = false;
+        if(DirectoryExist(newName) == false)
+        {
+            File oldFolder = new File(dataDir + "/" + strFolderPrefix + oldName);
+            File newFolder = new File(dataDir + "/" + strFolderPrefix + newName);
+            oldFolder.renameTo(newFolder);
             success = true;
         }
         return success;

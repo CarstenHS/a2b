@@ -15,6 +15,7 @@ public class SQLiteHelperThread extends AsyncTask<Object, Object, Object>
     static final int ACTION_INSERT = 0;
     static final int ACTION_SELECT = 1;
     static final int ACTION_DELETE = 2;
+    static final int ACTION_UPDATE = 3;
 
     public SQLiteHelperThread(){}
 
@@ -36,6 +37,7 @@ public class SQLiteHelperThread extends AsyncTask<Object, Object, Object>
                 break;
             }
             case ACTION_DELETE: Globals.GetInstance(null).getDbHelper().deleteDir((String)objs[1]); break;
+            case ACTION_UPDATE: Globals.GetInstance(null).getDbHelper().updateDir((String) objs[1], (String) objs[2]); break;
             default: break;
         }
         return null; // not used

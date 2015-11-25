@@ -174,22 +174,21 @@ public class SQLiteHelper extends SQLiteOpenHelper
         // Issue SQL statement.
         Globals.GetInstance(null).getReadableDB().delete(TripsTableEntry.TRIPS_TABLE_NAME, selection, selectionArgs);
     }
-/*
-    public void update()
+
+    public void updateDir(String oldDir, String newDir)
     {
         // New value for one column
         ContentValues values = new ContentValues();
-        values.put(FeedEntry.COLUMN_NAME_TITLE, title);
+        values.put(TripsTableEntry.COLUMN_NAME_TRIPS_DIRECTORY, newDir);
 
         // Which row to update, based on the ID
-        String selection = FeedEntry.COLUMN_NAME_ENTRY_ID + " LIKE ?";
-        String[] selectionArgs = { String.valueOf(rowId) };
+        String selection = TripsTableEntry.COLUMN_NAME_TRIPS_DIRECTORY + " LIKE ?";
+        String[] selectionArgs = { oldDir };
 
-        int count = db.update(
-                FeedReaderDbHelper.FeedEntry.TABLE_NAME,
+        int count = Globals.GetInstance(null).getWritableDB().update(
+                TripsTableEntry.TRIPS_TABLE_NAME,
                 values,
                 selection,
                 selectionArgs);
     }
-    */
 }

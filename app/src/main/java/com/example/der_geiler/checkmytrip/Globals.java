@@ -146,6 +146,24 @@ public class Globals implements
         fileHandlerInstance.SaveDirInfos(dirEntries);
     }
 
+    static public void renameDir(A2BdirInfo di)
+    {
+        A2BdirInfo diInfo = null;
+        for (Iterator<A2BdirInfo> iter = dirEntries.iterator(); iter.hasNext(); )
+        {
+            A2BdirInfo element = iter.next();
+            if(element.equals(di))
+            {
+                di.setGeofenceEnd(element.getGeofenceEnd());
+                di.setGeofenceStart(element.getGeofenceStart());
+                iter.remove();
+            }
+            break;
+        }
+        dirEntries.add(di);
+        fileHandlerInstance.SaveDirInfos(dirEntries);
+    }
+
     /* General todos:
     todo: auto-filtering of trips
 
