@@ -33,7 +33,7 @@ import java.util.Date;
  * Created by der_geiler on 13-05-2015.
  */
 public class Globals implements
-        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, ResultCallback
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, ResultCallback, OnDBInsertDoneCallback
 {
     static private Trip currentTrip = null;
     public Timer TripTimer;
@@ -153,6 +153,7 @@ public class Globals implements
         todo: Loading of types can be templates
         todo: Removing entry in array should be template
         todo: setTouchActions is used in dirGeo also. Could be made as lib
+        todo: OnConnection lost etc???
      */
     /************* GEOFENCING *****************/
 
@@ -347,6 +348,7 @@ public class Globals implements
         }
         return dirs;
     }
+
     /************* GEOFENCING END *****************/
 
     public class a2bLoc
@@ -565,9 +567,20 @@ public class Globals implements
         }
     }
 
+    public void insertInDB(Trip trip, String dir)
+    {
+        new SQLiteHelperThread().execute(SQLiteHelperThread.ACTION_INSERT, trip, dir, this);
+    }
+
+    @Override
+    public void onDBInsertDone()
+    {
+        cleanUp();
+        System.exit(0);
+    }
+
     public void cleanUp()
     {
-        Log.d("CHS", "CLEANUP!!!");
         TripTimer.cancel();
         durationTimer.cancel();
         stopGeofences();

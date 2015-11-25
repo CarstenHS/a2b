@@ -48,7 +48,6 @@ public class TripsActivity extends Activity implements onDBCursorReadyCallback
         if (null != intent)
         {
             selectedGroup = intent.getStringExtra("group");
-            //ShowTrips(selectedGroup);
         }
         new SQLiteHelperThread().execute(SQLiteHelperThread.ACTION_SELECT, this, selectedGroup);
         lastUiAction = new uiAction();

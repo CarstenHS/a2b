@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class NewTripActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener, GoogleMap.OnMapClickListener, OnDBInsertDoneCallback
+public class NewTripActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener, GoogleMap.OnMapClickListener
 {
     public GoogleMap map;
     int MAX_ZOOM = 15;
@@ -209,7 +209,7 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
             {
                 Trip ct = globals.GetCurrentTrip();
                 fileHandler.SaveTrip(null, ct);
-                new SQLiteHelperThread().execute(SQLiteHelperThread.ACTION_INSERT, ct, fileHandler.getUncategorizedString(), this);
+                globals.insertInDB(ct, fileHandler.getUncategorizedString());
             } catch (IOException e)
             {
                 e.printStackTrace();
@@ -339,12 +339,6 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
             globals.getCircle(hitGeofence.getName()).setFillColor(Color.RED);
             ShowDialogGeofenceKill(hitGeofence);
         }
-    }
-
-    @Override
-    public void onDBInsertDone()
-    {
-        System.exit(0);
     }
 
     /*
