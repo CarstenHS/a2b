@@ -60,6 +60,7 @@ public class GeofenceTransitionsIntentService extends IntentService
 
                         FileHandler fh = FileHandler.GetInstance();
                         Globals globals = Globals.GetInstance(null);
+                        globals.setEndTimestamp();
                         List dirsToSaveIn = globals.resolveGeoDir(triggerIds[0]);   /// this fucks up
                         FileHandler.GetInstance().SaveTrip(dirsToSaveIn, ct);
                         String saveDir = null;

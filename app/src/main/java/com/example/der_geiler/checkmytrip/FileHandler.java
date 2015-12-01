@@ -58,8 +58,16 @@ public class FileHandler extends Activity
 
     public Trip LoadTrip(String strGroup, String strTrip)
     {
+        /*
+        File folder = context.getDir(dir, Context.MODE_PRIVATE);
+        String fileName = filePrefix + trip.getFormattedTimeEnd();
+
+        File file = new File(folder, fileName);
+        if (file.exists() == false)
+            */
+
         File folder = context.getDir(strGroup, Context.MODE_PRIVATE);
-        File file = new File(folder, strTrip);
+        File file = new File(folder, filePrefix + strTrip);
         Trip trip = null;
         if(file.exists() == true)
         {
@@ -204,7 +212,7 @@ public class FileHandler extends Activity
 
     public void SaveTrip(List dirs, Trip trip) throws IOException
     {
-        if(dirs == null)    // for testing the save from options
+        if(dirs == null || dirs.size() == 0)    // for testing the save from options
         {
             dirs = new ArrayList<>();
             dirs.add(strDirUnCategorized);
@@ -212,8 +220,8 @@ public class FileHandler extends Activity
 
         for (String dir : (List<String>)dirs)
         {
-            File folder = context.getDir(strDirUnCategorized, Context.MODE_PRIVATE);
-            String fileName = filePrefix + trip.SetTimeEnd();
+            File folder = context.getDir(dir, Context.MODE_PRIVATE);
+            String fileName = filePrefix + trip.getFormattedTimeEnd();
 
             File file = new File(folder, fileName);
             if (file.exists() == false)
@@ -241,7 +249,6 @@ public class FileHandler extends Activity
                 e.printStackTrace();
             }
         }
-        LoadTrips(strDirUnCategorized);
     }
 
     public void SaveGeofences(List<A2BGeofence> gfsPersist)
@@ -392,11 +399,13 @@ public class FileHandler extends Activity
     {
         File f = new File(context.getFilesDir().getPath());
         File file[] = f.listFiles();
+        /*
         Log.d("Files", "Size: " + file.length);
         for (int i=0; i < file.length; i++)
         {
             Log.d("Files", "FileName:" + file[i].getName());
         }
+        */
     }
 
     public String readStackFile()

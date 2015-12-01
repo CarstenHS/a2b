@@ -38,7 +38,7 @@ public class Globals implements
     static private Trip currentTrip = null;
     public Timer TripTimer;
     public Timer durationTimer;
-    private int SetMarkTimeoutMins = 2;
+    private int SetMarkTimeoutMins = 1;
     private Location mLastLocation;
     static private GoogleApiClient mGoogleApiClient = null;
     private NewTripActivity mapActivity = null;
@@ -67,7 +67,6 @@ public class Globals implements
     static private FileHandler fileHandlerInstance = null;
     static private SQLiteHelper dbHelper = null;
     static private boolean enableMockLocations = true;
-    LocationListener lis = null;
     static int mockCnt = 0;
     private int insertCount = 0;
 
@@ -81,6 +80,10 @@ public class Globals implements
             instance = new Globals();
             fileHandlerInstance = FileHandler.GetInstance();
             dirEntries = fileHandlerInstance.LoadDirInfos();
+            /*
+            dirEntries.clear();
+            fileHandlerInstance.SaveDirInfos(dirEntries);
+            */
             if(dirEntries == null)
                 dirEntries = new ArrayList<>();
             if(dirEntries.size() == 0)
@@ -97,6 +100,7 @@ public class Globals implements
         return instance;
     }
 
+    public String setEndTimestamp(){return currentTrip.SetTimeEnd();}
     public void setInsertCount(int cnt){insertCount = cnt;}
     public SQLiteDatabase getWritableDB(){return dbHelper.getWritableDatabase();}
     public SQLiteDatabase getReadableDB(){return dbHelper.getReadableDatabase();}

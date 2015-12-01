@@ -46,9 +46,8 @@ public class TripsActivity extends Activity implements onDBCursorReadyCallback
         fileHandler = FileHandler.GetInstance();
         Intent intent = getIntent();
         if (null != intent)
-        {
             selectedGroup = intent.getStringExtra("group");
-        }
+
         new SQLiteHelperThread().execute(SQLiteHelperThread.ACTION_SELECT, this, selectedGroup);
         lastUiAction = new uiAction();
         touchRect = new Rect();
