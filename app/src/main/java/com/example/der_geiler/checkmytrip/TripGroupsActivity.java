@@ -70,16 +70,11 @@ public class TripGroupsActivity extends Activity
 
         alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener()
         {
-            @Override
-            public void onClick(DialogInterface dialog, int which)
-            {
-                //input.setText("canceled");
-            }
+            @Override public void onClick(DialogInterface dialog, int which){}
         });
         alert.setPositiveButton("OK", new DialogInterface.OnClickListener()
         {
-            @Override
-            public void onClick(DialogInterface dialog, int which)
+            @Override public void onClick(DialogInterface dialog, int which)
             {
                 String groupName = input.getText().toString();
                 if (groupName.equals("") == false)
@@ -110,11 +105,7 @@ public class TripGroupsActivity extends Activity
         alert.setTitle("Delete: " + group + "? (All trips will be deleted!)");
         alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener()
         {
-            @Override
-            public void onClick(DialogInterface dialog, int which)
-            {
-                //input.setText("canceled");
-            }
+            @Override public void onClick(DialogInterface dialog, int which){}
         });
         alert.setPositiveButton("OK", new DialogInterface.OnClickListener()
         {
@@ -132,8 +123,7 @@ public class TripGroupsActivity extends Activity
 
     private void ShowTripGroups()
     {
-        //if (tripGroupsTableLayout.getChildCount() != 0)
-            tripGroupsTableLayout.removeAllViewsInLayout();
+        tripGroupsTableLayout.removeAllViewsInLayout();
         List<String> dirs = fileHandler.GetDirectories();
         if (dirs.size() != 0)
         {
@@ -141,7 +131,6 @@ public class TripGroupsActivity extends Activity
             for (String dir : dirs)
             {
                 Context context = getApplicationContext();
-
                 TableRow tr = new TableRow(context);
                 tr.setGravity(Gravity.CENTER_HORIZONTAL);
                 TableRow.LayoutParams params = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT, 1f);
@@ -164,7 +153,6 @@ public class TripGroupsActivity extends Activity
                     public boolean onTouch(View v, MotionEvent event)
                     {
                         final String pressedGroup = ((TextView) v).getText().toString();
-
                         int action = event.getAction();
                         switch (action)
                         {
@@ -201,7 +189,6 @@ public class TripGroupsActivity extends Activity
                                     v.cancelLongPress();
                                     lastUiAction.lastAction = MotionEvent.ACTION_CANCEL;
                                 }
-
                             }
                         }
                         return false;
@@ -265,13 +252,11 @@ public class TripGroupsActivity extends Activity
     public boolean onOptionsItemSelected(MenuItem item)
     {
         int id = item.getItemId();
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_new_trip_group)
         {
             PromtUserNewGroup();
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -284,11 +269,7 @@ public class TripGroupsActivity extends Activity
 
         alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener()
         {
-            @Override
-            public void onClick(DialogInterface dialog, int which)
-            {
-                //input.setText("canceled");
-            }
+            @Override public void onClick(DialogInterface dialog, int which){}
         });
         alert.setPositiveButton("OK", new DialogInterface.OnClickListener()
         {

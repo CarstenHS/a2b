@@ -6,17 +6,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.*;
-import android.location.LocationListener;
+//import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.os.SystemClock;
-import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Result;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.*;
+import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
@@ -38,7 +37,7 @@ public class Globals implements
     static private Trip currentTrip = null;
     public Timer TripTimer;
     public Timer durationTimer;
-    private int SetMarkTimeoutMins = 1;
+    private int SetMarkTimeoutMins = 2;
     private Location mLastLocation;
     static private GoogleApiClient mGoogleApiClient = null;
     private NewTripActivity mapActivity = null;
@@ -66,8 +65,6 @@ public class Globals implements
     static private Context ctx = null;
     static private FileHandler fileHandlerInstance = null;
     static private SQLiteHelper dbHelper = null;
-    static private boolean enableMockLocations = true;
-    static int mockCnt = 0;
     private int insertCount = 0;
 
     private static Globals instance;
@@ -80,18 +77,17 @@ public class Globals implements
             instance = new Globals();
             fileHandlerInstance = FileHandler.GetInstance();
             dirEntries = fileHandlerInstance.LoadDirInfos();
+
             /*
             dirEntries.clear();
             fileHandlerInstance.SaveDirInfos(dirEntries);
             */
+
             if(dirEntries == null)
                 dirEntries = new ArrayList<>();
             if(dirEntries.size() == 0)
             {
                 A2BdirInfo di = new A2BdirInfo(FileHandler.GetInstance().getUncategorizedString());
-                di.setGeofenceStart("Not set");
-                di.setGeofenceEnd("Not set");
-                dirEntries.add(di);
                 setDir(di);
             }
             a2BGeofences = fileHandlerInstance.LoadGeofences();
@@ -105,13 +101,6 @@ public class Globals implements
     public SQLiteDatabase getWritableDB(){return dbHelper.getWritableDatabase();}
     public SQLiteDatabase getReadableDB(){return dbHelper.getReadableDatabase();}
     public SQLiteHelper getDbHelper(){return dbHelper;}
-
-    /* USE SET DIR !!!!!!!!!!!!!!!!!!!!*/
-    public void addDir(String dir)
-    {
-        dirEntries.add(new A2BdirInfo(dir));
-        fileHandlerInstance.SaveDirInfos(dirEntries);
-    }
 
     public void removeDir(String name)
     {
@@ -142,7 +131,6 @@ public class Globals implements
 
     static public void setDir(A2BdirInfo di)
     {
-        A2BdirInfo diInfo = null;
         for (Iterator<A2BdirInfo> iter = dirEntries.iterator(); iter.hasNext(); )
         {
             A2BdirInfo element = iter.next();
@@ -439,13 +427,13 @@ public class Globals implements
     public void SetMapVisible(NewTripActivity activity)
     {
         mapActivity = activity;
-        if(mGoogleApiClient != null && mLastLocation != null)
-            LocationServices.FusedLocationApi.setMockLocation(mGoogleApiClient, mLastLocation);
+        if(mGoogleApiClient != null)
+            LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
     }
 
     public LatLng UpdateLocation()
     {
-        //mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient); TODO uncomment
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         LatLng ll = null;
         if(mLastLocation != null)
         {
@@ -460,33 +448,19 @@ public class Globals implements
 
     public GoogleApiClient buildGoogleApiClient()
     {
-        if(enableMockLocations == false)
-        {
-        /* NO APPLICATION CONTEXT!!!!! */
-            //Context c = this.getApplicationContext();
-            mGoogleApiClient = new GoogleApiClient.Builder(ctx)
-                    .addConnectionCallbacks(this)
-                    .addOnConnectionFailedListener(this)
-                    .addApi(LocationServices.API)
-                    .build();
+        mGoogleApiClient = new GoogleApiClient.Builder(ctx)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
 
-            mGoogleApiClient.connect();
+        mGoogleApiClient.connect();
 
-            locationRequest = new LocationRequest();
-            locationRequest.setInterval(5000);
-            locationRequest.setFastestInterval(3000);
-            locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        }
-        else
-        {
-            mGoogleApiClient = new GoogleApiClient.Builder(ctx)
-                    .addConnectionCallbacks(this)
-                    .addOnConnectionFailedListener(this)
-                    .addApi(LocationServices.API)
-                    .build();
+        locationRequest = new LocationRequest();
+        locationRequest.setInterval(5000);
+        locationRequest.setFastestInterval(3000);
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
-            mGoogleApiClient.connect();
-        }
         return mGoogleApiClient;
     }
 
@@ -545,23 +519,7 @@ public class Globals implements
     public void onConnected(Bundle connectionHint)
     {
         StartTimers();
-        //if(enableMockLocations == false)
-            //LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, createLocationReq(), this); // import the right location thing if problem
-        //else
-        {
-            LocationServices.FusedLocationApi.setMockMode(mGoogleApiClient, true);
-
-            //Set test location
-            mLastLocation = new Location("network");
-            mLastLocation.setLatitude(55.6476651);
-            mLastLocation.setLongitude(12.6244121);
-            mLastLocation.setAltitude(0);
-            mLastLocation.setAccuracy(1);
-            mLastLocation.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos());
-            mLastLocation.setTime(System.currentTimeMillis());
-
-            LocationServices.FusedLocationApi.setMockLocation(mGoogleApiClient, mLastLocation);
-        }
+        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, createLocationReq(), this);
 
         LatLng ll = UpdateLocation();
 
@@ -574,8 +532,6 @@ public class Globals implements
 
         setGeofences();
     }
-
-
 
     static public boolean isGoogleApiConnectionState() {return mGoogleApiClient.isConnected();}
 
@@ -602,30 +558,6 @@ public class Globals implements
         @Override
         public void run()
         {
-            if(enableMockLocations == true)
-            {
-                switch(mockCnt)
-                {
-                    case 0:
-                    {
-                        // temp
-                        mLastLocation.setLatitude(55.647223);
-                        mLastLocation.setLongitude(12.620465);
-                        break;
-                    }
-                    case 1:
-                    {
-                        //test1
-                        mLastLocation.setLatitude(55.648610);
-                        mLastLocation.setLongitude(12.621295);
-                        break;
-                    }
-                }
-                mLastLocation.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos());
-                mLastLocation.setTime(System.currentTimeMillis());
-                LocationServices.FusedLocationApi.setMockLocation(mGoogleApiClient, mLastLocation);
-                mockCnt++;
-            }
             LatLng ll = UpdateLocation();
             if(mapActivity != null)
                 mapActivity.AddMarkerUI(ll, currentTrip.getNumMarkers() - 1);
@@ -657,11 +589,15 @@ public class Globals implements
 
     public void cleanUp()
     {
-        TripTimer.cancel();
-        durationTimer.cancel();
-        stopGeofences();
-        //TODO: uncomment this - might crap out on the include change I had to do
-        //LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+        if(TripTimer != null)
+            TripTimer.cancel();
+        if(durationTimer != null)
+            durationTimer.cancel();
+        if(mGoogleApiClient != null)
+        {
+            stopGeofences();
+            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+        }
         instance = null;
         System.exit(0);
     }

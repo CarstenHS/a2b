@@ -153,7 +153,6 @@ public class DirectoryGeoActivity extends Activity
             public boolean onTouch(View v, MotionEvent event)
             {
                 int action = event.getAction();
-                //Log.d("onTouch dirGeo: ", String.valueOf(action));
                 switch (action)
                 {
                     case MotionEvent.ACTION_DOWN:

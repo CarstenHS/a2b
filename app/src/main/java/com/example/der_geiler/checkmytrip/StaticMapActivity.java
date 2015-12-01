@@ -76,9 +76,7 @@ public class StaticMapActivity extends FragmentActivity implements OnMapReadyCal
             cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 200);
         }
         else
-        {
             cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(a2bMarkers.get(0).GetLat(), a2bMarkers.get(0).GetLon()), MAX_ZOOM);
-        }
         try
         {
             map.moveCamera(cameraUpdate);
