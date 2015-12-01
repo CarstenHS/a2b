@@ -36,17 +36,17 @@ public class StaticMapActivity extends FragmentActivity implements OnMapReadyCal
             Marker marker = map.addMarker(new MarkerOptions()
                     .position(ll)
                     .title("Start")
-                    .snippet(fmt.format(trip.A2BMarkers.get(num).date))
+                    .snippet(fmt.format(trip.getMarker(num).date))
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
 
             marker.showInfoWindow();
         }
-        else if(num == trip.A2BMarkers.size() - 1)
+        else if(num == trip.getNumMarkers() - 1)
         {
             Marker marker = map.addMarker(new MarkerOptions()
                     .position(ll)
                     .title("End")
-                    .snippet(fmt.format(trip.A2BMarkers.get(num).date))
+                    .snippet(fmt.format(trip.getMarker(num).date))
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
 
             marker.showInfoWindow();
@@ -55,7 +55,7 @@ public class StaticMapActivity extends FragmentActivity implements OnMapReadyCal
         {
             Marker marker = map.addMarker(new MarkerOptions()
                     .position(ll)
-                    .title(fmt.format(trip.A2BMarkers.get(num).date))
+                    .title(fmt.format(trip.getMarker(num).date))
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
         }
     }
@@ -131,13 +131,6 @@ public class StaticMapActivity extends FragmentActivity implements OnMapReadyCal
             trip = fileHandler.LoadTrip(selectedGroup, selectedTrip);
 
         }
-
         ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMapAsync(this);
-
-/*
-        Intent i = new Intent(getApplicationContext(), TripsActivity.class);
-        i.putExtra("group", pressedGroup);
-        startActivity(i);
-                */
     }
 }

@@ -48,9 +48,12 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
     {
         map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
         map.setMyLocationEnabled(true);
-        AddMarkerToMap(ll, 0);
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(ll, MAX_ZOOM);
-        map.animateCamera(cameraUpdate);
+        if(ll != null)
+        {
+            AddMarkerToMap(ll, 0);
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(ll, MAX_ZOOM);
+            map.animateCamera(cameraUpdate);
+        }
     }
 
     public GoogleMap getMap(){return map;}
@@ -117,17 +120,17 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
             Marker marker = map.addMarker(new MarkerOptions()
                     .position(ll)
                     .title("Start")
-                    .snippet(fmt.format(currentTrip.A2BMarkers.get(num).date))
+                    .snippet(fmt.format(currentTrip.getMarker(num).date))
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
 
             marker.showInfoWindow();
         }
-        else if(num == currentTrip.A2BMarkers.size() - 1)
+        else if(num == currentTrip.getNumMarkers() - 1)
         {
             Marker marker = map.addMarker(new MarkerOptions()
                     .position(ll)
                     .title("End")
-                    .snippet(fmt.format(currentTrip.A2BMarkers.get(num).date))
+                    .snippet(fmt.format(currentTrip.getMarker(num).date))
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
 
             marker.showInfoWindow();
@@ -136,7 +139,7 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
         {
             Marker marker = map.addMarker(new MarkerOptions()
                     .position(ll)
-                    .title(fmt.format(currentTrip.A2BMarkers.get(num).date))
+                    .title(fmt.format(currentTrip.getMarker(num).date))
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
         }
     }
@@ -165,7 +168,7 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
         {
             currentTrip = new Trip();
             globals.buildGoogleApiClient();
-            currentTrip.A2BMarkers = new ArrayList<A2BMarker>();
+            currentTrip.setA2bMarkers(new ArrayList<A2BMarker>());
             currentTrip.SetTimeStart(new Date());
             Date d = new Date();
             globals.setCurrentTrip(currentTrip);

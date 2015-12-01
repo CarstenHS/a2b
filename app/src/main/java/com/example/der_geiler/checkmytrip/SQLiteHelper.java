@@ -46,11 +46,14 @@ public class SQLiteHelper extends SQLiteOpenHelper
 
     public SQLiteHelper(Context context)
     {
-        super(context, Environment.getExternalStorageDirectory()
-                + File.separator + DATABASE_NAME, null, DATABASE_VERSION);
+        super(context, Environment.getExternalStorageDirectory() + File.separator + DATABASE_NAME, null, DATABASE_VERSION);
         SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(Environment.getExternalStorageDirectory()
                 + File.separator+ DATABASE_NAME,null);
-        int i = 0;
+
+        /*
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(DATABASE_NAME,null);
+        */
     }
     public void onCreate(SQLiteDatabase db)
     {
@@ -142,7 +145,7 @@ public class SQLiteHelper extends SQLiteOpenHelper
                         TripsTableEntry.COLUMN_NAME_TRIPS_DURATION
                 };
         String selection = TripsTableEntry.COLUMN_NAME_TRIPS_DIRECTORY + strEQUALS;
-        String[] selectionArgs = dir.split(" ");
+        String[] selectionArgs = { dir };
 
         // How you want the results sorted in the resulting Cursor
         String sortOrder = TripsTableEntry.COLUMN_NAME_TRIPS_DURATION + " ASC";

@@ -2,6 +2,8 @@ package com.example.der_geiler.checkmytrip;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -9,12 +11,17 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.lang.reflect.Type;
+import java.util.logging.Logger;
 
 /**
  * Created by der_geiler on 18-05-2015.
@@ -360,4 +367,59 @@ public class FileHandler extends Activity
         }
         catch (Exception e){e.printStackTrace();}
     }
+
+    public void saveStackTrace(String stackTrace)
+    {
+        String filename = "a2bStackTrace.txt";
+        File file = new File(context.getFilesDir(), filename);
+
+        if(file.exists() == false)
+        {
+            try{ file.createNewFile();}
+            catch (Exception e) {e.printStackTrace();}
+        }
+        file.setWritable(true);
+        try
+        {
+            FileWriter writer = new FileWriter(file);
+            writer.append(stackTrace + "\n");
+            writer.close();
+        }
+        catch (Exception e){e.printStackTrace();}
+    }
+
+    public void listFiles()
+    {
+        File f = new File(context.getFilesDir().getPath());
+        File file[] = f.listFiles();
+        Log.d("Files", "Size: " + file.length);
+        for (int i=0; i < file.length; i++)
+        {
+            Log.d("Files", "FileName:" + file[i].getName());
+        }
+    }
+
+    public String readStackFile()
+    {
+        StringBuilder stringBuilder = new StringBuilder();
+        String line;
+        BufferedReader in = null;
+
+        try
+        {
+            in = new BufferedReader(new FileReader(new File(context.getFilesDir(), "a2bStackTrace.txt")));
+            while ((line = in.readLine()) != null) stringBuilder.append(line);
+        }
+        catch (FileNotFoundException e)
+        {
+            //Logger.logError(TAG, e);
+        }
+        catch (IOException e)
+        {
+            //Logger.logError(TAG, e);
+        }
+
+        return stringBuilder.toString();
+    }
+
 }

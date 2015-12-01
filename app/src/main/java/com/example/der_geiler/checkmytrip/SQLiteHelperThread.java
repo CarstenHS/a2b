@@ -42,11 +42,4 @@ public class SQLiteHelperThread extends AsyncTask<Object, Object, Object>
         }
         return null; // not used
     }
-
-    /*
-    protected void onPostExecute(Long result)
-    {
-        cb.onDBCursorReady(c);
-    }
-    */
 }

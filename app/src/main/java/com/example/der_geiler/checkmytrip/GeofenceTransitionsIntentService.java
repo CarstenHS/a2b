@@ -48,44 +48,58 @@ public class GeofenceTransitionsIntentService extends IntentService
             for (int i = 0; i < triggerIds.length; i++)
                 triggerIds[i] = ((Geofence)triggeringGeofences.get(i)).getRequestId();
 
-            if(geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER)
+            if(triggerIds.length != 0)
             {
-                try
+                if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER)
                 {
-                    Globals globals = Globals.GetInstance(null);
-                    List dirsToSaveIn = globals.resolveGeoDir(triggerIds[0]);
-                    Trip ct = Globals.GetInstance(null).GetCurrentTrip();
-                    String saveDir = dirsToSaveIn.get(0).toString();
-                    ct.setEndGeo(saveDir);
-                    FileHandler.GetInstance().SaveTrip(dirsToSaveIn, ct);
-                    globals.insertInDB(ct, saveDir);
-                }
-                catch (IOException e)
+                    try
+                    {
+                        FileHandler fh = FileHandler.GetInstance();
+                        fh.saveStackTrace("one");
+                        Globals globals = Globals.GetInstance(null);
+                        List dirsToSaveIn = globals.resolveGeoDir(triggerIds[0]);   /// this fucks up
+                        fh.saveStackTrace("two");
+                        fh.saveStackTrace("two triggerIds[0].length: " + triggerIds[0].length());
+                        fh.saveStackTrace("two triggerIds[0]: " + triggerIds[0]);
+                        fh.saveStackTrace("two: " + String.valueOf(dirsToSaveIn.size()));
+                        Trip ct = Globals.GetInstance(null).GetCurrentTrip();
+                        String saveDir = dirsToSaveIn.get(0).toString();
+                        fh.saveStackTrace("three");
+                        fh.saveStackTrace("three: " + saveDir);
+                        if (dirsToSaveIn.size() != 0)
+                            ct.setEndGeo(triggerIds[0]);
+                        else
+                            saveDir = fh.getUncategorizedString();
+                        fh.saveStackTrace("four");
+                        FileHandler.GetInstance().SaveTrip(dirsToSaveIn, ct);
+                        fh.saveStackTrace("five");
+                        globals.insertInDB(ct, saveDir);
+                    } catch (IOException e)
+                    {
+                        e.printStackTrace();
+                    }
+                } else if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT)
                 {
-                    e.printStackTrace();
+                    Globals.GetInstance(null).GetCurrentTrip().setStartGeo(triggerIds[0]);
+                    id = R.raw.in;
+                    //Start
                 }
-            }
-            else if(geofenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT)
-            {
-                Globals.GetInstance(null).GetCurrentTrip().setStartGeo(triggerIds[0]);
-                id = R.raw.in;
-                //Start
-            }
-            mp = MediaPlayer.create(this.getApplicationContext(), id);
-            mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener()
-            {
+                mp = MediaPlayer.create(this.getApplicationContext(), id);
+                mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener()
+                {
 
-                @Override
-                public void onCompletion(MediaPlayer mp)
-                {
-                    // TODO Auto-generated method stub
-                    mp.reset();
-                    mp.release();
-                    mp = null;
-                }
+                    @Override
+                    public void onCompletion(MediaPlayer mp)
+                    {
+                        // TODO Auto-generated method stub
+                        mp.reset();
+                        mp.release();
+                        mp = null;
+                    }
 
-            });
-            mp.start();
+                });
+                mp.start();
+            }
 
             // Get the transition details as a String.
             /*

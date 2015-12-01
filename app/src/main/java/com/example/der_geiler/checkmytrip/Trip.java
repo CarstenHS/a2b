@@ -9,7 +9,7 @@ import android.text.format.*;
  */
 public class Trip
 {
-    public List<A2BMarker> A2BMarkers;
+    private List<A2BMarker> A2BMarkers;
     private Date dateStart, dateEnd;
     private int ticks = 0;
     private float distance;
@@ -25,7 +25,11 @@ public class Trip
         topSpeedInMetPerSec = 0;
     }
 
+    public void addA2bMarker(A2BMarker m){A2BMarkers.add(m);}
     public List<A2BMarker> getA2bMarkers() {return A2BMarkers;}
+    public void setA2bMarkers(List<A2BMarker> markers) {A2BMarkers = markers;}
+    public int getNumMarkers(){return A2BMarkers.size();}
+    public A2BMarker getMarker(int index){return A2BMarkers.get(index);}
     public String getStartGeo(){return startGeo;}
     public String getEndGeo(){return endGeo;}
     public Date GetTimeStart() {return dateStart;}

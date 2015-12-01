@@ -84,7 +84,6 @@ public class TripGroupsActivity extends Activity
                 String groupName = input.getText().toString();
                 if (groupName.equals("") == false)
                 {
-                    /* SHOULD BE RENAMED HERE INSTEAD */
                     if (fileHandler.RenameTripGroup(oldGroupname, groupName) == false)
                     {
                         AlertDialog.Builder builder = new AlertDialog.Builder(TripGroupsActivity.this);
