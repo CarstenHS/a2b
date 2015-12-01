@@ -54,31 +54,34 @@ public class GeofenceTransitionsIntentService extends IntentService
                 {
                     try
                     {
+                        Trip ct = Globals.GetInstance(null).GetCurrentTrip();
+                        if (triggerIds[0].length() != 0)
+                            ct.setEndGeo(triggerIds[0]);
+
                         FileHandler fh = FileHandler.GetInstance();
-                        fh.saveStackTrace("one");
                         Globals globals = Globals.GetInstance(null);
                         List dirsToSaveIn = globals.resolveGeoDir(triggerIds[0]);   /// this fucks up
-                        fh.saveStackTrace("two");
-                        fh.saveStackTrace("two triggerIds[0].length: " + triggerIds[0].length());
-                        fh.saveStackTrace("two triggerIds[0]: " + triggerIds[0]);
-                        fh.saveStackTrace("two: " + String.valueOf(dirsToSaveIn.size()));
-                        Trip ct = Globals.GetInstance(null).GetCurrentTrip();
-                        String saveDir = dirsToSaveIn.get(0).toString();
-                        fh.saveStackTrace("three");
-                        fh.saveStackTrace("three: " + saveDir);
-                        if (dirsToSaveIn.size() != 0)
-                            ct.setEndGeo(triggerIds[0]);
-                        else
-                            saveDir = fh.getUncategorizedString();
-                        fh.saveStackTrace("four");
                         FileHandler.GetInstance().SaveTrip(dirsToSaveIn, ct);
-                        fh.saveStackTrace("five");
-                        globals.insertInDB(ct, saveDir);
-                    } catch (IOException e)
+                        String saveDir = null;
+                        if(dirsToSaveIn.size() == 0)
+                        {
+                            saveDir = fh.getUncategorizedString();
+                            globals.setInsertCount(1);
+                            globals.insertInDB(ct, saveDir);
+                        }
+                        else
+                        {
+                            globals.setInsertCount(dirsToSaveIn.size());
+                            for(String s : (List<String>)dirsToSaveIn)
+                                globals.insertInDB(ct, s);
+                        }
+                    }
+                    catch (IOException e)
                     {
                         e.printStackTrace();
                     }
-                } else if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT)
+                }
+                else if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT)
                 {
                     Globals.GetInstance(null).GetCurrentTrip().setStartGeo(triggerIds[0]);
                     id = R.raw.in;

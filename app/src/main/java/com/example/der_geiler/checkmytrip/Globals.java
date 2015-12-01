@@ -69,6 +69,7 @@ public class Globals implements
     static private boolean enableMockLocations = true;
     LocationListener lis = null;
     static int mockCnt = 0;
+    private int insertCount = 0;
 
     private static Globals instance;
     public Globals(){}
@@ -96,6 +97,7 @@ public class Globals implements
         return instance;
     }
 
+    public void setInsertCount(int cnt){insertCount = cnt;}
     public SQLiteDatabase getWritableDB(){return dbHelper.getWritableDatabase();}
     public SQLiteDatabase getReadableDB(){return dbHelper.getReadableDatabase();}
     public SQLiteHelper getDbHelper(){return dbHelper;}
@@ -650,7 +652,8 @@ public class Globals implements
     @Override
     public void onDBInsertDone()
     {
-        cleanUp();
+        if(--insertCount == 0)
+            cleanUp();
     }
 
     public void cleanUp()

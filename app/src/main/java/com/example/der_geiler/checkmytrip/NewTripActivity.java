@@ -212,6 +212,7 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
             {
                 Trip ct = globals.GetCurrentTrip();
                 fileHandler.SaveTrip(null, ct);
+                globals.setInsertCount(1);
                 globals.insertInDB(ct, fileHandler.getUncategorizedString());
             } catch (IOException e)
             {
@@ -224,9 +225,6 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
             if(id == R.id.start_end_point)
                 onMapLongClick(globals.getLastLoc().getLatlng());
         }
-        //noinspection SimplifiableIfStatement
-
-
         return super.onOptionsItemSelected(item);
     }
 
