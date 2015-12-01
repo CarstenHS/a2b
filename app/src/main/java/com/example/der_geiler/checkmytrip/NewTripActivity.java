@@ -47,7 +47,7 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
     public void SetMap(LatLng ll)
     {
         map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
-        map.setMyLocationEnabled(true);
+        //map.setMyLocationEnabled(true);
         if(ll != null)
         {
             AddMarkerToMap(ll, 0);
@@ -61,6 +61,12 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
     private void EndTrip()
     {
         Trip currentTrip = globals.GetCurrentTrip();
+    }
+
+    private void zoomToPosition(LatLng ll)
+    {
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(ll, MAX_ZOOM);
+        map.animateCamera(cameraUpdate);
     }
 
     public void UpdateUIElement(final int element, final String text)
@@ -91,8 +97,7 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
             public void run()
             {
                 AddMarkerToMap(ll, num);
-                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(ll, MAX_ZOOM);
-                map.animateCamera(cameraUpdate);
+                zoomToPosition(ll);
                 //UpdateBounds();
             }
         });
@@ -146,18 +151,22 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
 
     public void onMapReady(GoogleMap map)
     {
-        this.map = map;
-        this.map.setOnMapLongClickListener(this);
-        this.map.setOnMapClickListener(this);
-        globals.setMap(map);
-        int i = 0;
-        List<LatLng> lls = globals.GetLatLngs();
-        for(LatLng ll : lls)
+        if(this.map == null)
         {
-            AddMarkerUI(ll, i);
-            ++i;
+            this.map = map;
+            this.map.setOnMapLongClickListener(this);
+            this.map.setOnMapClickListener(this);
+            globals.setMap(map);
+            int i = 0;
+            List<LatLng> lls = globals.GetLatLngs();
+            map.setMyLocationEnabled(true);
+            for (LatLng ll : lls)
+            {
+                AddMarkerUI(ll, i);
+                ++i;
+            }
+            Globals.GetInstance(this.getApplicationContext()).setGeofences();  // Must call this way to avoid non-static error
         }
-        Globals.GetInstance(this.getApplicationContext()).setGeofences();  // Must call this way to avoid non-static error
     }
 
     private void InitMap()
@@ -210,6 +219,7 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
         {
             try
             {
+                globals.setEndTimestamp();
                 Trip ct = globals.GetCurrentTrip();
                 fileHandler.SaveTrip(null, ct);
                 globals.setInsertCount(1);

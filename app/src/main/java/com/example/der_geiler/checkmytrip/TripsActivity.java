@@ -60,7 +60,7 @@ public class TripsActivity extends Activity implements onDBCursorReadyCallback
         {
             c.moveToFirst();
             long id;
-            List<String> trips = new ArrayList<>();
+            final List<String> trips = new ArrayList<>();
 
             do
             {
@@ -68,7 +68,8 @@ public class TripsActivity extends Activity implements onDBCursorReadyCallback
                 trips.add(name);
             } while (c.moveToNext());
 
-            ShowTrips(trips, selectedGroup);
+            runOnUiThread(new Runnable()
+                    {@Override public void run(){ShowTrips(trips, selectedGroup);}});
         }
     }
 
@@ -199,12 +200,6 @@ public class TripsActivity extends Activity implements onDBCursorReadyCallback
     {
         setContentView(R.layout.trips);
         tripsTableLayout = (TableLayout) findViewById(R.id.tripsTableLayout);
-        /*
-        List<String> trips = new ArrayList<String>();
-        if (tripsTableLayout.getChildCount() != 0)
-            tripsTableLayout.removeAllViewsInLayout();
-        trips = fileHandler.LoadTrips(group);
-        */
         if (trips.size() != 0)
         {
             for (String trip : trips)

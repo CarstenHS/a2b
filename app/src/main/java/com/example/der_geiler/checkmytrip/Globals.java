@@ -121,7 +121,6 @@ public class Globals implements
             if(element.getDir().equals(name))
             {
                 iter.remove();                          // remove from list circles list
-                break;
             }
         }
         fileHandlerInstance.SaveDirInfos(dirEntries);
@@ -421,15 +420,9 @@ public class Globals implements
         currentTrip = trip;
     }
 
-    static public Trip GetCurrentTrip()
-    {
-        return currentTrip;
-    }
+    static public Trip GetCurrentTrip(){return currentTrip;}
 
-    public List<LatLng> GetLatLngs()
-    {
-        return currentLatLongs;
-    }
+    public List<LatLng> GetLatLngs(){return currentLatLongs;}
 
     public void StartTimers()
     {
@@ -446,6 +439,8 @@ public class Globals implements
     public void SetMapVisible(NewTripActivity activity)
     {
         mapActivity = activity;
+        if(mGoogleApiClient != null && mLastLocation != null)
+            LocationServices.FusedLocationApi.setMockLocation(mGoogleApiClient, mLastLocation);
     }
 
     public LatLng UpdateLocation()
