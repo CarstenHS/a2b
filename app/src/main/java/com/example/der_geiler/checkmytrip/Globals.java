@@ -77,12 +77,10 @@ public class Globals implements
             instance = new Globals();
             fileHandlerInstance = FileHandler.GetInstance();
             dirEntries = fileHandlerInstance.LoadDirInfos();
-
-            /*
+/*
             dirEntries.clear();
             fileHandlerInstance.SaveDirInfos(dirEntries);
-            */
-
+*/
             if(dirEntries == null)
                 dirEntries = new ArrayList<>();
             if(dirEntries.size() == 0)
@@ -135,8 +133,10 @@ public class Globals implements
         {
             A2BdirInfo element = iter.next();
             if(element.equals(di))
+            {
                 iter.remove();
-            break;
+                break;
+            }
         }
         dirEntries.add(di);
         fileHandlerInstance.SaveDirInfos(dirEntries);
