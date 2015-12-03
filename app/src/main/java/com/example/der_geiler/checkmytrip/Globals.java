@@ -66,6 +66,7 @@ public class Globals implements
     static private FileHandler fileHandlerInstance = null;
     static private SQLiteHelper dbHelper = null;
     private int insertCount = 0;
+    static private final String strNotSet = "Not set";
 
     private static Globals instance;
     public Globals(){}
@@ -158,6 +159,18 @@ public class Globals implements
         }
         dirEntries.add(di);
         fileHandlerInstance.SaveDirInfos(dirEntries);
+    }
+
+    private void resetGeoInDirInfo(String geo)
+    {
+        for (Iterator<A2BdirInfo> iter = dirEntries.iterator(); iter.hasNext(); )
+        {
+            A2BdirInfo element = iter.next();
+            if(element.getGeofenceEnd().equals(geo))
+                element.setGeofenceEnd(strNotSet);
+            if(element.getGeofenceStart().equals(geo))
+                element.setGeofenceStart(strNotSet);
+        }
     }
 
     /* General todos:
@@ -341,6 +354,7 @@ public class Globals implements
                 break;
             }
         }
+        resetGeoInDirInfo(name);
     }
 
     public List resolveGeoDir(String endGeo)
