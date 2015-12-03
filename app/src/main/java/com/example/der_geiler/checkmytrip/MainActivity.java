@@ -4,9 +4,6 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.content.Intent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -31,27 +28,36 @@ public class MainActivity extends Activity
     private Rect touchRect = null;
     private uiAction lastUiAction = null;
 
-    private void startActivity(String act)
+    private void startActivity(int id)
     {
-        switch (act)
+        Intent i = null;
+        switch (id)
         {
-            case strNewTrip:
-            case strCurrentTrip:    /* fall-through */
+            case R.id.textView_newTrip:
             {
-                Intent i = new Intent(MainActivity.this, NewTripActivity.GetInstance().getClass());
+                i = new Intent(MainActivity.this, NewTripActivity.GetInstance().getClass());
                 i.putExtra("class", MainActivity.class.getPackage().getName() + "." + this.getClass().getSimpleName());
-                startActivity(i);
                 break;
             }
-            case "Trip groups":
+            case R.id.textView_tripGroups:
             {
-                Intent i = new Intent(MainActivity.this, TripGroupsActivity.class);
-                startActivity(i);
+                i = new Intent(MainActivity.this, TripGroupsActivity.class);
+                break;
+            }
+            case R.id.textView_about:
+            {
+                i = new Intent(MainActivity.this, Activity_about.class);
+                break;
+            }
+            case R.id.textView_help:
+            {
+                i = new Intent(MainActivity.this, Activity_help.class);
                 break;
             }
             default:
                 break;
         }
+        startActivity(i);
     }
 
     private void setUiActions()
@@ -66,7 +72,6 @@ public class MainActivity extends Activity
                 public boolean onTouch(View v, MotionEvent event)
                 {
                     int action = event.getAction();
-                    Log.d("action::", String.valueOf(action));
                     switch (action)
                     {
                         case MotionEvent.ACTION_DOWN:
@@ -87,7 +92,7 @@ public class MainActivity extends Activity
                             if (lastUiAction.lastAction == MotionEvent.ACTION_DOWN)
                             {
                                 lastUiAction.view.setBackgroundColor(Color.parseColor("#b0b0b0"));
-                                startActivity(((TextView) v).getText().toString());
+                                startActivity(((TextView) v).getId());
                             }
                             break;
                         }
@@ -110,7 +115,7 @@ public class MainActivity extends Activity
 
     private void setNewTripText()
     {
-        TextView tv = (TextView) findViewById(R.id.NewTripView);
+        TextView tv = (TextView) findViewById(R.id.textView_newTrip);
         if(Globals.GetCurrentTrip() != null)
         {
             tv.setText(strCurrentTrip);
@@ -162,28 +167,5 @@ public class MainActivity extends Activity
     {
         super.onResume();
         setNewTripText();
-    }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.save_and_end) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 }

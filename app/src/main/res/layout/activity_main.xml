@@ -27,7 +27,7 @@
                 android:padding="18dip" android:background="#b0b0b0"
                 android:textColor="#000" android:gravity="center_horizontal"
                 android:layout_weight="1" android:layout_margin="1dp"
-                android:id="@+id/NewTripView"/>
+                android:id="@+id/textView_newTrip"/>
 
         </TableRow>
 
@@ -44,7 +44,8 @@
                 android:textSize="18dp" android:text="Trip groups"  android:layout_span="1"
                 android:padding="18dip" android:background="#b0b0b0"
                 android:textColor="#000" android:gravity="center_horizontal"
-                android:layout_weight="1" android:layout_margin="1dp"/>
+                android:layout_weight="1" android:layout_margin="1dp"
+                android:id="@+id/textView_tripGroups"/>
 
         </TableRow>
 
@@ -59,7 +60,8 @@
                 android:textSize="18dp" android:text="Settings"  android:layout_span="1"
                 android:padding="18dip" android:background="#b0b0b0"
                 android:textColor="#000" android:gravity="center_horizontal"
-                android:layout_weight="1" android:layout_margin="1dp"/>
+                android:layout_weight="1" android:layout_margin="1dp"
+                android:id="@+id/textView_settings"/>
 
         </TableRow>
 
@@ -74,7 +76,8 @@
                 android:textSize="18dp" android:text="Help"  android:layout_span="1"
                 android:padding="18dip" android:background="#b0b0b0"
                 android:textColor="#000" android:gravity="center_horizontal"
-                android:layout_weight="1" android:layout_margin="1dp"/>
+                android:layout_weight="1" android:layout_margin="1dp"
+                android:id="@+id/textView_help"/>
 
         </TableRow>
 
@@ -89,7 +92,8 @@
                 android:textSize="18dp" android:text="About"  android:layout_span="1"
                 android:padding="18dip" android:background="#b0b0b0"
                 android:textColor="#000" android:gravity="center_horizontal"
-                android:layout_weight="1" android:layout_margin="1dp"/>
+                android:layout_weight="1" android:layout_margin="1dp"
+                android:id="@+id/textView_about"/>
 
         </TableRow>
 

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".Activity_about">
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textSize="18dp"
+
+        android:text="Thanks for using the A2B application! This application is intended for use by commuters commuting from A to B who want to figure out if their choice of transportation is the right. This can be done by realtime measurement of the trip going from A to B and then by analyzing the time it takes to go from A to B. transportation is stochastic by nature and the transport time may vary according
+        to trip start, day of week, etc. The commuter can try different routes and means of transportation and by this app analyze the impact in time of transportation."
+
+        android:layout_span="1"
+        android:padding="18dip" android:background="#b0b0b0"
+        android:textColor="#000" android:gravity="center_horizontal"
+        android:layout_weight="1" android:layout_margin="1dp"
+        android:id="@+id/textView_newTrip"/>
+
+</RelativeLayout>
