@@ -37,72 +37,51 @@ public class GeofenceTransitionsIntentService extends IntentService
         if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER ||
             geofenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT)
         {
-            MediaPlayer mp;
-            int id = R.raw.out;
+            Trip ct = Globals.GetInstance(null).GetCurrentTrip();
 
-            // Get the geofences that were triggered. A single event can trigger
-            // multiple geofences.
-            List triggeringGeofences = geofencingEvent.getTriggeringGeofences();
-            String[] triggerIds = new String[triggeringGeofences.size()];
-
-            for (int i = 0; i < triggerIds.length; i++)
-                triggerIds[i] = ((Geofence)triggeringGeofences.get(i)).getRequestId();
-
-            if(triggerIds.length != 0)
+            if(ct != null)
             {
-                if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER)
-                {
-                    try
-                    {
-                        Trip ct = Globals.GetInstance(null).GetCurrentTrip();
-                        if (triggerIds[0].length() != 0)
-                            ct.setEndGeo(triggerIds[0]);
+                // Get the geofences that were triggered. A single event can trigger
+                // multiple geofences.
+                List triggeringGeofences = geofencingEvent.getTriggeringGeofences();
+                String[] triggerIds = new String[triggeringGeofences.size()];
 
-                        FileHandler fh = FileHandler.GetInstance();
-                        Globals globals = Globals.GetInstance(null);
-                        globals.setEndTimestamp();
-                        List dirsToSaveIn = globals.resolveGeoDir(triggerIds[0]);
-                        FileHandler.GetInstance().SaveTrip(dirsToSaveIn, ct);
-                        String saveDir = null;
-                        if(dirsToSaveIn.size() == 0)
+                for (int i = 0; i < triggerIds.length; i++)
+                    triggerIds[i] = ((Geofence) triggeringGeofences.get(i)).getRequestId();
+
+                if (triggerIds.length != 0)
+                {
+                    if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER)
+                    {
+                        try
                         {
-                            saveDir = fh.getUncategorizedString();
-                            globals.setInsertCount(1);
-                            globals.insertInDB(ct, saveDir);
-                        }
-                        else
+                            if (triggerIds[0].length() != 0)
+                                ct.setEndGeo(triggerIds[0]);
+
+                            FileHandler fh = FileHandler.GetInstance();
+                            Globals globals = Globals.GetInstance(null);
+                            globals.setEndTimestamp();
+                            List dirsToSaveIn = globals.resolveGeoDir(triggerIds[0]);
+                            FileHandler.GetInstance().SaveTrip(dirsToSaveIn, ct);
+                            String saveDir = null;
+                            if (dirsToSaveIn.size() == 0)
+                            {
+                                saveDir = fh.getUncategorizedString();
+                                globals.setInsertCount(1);
+                                globals.insertInDB(ct, saveDir);
+                            } else
+                            {
+                                globals.setInsertCount(dirsToSaveIn.size());
+                                for (String s : (List<String>) dirsToSaveIn)
+                                    globals.insertInDB(ct, s);
+                            }
+                        } catch (IOException e)
                         {
-                            globals.setInsertCount(dirsToSaveIn.size());
-                            for(String s : (List<String>)dirsToSaveIn)
-                                globals.insertInDB(ct, s);
+                            e.printStackTrace();
                         }
-                    }
-                    catch (IOException e)
-                    {
-                        e.printStackTrace();
-                    }
+                    } else if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT)
+                        Globals.GetInstance(null).GetCurrentTrip().setStartGeo(triggerIds[0]);
                 }
-                else if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT)
-                {
-                    Globals.GetInstance(null).GetCurrentTrip().setStartGeo(triggerIds[0]);
-                    id = R.raw.in;
-                    //Start
-                }
-                mp = MediaPlayer.create(this.getApplicationContext(), id);
-                mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener()
-                {
-
-                    @Override
-                    public void onCompletion(MediaPlayer mp)
-                    {
-                        // TODO Auto-generated method stub
-                        mp.reset();
-                        mp.release();
-                        mp = null;
-                    }
-
-                });
-                mp.start();
             }
 
             // Get the transition details as a String.
@@ -120,6 +99,7 @@ public class GeofenceTransitionsIntentService extends IntentService
                     sendNotification(geofenceTransitionDetails);
             Log.i(TAG, geofenceTransitionDetails);
             */
+
         }
         else
         {

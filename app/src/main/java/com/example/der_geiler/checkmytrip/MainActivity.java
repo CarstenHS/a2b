@@ -54,6 +54,11 @@ public class MainActivity extends Activity
                 i = new Intent(MainActivity.this, Activity_help.class);
                 break;
             }
+            case R.id.textView_settings:
+            {
+                i = new Intent(MainActivity.this, Activity_settings.class);
+                break;
+            }
             default:
                 break;
         }

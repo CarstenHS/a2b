@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.example.der_geiler.checkmytrip.Activity_settings">
+
+    <TableRow
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:gravity="left">
+
+        <TextView
+            android:layout_width="0dp" android:layout_height="wrap_content"
+            android:textSize="18dp" android:text="App mode: "  android:layout_span="1"
+            android:padding="18dip" android:background="#b0b0b0"
+            android:textColor="#000" android:gravity="left"
+            android:layout_weight="0.60" android:layout_margin="1dp"
+            android:id="@+id/tv_settings_AppMode"/>
+
+        <Spinner
+            android:layout_width="0dp" android:layout_height="wrap_content"
+            android:textSize="18dp" android:layout_span="1"
+            android:padding="18dip" android:background="#b0b0b0"
+            android:textColor="#000" android:gravity="right"
+            android:layout_weight="0.40" android:layout_margin="1dp"
+            android:text="Manual"
+            android:id="@+id/tv_settings_AppMode_spinner"/>
+    </TableRow>
+
+    <TableRow
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:gravity="left">
+
+        <TextView
+            android:layout_width="0dp" android:layout_height="wrap_content"
+            android:textSize="18dp" android:text="Speed unit: "  android:layout_span="1"
+            android:padding="18dip" android:background="#b0b0b0"
+            android:textColor="#000" android:gravity="left"
+            android:layout_weight="0.60" android:layout_margin="1dp"
+            android:id="@+id/tv_settings_unitSpeed"/>
+
+        <Spinner
+            android:layout_width="0dp" android:layout_height="wrap_content"
+            android:textSize="18dp" android:layout_span="1"
+            android:padding="18dip" android:background="#b0b0b0"
+            android:textColor="#000" android:gravity="right"
+            android:layout_weight="0.40" android:layout_margin="1dp"
+            android:text="m/s"
+            android:id="@+id/tv_settings_unitSpeed_spinner"/>
+    </TableRow>
+
+    <TableRow
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:gravity="left">
+
+        <TextView
+            android:layout_width="0dp" android:layout_height="wrap_content"
+            android:textSize="18dp" android:text="Marker interval: "  android:layout_span="1"
+            android:padding="18dip" android:background="#b0b0b0"
+            android:textColor="#000" android:gravity="left"
+            android:layout_weight="0.60" android:layout_margin="1dp"
+            android:id="@+id/tv_settings_markerInterval"/>
+
+        <Spinner
+            android:layout_width="0dp" android:layout_height="wrap_content"
+            android:textSize="18dp" android:layout_span="1"
+            android:padding="18dip" android:background="#b0b0b0"
+            android:textColor="#000" android:gravity="right"
+            android:layout_weight="0.40" android:layout_margin="1dp"
+            android:text="m/s"
+            android:id="@+id/tv_settings_markerInterval_spinner"/>
+    </TableRow>
+
+</TableLayout>
