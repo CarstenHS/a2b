@@ -37,21 +37,17 @@ public class Globals implements
     static private Trip currentTrip = null;
     public Timer TripTimer;
     public Timer durationTimer;
-    private int SetMarkTimeoutMins = 2;
     private Location mLastLocation;
     static private GoogleApiClient mGoogleApiClient = null;
     private NewTripActivity mapActivity = null;
     private LocationRequest locationRequest;
     private a2bLoc lastLoc;
     private List<LatLng> currentLatLongs;
-    private static final int SPEED_UNIT_MS = 0;
-    private static final int SPEED_UNIT_KPH = 1;
-    private static final int SPEED_UNIT_MPH = 2;
+    static private Settings settings;
     private static final int DIST_UNIT_KILOMETERS = 0;
     private static final int DIST_UNIT_MILES = 1;
-    private static PendingIntent mGeofencePendingIntent = null;
     private int distUnit = DIST_UNIT_KILOMETERS;
-    private int speedUnit = SPEED_UNIT_KPH;
+    private static PendingIntent mGeofencePendingIntent = null;
     static private GoogleMap map;
     private static List<A2BGeofence> a2BGeofences;
     static public List<A2BCircle> circles;
@@ -78,6 +74,8 @@ public class Globals implements
             instance = new Globals();
             fileHandlerInstance = FileHandler.GetInstance();
             dirEntries = fileHandlerInstance.LoadDirInfos();
+            settings = fileHandlerInstance.loadSettings();
+            settings = (settings != null) ? settings : new Settings();
 /*
             dirEntries.clear();
             fileHandlerInstance.SaveDirInfos(dirEntries);
@@ -95,6 +93,7 @@ public class Globals implements
         return instance;
     }
 
+    public Settings getSettings(){return settings;}
     public String setEndTimestamp(){return currentTrip.SetTimeEnd();}
     public void setInsertCount(int cnt){insertCount = cnt;}
     public SQLiteDatabase getWritableDB(){return dbHelper.getWritableDatabase();}
@@ -174,7 +173,6 @@ public class Globals implements
     }
 
     /* General todos:
-    todo: auto-filtering of trips
 
     2nd:
         todo: Loading of types can be templates
@@ -430,7 +428,7 @@ public class Globals implements
     {
         MarkerTask task = new MarkerTask();
         TripTimer = new Timer();
-        int timeout = 1000 * 60 * SetMarkTimeoutMins;
+        int timeout = 1000 * 60 * settings.getMarkerTimeout();
         TripTimer.schedule(task, timeout, timeout);
 
         durationTimer = new Timer();
@@ -505,11 +503,11 @@ public class Globals implements
 
     private String ConvertSpeed(float speed)
     {
-        switch(speedUnit)
+        switch(settings.getSpeedUnit())
         {
-            case SPEED_UNIT_MS: return String.valueOf(speed) + "m/s";
-            case SPEED_UNIT_KPH: return String.format("%.2f", (speed * 3.6)) + "km/h";
-            case SPEED_UNIT_MPH: return String.format("%.2f", (speed * 2.24)) + "mph";
+            case Settings.SPEED_UNIT_MS: return String.valueOf(speed) + "m/s";
+            case Settings.SPEED_UNIT_KPH: return String.format("%.2f", (speed * 3.6)) + "km/h";
+            case Settings.SPEED_UNIT_MPH: return String.format("%.2f", (speed * 2.24)) + "mph";
         }
         return "-1-1-1";
     }

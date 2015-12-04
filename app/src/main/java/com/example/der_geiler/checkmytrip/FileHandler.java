@@ -39,6 +39,7 @@ public class FileHandler extends Activity
     private final String strDirUnCategorized = "Uncategorized";
     private final String strGeofences = "Geofences";
     private final String strDirInfos = "dirInfos";
+    private final String strSettings = "settings";
 
     public static FileHandler GetInstance()
     {
@@ -56,16 +57,69 @@ public class FileHandler extends Activity
 
     public String getUncategorizedString(){return strDirUnCategorized;}
 
+    public Settings loadSettings()
+    {
+        String filename = strSettings + fileExtension;
+        File file = new File(context.getFilesDir(), filename);
+        Settings settings = null;
+        if(file.exists() == true)
+        {
+            FileInputStream fis = null;
+            try
+            {
+                fis = new FileInputStream(file);
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+            InputStreamReader isr = new InputStreamReader(fis);
+            BufferedReader bufferedReader = new BufferedReader(isr);
+            StringBuilder sb = new StringBuilder();
+            String line;
+
+            try
+            {
+                while ((line = bufferedReader.readLine()) != null)
+                    sb.append(line);
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+
+            String json = sb.toString();
+            Gson gson = new Gson();
+            settings = gson.fromJson(json, Settings.class);
+        }
+        return settings;
+    }
+
+    public void saveSettings(Settings settings)
+    {
+        String filename = strSettings + fileExtension;
+        File file = new File(context.getFilesDir(), filename);
+
+        if(file.exists() == false)
+        {
+            try{ file.createNewFile();}
+            catch (Exception e) {e.printStackTrace();}
+        }
+
+        Gson gson = new Gson();
+        String s = gson.toJson(settings);
+        file.setWritable(true);
+        try
+        {
+            FileOutputStream outputStream = new FileOutputStream(file);
+            outputStream.write(s.getBytes());
+            outputStream.close();
+        }
+        catch (Exception e){e.printStackTrace();}
+    }
+
     public Trip LoadTrip(String strGroup, String strTrip)
     {
-        /*
-        File folder = context.getDir(dir, Context.MODE_PRIVATE);
-        String fileName = filePrefix + trip.getFormattedTimeEnd();
-
-        File file = new File(folder, fileName);
-        if (file.exists() == false)
-            */
-
         File folder = context.getDir(strGroup, Context.MODE_PRIVATE);
         File file = new File(folder, filePrefix + strTrip);
         Trip trip = null;
