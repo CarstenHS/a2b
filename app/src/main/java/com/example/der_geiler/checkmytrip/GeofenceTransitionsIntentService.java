@@ -55,25 +55,28 @@ public class GeofenceTransitionsIntentService extends IntentService
                     {
                         try
                         {
-                            if (triggerIds[0].length() != 0)
-                                ct.setEndGeo(triggerIds[0]);
+                            if(ct.getStartGeo().equals(triggerIds[0]) == false) // no re-entrent
+                            {
+                                if (triggerIds[0].length() != 0)
+                                    ct.setEndGeo(triggerIds[0]);
 
-                            FileHandler fh = FileHandler.GetInstance();
-                            Globals globals = Globals.GetInstance(null);
-                            globals.setEndTimestamp();
-                            List dirsToSaveIn = globals.resolveGeoDir(triggerIds[0]);
-                            FileHandler.GetInstance().SaveTrip(dirsToSaveIn, ct);
-                            String saveDir = null;
-                            if (dirsToSaveIn.size() == 0)
-                            {
-                                saveDir = fh.getUncategorizedString();
-                                globals.setInsertCount(1);
-                                globals.insertInDB(ct, saveDir);
-                            } else
-                            {
-                                globals.setInsertCount(dirsToSaveIn.size());
-                                for (String s : (List<String>) dirsToSaveIn)
-                                    globals.insertInDB(ct, s);
+                                FileHandler fh = FileHandler.GetInstance();
+                                Globals globals = Globals.GetInstance(null);
+                                globals.setEndTimestamp();
+                                List dirsToSaveIn = globals.resolveGeoDir(triggerIds[0]);
+                                FileHandler.GetInstance().SaveTrip(dirsToSaveIn, ct);
+                                String saveDir = null;
+                                if (dirsToSaveIn.size() == 0)
+                                {
+                                    saveDir = fh.getUncategorizedString();
+                                    globals.setInsertCount(1);
+                                    globals.insertInDB(ct, saveDir);
+                                } else
+                                {
+                                    globals.setInsertCount(dirsToSaveIn.size());
+                                    for (String s : (List<String>) dirsToSaveIn)
+                                        globals.insertInDB(ct, s);
+                                }
                             }
                         } catch (IOException e)
                         {
