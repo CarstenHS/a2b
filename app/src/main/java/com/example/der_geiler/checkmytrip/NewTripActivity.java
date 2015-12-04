@@ -160,10 +160,13 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
             int i = 0;
             List<LatLng> lls = globals.GetLatLngs();
             map.setMyLocationEnabled(true);
-            for (LatLng ll : lls)
+            if(lls != null)
             {
-                AddMarkerUI(ll, i);
-                ++i;
+                for (LatLng ll : lls)
+                {
+                    AddMarkerUI(ll, i);
+                    ++i;
+                }
             }
             Globals.GetInstance(this.getApplicationContext()).setGeofences();  // Must call this way to avoid non-static error
         }
@@ -179,7 +182,6 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
             globals.buildGoogleApiClient();
             currentTrip.setA2bMarkers(new ArrayList<A2BMarker>());
             currentTrip.SetTimeStart(new Date());
-            Date d = new Date();
             globals.setCurrentTrip(currentTrip);
         }
         else

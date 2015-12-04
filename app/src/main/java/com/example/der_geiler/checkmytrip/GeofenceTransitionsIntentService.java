@@ -75,7 +75,7 @@ public class GeofenceTransitionsIntentService extends IntentService
                                 {
                                     globals.setInsertCount(dirsToSaveIn.size());
                                     for (String s : (List<String>) dirsToSaveIn)
-                                        globals.insertInDB(ct, s);
+                                        globals.insertInDB(ct, s); // this results in end on callback
                                 }
                             }
                         } catch (IOException e)
