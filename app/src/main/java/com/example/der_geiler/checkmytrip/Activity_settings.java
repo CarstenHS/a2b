@@ -39,7 +39,7 @@ public class Activity_settings extends Activity implements AdapterView.OnItemSel
         spinnerArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, itemsInterval);
         spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(spinnerArrayAdapter);
-        spinner.setSelection(settings.getMarkerTimeout()-1);
+        spinner.setSelection(settings.getMarkerTimeout() - 1);
         spinner.setOnItemSelectedListener(this);
     }
 
@@ -74,6 +74,7 @@ public class Activity_settings extends Activity implements AdapterView.OnItemSel
                 break;
         }
         FileHandler.GetInstance().saveSettings(settings);
+        Globals.GetInstance(null).updateSettings(settings);
     }
 
     @Override

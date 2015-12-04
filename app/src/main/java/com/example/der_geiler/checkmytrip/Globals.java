@@ -93,6 +93,7 @@ public class Globals implements
         return instance;
     }
 
+    public void updateSettings(Settings settings){this.settings = settings;}
     public Settings getSettings(){return settings;}
     public String setEndTimestamp(){return currentTrip.SetTimeEnd();}
     public void setInsertCount(int cnt){insertCount = cnt;}
