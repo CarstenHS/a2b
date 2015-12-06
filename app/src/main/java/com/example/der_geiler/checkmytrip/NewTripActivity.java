@@ -33,6 +33,9 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
     public static final int UI_ELEMENT_DISTANCE = 1;
     private Globals globals = null;
     private boolean removeGeoCircle = true;
+    static final int MENU_ITEM_ID_START = 0;
+    static final int MENU_ITEM_ID_SAVE_AND_END = 1;
+    static final int MENU_ITEM_ID_CREATE_START_END_POINT = 2;
 
     /***** SINGLETON ********/
     public NewTripActivity(){}
@@ -175,15 +178,8 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
     private void InitMap()
     {
         globals.SetMapVisible(this);
-        Trip currentTrip = globals.GetCurrentTrip();
-        if(currentTrip == null)
-        {
-            currentTrip = new Trip();
+        if(globals.isGoogleApiConnectionState() == false)
             globals.buildGoogleApiClient();
-            currentTrip.setA2bMarkers(new ArrayList<A2BMarker>());
-            currentTrip.SetTimeStart(new Date());
-            globals.setCurrentTrip(currentTrip);
-        }
         else
             ((MapFragment)getFragmentManager().findFragmentById(R.id.map)).getMapAsync(this);
     }
@@ -207,8 +203,19 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
+        /*
+        <item android:id="@+id/start_trip" android:title="@string/start_trip"></item>
+        <item android:id="@+id/save_and_end" android:title="@string/save_and_end"></item>
+        <item android:id="@+id/start_end_point" android:title="@string/create_start_end"
+            */
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        //getMenuInflater().inflate(R.menu.menu_main, menu);
+        Globals g = globals.GetInstance(null);
+        if(g.getSettings().getAppMode() == Settings.APP_MODE_MANUAL)
+            menu.add(Menu.NONE, MENU_ITEM_ID_START, Menu.NONE, "@string/start_trip");
+        if(g.GetCurrentTrip() != null)
+            menu.add(Menu.NONE, MENU_ITEM_ID_START, Menu.NONE, "@string/save_and_end");
+        menu.add(Menu.NONE, MENU_ITEM_ID_START, Menu.NONE, "@string/create_start_end");
         return true;
     }
 
@@ -217,26 +224,35 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
     {
         int id = item.getItemId();
         FileHandler fileHandler = FileHandler.GetInstance();
-        if (id == R.id.save_and_end)
+        switch(id)
         {
-            try
+            case MENU_ITEM_ID_SAVE_AND_END:
             {
-                globals.setEndTimestamp();
-                Trip ct = globals.GetCurrentTrip();
-                fileHandler.SaveTrip(null, ct);
-                globals.setInsertCount(1);
-                globals.insertInDB(ct, fileHandler.getUncategorizedString());
-            } catch (IOException e)
-            {
-                e.printStackTrace();
+                try
+                {
+                    globals.setEndTimestamp();
+                    Trip ct = globals.GetCurrentTrip();
+                    fileHandler.SaveTrip(null, ct);
+                    globals.setInsertCount(1);
+                    globals.insertInDB(ct, fileHandler.getUncategorizedString());
+                } catch (IOException e)
+                {
+                    e.printStackTrace();
+                }
+                return true;
             }
-            return true;
-        }
-        else
-        {
-            if(id == R.id.start_end_point)
+            case MENU_ITEM_ID_CREATE_START_END_POINT:
+            {
                 onMapLongClick(globals.getLastLoc().getLatlng());
+                break;
+            }
+            case MENU_ITEM_ID_START:
+            {
+                globals.startTrip();
+                break;
+            }
         }
+
         return super.onOptionsItemSelected(item);
     }
 

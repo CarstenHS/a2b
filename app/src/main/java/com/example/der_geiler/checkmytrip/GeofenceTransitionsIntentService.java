@@ -82,8 +82,14 @@ public class GeofenceTransitionsIntentService extends IntentService
                         {
                             e.printStackTrace();
                         }
-                    } else if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT)
-                        Globals.GetInstance(null).GetCurrentTrip().setStartGeo(triggerIds[0]);
+                    }
+                    else if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT)
+                    {
+                        Globals g = Globals.GetInstance(null);
+                        g.GetCurrentTrip().setStartGeo(triggerIds[0]);
+                        if(g.getSettings().getAppMode() == Settings.APP_MODE_AUTO)
+                            g.startTrip();
+                    }
                 }
             }
 

@@ -209,7 +209,10 @@ public class Globals implements
         result = result;
     }
 
-    public void setMap(GoogleMap map){this.map = map;}
+    public void setMap(GoogleMap map)
+    {
+        this.map = map;
+    }
 
     static private GeofencingRequest getGeofencingRequest(List<Geofence> geofences)
     {
@@ -481,7 +484,7 @@ public class Globals implements
     public void onLocationChanged(Location location)
     {
         Date now = new Date();
-        if (lastLoc != null)
+        if (lastLoc != null && currentTrip != null)
         {
             float speed = location.getSpeed();
             if(speed != 0)
@@ -531,22 +534,32 @@ public class Globals implements
     @Override
     public void onConnected(Bundle connectionHint)
     {
-        StartTimers();
         LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, createLocationReq(), this);
+        map = mapActivity.getMap();
+        if(circles == null)
+            circles = new ArrayList<>();
+
+        if(map != null)
+            setGeofences();
+    }
+
+    public void startTrip()
+    {
+        currentTrip = new Trip();
+        currentTrip.setA2bMarkers(new ArrayList<A2BMarker>());
+        currentTrip.SetTimeStart(new Date());
+        StartTimers();
 
         LatLng ll = UpdateLocation();
 
         if(mapActivity != null)
             mapActivity.SetMap(ll);
-
-        map = mapActivity.getMap();
-        if(circles == null)
-            circles = new ArrayList<>();
-
-        setGeofences();
     }
 
-    static public boolean isGoogleApiConnectionState() {return mGoogleApiClient.isConnected();}
+    static public boolean isGoogleApiConnectionState()
+    {
+        return (mGoogleApiClient != null && mGoogleApiClient.isConnected());
+    }
 
     public void setGeofences()
     {
