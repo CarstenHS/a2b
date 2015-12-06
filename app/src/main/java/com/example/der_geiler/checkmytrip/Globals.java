@@ -499,10 +499,14 @@ public class Globals implements
             }
         }
         else
+        {
             lastLoc = new a2bLoc();
-
-        lastLoc.lastLocation = location;
-        lastLoc.lastDate = now;
+            lastLoc.lastLocation = location;
+            lastLoc.lastDate = now;
+            LatLng ll = lastLoc.getLatlng();
+            if(this.map != null && mapActivity != null)
+                mapActivity.zoomToPosition(ll);
+        }
     }
 
     private String ConvertSpeed(float speed)
@@ -556,10 +560,7 @@ public class Globals implements
             mapActivity.SetMap(ll);
     }
 
-    static public boolean isGoogleApiConnectionState()
-    {
-        return (mGoogleApiClient != null && mGoogleApiClient.isConnected());
-    }
+    static public GoogleApiClient getGoogleApiClient(){return (mGoogleApiClient);}
 
     public void setGeofences()
     {

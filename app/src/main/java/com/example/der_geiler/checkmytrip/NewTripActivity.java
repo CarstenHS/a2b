@@ -21,8 +21,6 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class NewTripActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener, GoogleMap.OnMapClickListener
@@ -66,10 +64,13 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
         Trip currentTrip = globals.GetCurrentTrip();
     }
 
-    private void zoomToPosition(LatLng ll)
+    public void zoomToPosition(LatLng ll)
     {
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(ll, MAX_ZOOM);
-        map.animateCamera(cameraUpdate);
+        if(map != null)
+        {
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(ll, MAX_ZOOM);
+            map.animateCamera(cameraUpdate);
+        }
     }
 
     public void UpdateUIElement(final int element, final String text)
@@ -178,7 +179,7 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
     private void InitMap()
     {
         globals.SetMapVisible(this);
-        if(globals.isGoogleApiConnectionState() == false)
+        if(globals.getGoogleApiClient() == null)
             globals.buildGoogleApiClient();
         else
             ((MapFragment)getFragmentManager().findFragmentById(R.id.map)).getMapAsync(this);
