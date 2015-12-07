@@ -417,13 +417,6 @@ public class Globals implements
 
     public a2bLoc getLastLoc(){return lastLoc;}
 
-    public void setCurrentTrip(Trip trip)
-    {
-        if(currentTrip == null)
-            currentLatLongs = new ArrayList<LatLng>();
-        currentTrip = trip;
-    }
-
     static public Trip GetCurrentTrip(){return currentTrip;}
 
     public List<LatLng> GetLatLngs(){return currentLatLongs;}
@@ -552,6 +545,7 @@ public class Globals implements
         currentTrip = new Trip();
         currentTrip.setA2bMarkers(new ArrayList<A2BMarker>());
         currentTrip.SetTimeStart(new Date());
+        currentLatLongs = new ArrayList<LatLng>();
         StartTimers();
 
         LatLng ll = UpdateLocation();

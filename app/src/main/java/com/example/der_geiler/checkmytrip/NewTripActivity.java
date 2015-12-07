@@ -202,21 +202,16 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu)
+    public boolean onPrepareOptionsMenu(Menu menu)
     {
-        /*
-        <item android:id="@+id/start_trip" android:title="@string/start_trip"></item>
-        <item android:id="@+id/save_and_end" android:title="@string/save_and_end"></item>
-        <item android:id="@+id/start_end_point" android:title="@string/create_start_end"
-            */
-        // Inflate the menu; this adds items to the action bar if it is present.
-        //getMenuInflater().inflate(R.menu.menu_main, menu);
+        menu.clear();
         Globals g = globals.GetInstance(null);
-        if(g.getSettings().getAppMode() == Settings.APP_MODE_MANUAL)
-            menu.add(Menu.NONE, MENU_ITEM_ID_START, Menu.NONE, "@string/start_trip");
+        if(g.getSettings().getAppMode() == Settings.APP_MODE_MANUAL && g.GetCurrentTrip() == null)
+            menu.add(Menu.NONE, MENU_ITEM_ID_START, Menu.NONE, R.string.start_trip);
         if(g.GetCurrentTrip() != null)
-            menu.add(Menu.NONE, MENU_ITEM_ID_START, Menu.NONE, "@string/save_and_end");
-        menu.add(Menu.NONE, MENU_ITEM_ID_START, Menu.NONE, "@string/create_start_end");
+            menu.add(Menu.NONE, MENU_ITEM_ID_SAVE_AND_END, Menu.NONE, R.string.end_trip);
+
+        menu.add(Menu.NONE, MENU_ITEM_ID_START, Menu.NONE, R.string.create_start_end);
         return true;
     }
 

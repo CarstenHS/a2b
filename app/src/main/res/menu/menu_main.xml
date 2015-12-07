@@ -1,7 +1,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" tools:context=".MainActivity">
     <item android:id="@+id/start_trip" android:title="@string/start_trip"></item>
-    <item android:id="@+id/save_and_end" android:title="@string/save_and_end"></item>
+    <item android:id="@+id/save_and_end" android:title="@string/end_trip"></item>
     <item android:id="@+id/start_end_point" android:title="@string/create_start_end"
         android:orderInCategory="100" android:showAsAction="never" />
 </menu>
