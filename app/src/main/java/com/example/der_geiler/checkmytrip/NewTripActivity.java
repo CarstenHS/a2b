@@ -182,9 +182,9 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
 
     private void InitMap()
     {
-        globals.SetMapVisible(this);
+        globals.Test_SetMapVisible(this);
         if(globals.getGoogleApiClient() == null)
-            globals.buildGoogleApiClient();
+            globals.Test_buildGoogleApiClient();
         else
             ((MapFragment)getFragmentManager().findFragmentById(R.id.map)).getMapAsync(this);
     }
@@ -229,7 +229,7 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
     @Override
     protected void onPause()
     {
-        globals.SetMapVisible(null);
+        globals.Test_SetMapVisible(null);
         super.onPause();
     }
 

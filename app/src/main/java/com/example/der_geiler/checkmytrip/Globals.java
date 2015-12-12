@@ -9,6 +9,7 @@ import android.location.*;
 //import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.SystemClock;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -51,10 +52,10 @@ public class Globals implements
     private static List<A2BGeofence> a2BGeofences;
     static public List<A2BCircle> circles;
     static public List<A2BdirInfo> dirEntries;
-    public static final int RES_OK          = 0;
-    public static final int RES_EXISTS      = -1;
-    public static final int RES_INVALID     = -2;
-    public static final int RES_EMPTY       = -3;
+    public static final int RES_OK = 0;
+    public static final int RES_EXISTS = -1;
+    public static final int RES_INVALID = -2;
+    public static final int RES_EMPTY = -3;
     public static final int GEO_FENCE_RADIUS = 100;
     public static final int COLOR_BASIC_GEOFENCE = 0xB2A9F6;
     static private Context ctx = null;
@@ -62,13 +63,18 @@ public class Globals implements
     static private SQLiteHelper dbHelper = null;
     private int insertCount = 0;
     static private final String strNotSet = "Not set";
+    static private int mockCnt = 0;
 
     private static Globals instance;
-    public Globals(){}
+
+    public Globals()
+    {
+    }
+
     public static Globals GetInstance(Context c)
     {
         ctx = (c != null) ? c : ctx;
-        if(instance == null)
+        if (instance == null)
         {
             instance = new Globals();
             fileHandlerInstance = FileHandler.GetInstance();
@@ -81,9 +87,9 @@ public class Globals implements
             dirEntries.clear();
             fileHandlerInstance.SaveDirInfos(dirEntries);
 */
-            if(dirEntries == null)
+            if (dirEntries == null)
                 dirEntries = new ArrayList<>();
-            if(dirEntries.size() == 0)
+            if (dirEntries.size() == 0)
             {
                 A2BdirInfo di = new A2BdirInfo(FileHandler.GetInstance().getUncategorizedString());
                 setDir(di);
@@ -94,20 +100,47 @@ public class Globals implements
         return instance;
     }
 
-    public void updateSettings(Settings settings){this.settings = settings;}
-    public Settings getSettings(){return settings;}
-    public String setEndTimestamp(){return currentTrip.SetTimeEnd();}
-    public void setInsertCount(int cnt){insertCount = cnt;}
-    public SQLiteDatabase getWritableDB(){return dbHelper.getWritableDatabase();}
-    public SQLiteDatabase getReadableDB(){return dbHelper.getReadableDatabase();}
-    public SQLiteHelper getDbHelper(){return dbHelper;}
+    public void updateSettings(Settings settings)
+    {
+        this.settings = settings;
+    }
+
+    public Settings getSettings()
+    {
+        return settings;
+    }
+
+    public String setEndTimestamp()
+    {
+        return currentTrip.SetTimeEnd();
+    }
+
+    public void setInsertCount(int cnt)
+    {
+        insertCount = cnt;
+    }
+
+    public SQLiteDatabase getWritableDB()
+    {
+        return dbHelper.getWritableDatabase();
+    }
+
+    public SQLiteDatabase getReadableDB()
+    {
+        return dbHelper.getReadableDatabase();
+    }
+
+    public SQLiteHelper getDbHelper()
+    {
+        return dbHelper;
+    }
 
     public void removeDir(String name)
     {
         for (Iterator<A2BdirInfo> iter = dirEntries.iterator(); iter.hasNext(); )
         {
             A2BdirInfo element = iter.next();
-            if(element.getDir().equals(name))
+            if (element.getDir().equals(name))
             {
                 iter.remove();                          // remove from list circles list
             }
@@ -117,7 +150,7 @@ public class Globals implements
 
     public A2BdirInfo getDir(String name)
     {
-        if(dirEntries != null)
+        if (dirEntries != null)
         {
             for (Iterator<A2BdirInfo> iter = dirEntries.iterator(); iter.hasNext(); )
             {
@@ -134,7 +167,7 @@ public class Globals implements
         for (Iterator<A2BdirInfo> iter = dirEntries.iterator(); iter.hasNext(); )
         {
             A2BdirInfo element = iter.next();
-            if(element.equals(di))
+            if (element.equals(di))
             {
                 iter.remove();
                 break;
@@ -150,7 +183,7 @@ public class Globals implements
         for (Iterator<A2BdirInfo> iter = dirEntries.iterator(); iter.hasNext(); )
         {
             A2BdirInfo element = iter.next();
-            if(element.equals(di))
+            if (element.equals(di))
             {
                 di.setGeofenceEnd(element.getGeofenceEnd());
                 di.setGeofenceStart(element.getGeofenceStart());
@@ -167,9 +200,9 @@ public class Globals implements
         for (Iterator<A2BdirInfo> iter = dirEntries.iterator(); iter.hasNext(); )
         {
             A2BdirInfo element = iter.next();
-            if(element.getGeofenceEnd().equals(geo))
+            if (element.getGeofenceEnd().equals(geo))
                 element.setGeofenceEnd(strNotSet);
-            if(element.getGeofenceStart().equals(geo))
+            if (element.getGeofenceStart().equals(geo))
                 element.setGeofenceStart(strNotSet);
         }
     }
@@ -182,12 +215,15 @@ public class Globals implements
         todo: setTouchActions is used in dirGeo also. Could be made as lib
         todo: OnConnection lost etc???
      */
-    /************* GEOFENCING *****************/
+
+    /*************
+     * GEOFENCING
+     *****************/
 
     List<A2BGeofence> getGeoFencesPersist()
     {
         List<A2BGeofence> geofences = null;
-        if(a2BGeofences != null)
+        if (a2BGeofences != null)
         {
             geofences = new ArrayList<>();
             for (Iterator<A2BGeofence> iter = a2BGeofences.iterator(); iter.hasNext(); )
@@ -198,12 +234,13 @@ public class Globals implements
 
     static public void createAndDrawGeofenceCircles()
     {
-        if(a2BGeofences != null && a2BGeofences.size() != 0)
+        if (a2BGeofences != null && a2BGeofences.size() != 0)
         {
             for (A2BGeofence gf : a2BGeofences)
                 circles.add(new A2BCircle(createAndDrawGeofenceCircle(gf.getLat(), gf.getLon()), gf.getName()));
         }
     }
+
     @Override
     public void onResult(Result result)
     {
@@ -263,7 +300,7 @@ public class Globals implements
 
     public void initGeofences()
     {
-        if(a2BGeofences != null && a2BGeofences.size() != 0)
+        if (a2BGeofences != null && a2BGeofences.size() != 0)
         {
             List<Geofence> mapGeofences = new ArrayList<>();
 
@@ -288,12 +325,12 @@ public class Globals implements
 
     public int nameOk(String name)
     {
-        if(name.equals(""))
+        if (name.equals(""))
             return RES_EMPTY;
-        if(a2BGeofences.size() != 0)
+        if (a2BGeofences.size() != 0)
         {
             for (A2BGeofence gf : a2BGeofences)
-                if(name.equals(gf.name))
+                if (name.equals(gf.name))
                     return RES_EXISTS;
         }
         return RES_OK;
@@ -302,12 +339,12 @@ public class Globals implements
     public static A2BGeofence anyGeofenceHit(LatLng llPress)
     {
         float results[] = new float[3];
-        if(a2BGeofences.size() != 0)
+        if (a2BGeofences.size() != 0)
         {
             for (A2BGeofence gf : a2BGeofences)
             {
                 Location.distanceBetween(llPress.latitude, llPress.longitude, gf.lat, gf.lon, results);
-                if(results[0] < GEO_FENCE_RADIUS)
+                if (results[0] < GEO_FENCE_RADIUS)
                     return gf;
             }
         }
@@ -319,7 +356,7 @@ public class Globals implements
         for (Iterator<A2BCircle> iter = circles.iterator(); iter.hasNext(); )
         {
             A2BCircle element = iter.next();
-            if(element.getName().equals(name))
+            if (element.getName().equals(name))
             {
                 element.getCircle().remove();           // remove from map
                 iter.remove();                          // remove from list circles list
@@ -332,20 +369,23 @@ public class Globals implements
         for (Iterator<A2BCircle> iter = circles.iterator(); iter.hasNext(); )
         {
             A2BCircle element = iter.next();
-            if(element.getName().equals(name))
+            if (element.getName().equals(name))
                 return element.getCircle();
         }
         return null;
     }
 
-    public void addCircle(A2BCircle c){circles.add(c);}
+    public void addCircle(A2BCircle c)
+    {
+        circles.add(c);
+    }
 
     public void removeGeofence(String name)
     {
         for (Iterator<A2BGeofence> iter = a2BGeofences.iterator(); iter.hasNext(); )
         {
             A2BGeofence element = iter.next();
-            if(element.name.equals(name))
+            if (element.name.equals(name))
             {
                 List<String> names = new ArrayList<>(1);
                 names.add(name);
@@ -358,7 +398,7 @@ public class Globals implements
             }
         }
         resetGeoInDirInfo(name);
-        if(a2BGeofences.size() < 2)
+        if (a2BGeofences.size() < 2)
         {
             settings.setAppMode(Settings.APP_MODE_MANUAL);
             fileHandlerInstance.saveSettings(settings);
@@ -368,14 +408,14 @@ public class Globals implements
     public List resolveGeoDir(String endGeo)
     {
         List<String> dirs = new ArrayList<>();
-        if(dirEntries != null)
+        if (dirEntries != null)
         {
             for (Iterator<A2BdirInfo> iter = dirEntries.iterator(); iter.hasNext(); )
             {
                 A2BdirInfo element = iter.next();
                 if (element.getGeofenceStart().equals(currentTrip.getStartGeo())
-                    &&
-                   (element.getGeofenceEnd().equals(endGeo)))
+                        &&
+                        (element.getGeofenceEnd().equals(endGeo)))
                 {
                     dirs.add(element.getDir());
                 }
@@ -384,17 +424,28 @@ public class Globals implements
         return dirs;
     }
 
-    /************* GEOFENCING END *****************/
+    /*************
+     * GEOFENCING END
+     *****************/
 
     public class a2bLoc
     {
         private Location lastLocation;
+
         public LatLng getLatlng()
         {
             return new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
         }
-        public Location getLocation(){return lastLocation;}
-        public void setLocation(Location l){lastLocation = l;}
+
+        public Location getLocation()
+        {
+            return lastLocation;
+        }
+
+        public void setLocation(Location l)
+        {
+            lastLocation = l;
+        }
     }
 
     public String ExtractDurationFromTicks(int ticks)
@@ -402,18 +453,18 @@ public class Globals implements
         String hours = null;
         String mins = null;
         String secs = null;
-        int unit = 60*60;
+        int unit = 60 * 60;
 
         int temp = ticks / unit;
-        hours  = (temp != 0) ? String.format("%02d", temp) : "00";
+        hours = (temp != 0) ? String.format("%02d", temp) : "00";
 
-        ticks -= temp*unit;
+        ticks -= temp * unit;
 
         unit = 60;
         temp = (ticks / unit);
         mins = (temp != 0) ? String.format("%02d", temp) : "00";
 
-        ticks -= temp*unit;
+        ticks -= temp * unit;
 
         unit = 1;
         temp = ticks / unit;
@@ -422,13 +473,19 @@ public class Globals implements
         return hours + ":" + mins + ":" + secs;
     }
 
-    public a2bLoc getLastLoc(){return lastLoc;}
+    public a2bLoc getLastLoc()
+    {
+        return lastLoc;
+    }
 
-    static public Trip GetCurrentTrip(){return currentTrip;}
+    static public Trip GetCurrentTrip()
+    {
+        return currentTrip;
+    }
 
     public void StartTimers()
     {
-        MarkerTask task = new MarkerTask();
+        Test_MarkerTask task = new Test_MarkerTask();
         TripTimer = new Timer();
         int timeout = 1000 * 60 * settings.getMarkerTimeout();
         TripTimer.schedule(task, timeout, timeout);
@@ -437,13 +494,100 @@ public class Globals implements
         durationTimer.schedule(new DurationTask(), 1000, 1000);
     }
 
+    /*
     public void SetMapVisible(NewTripActivity activity)
     {
         mapActivity = activity;
         if(mGoogleApiClient != null)
             LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
     }
+*/
+    //********************** TESTING **********************//
+    public void Test_SetMapVisible(NewTripActivity activity)
+    {
+        mapActivity = activity;
+        if (mGoogleApiClient != null && mLastLocation != null)
+            LocationServices.FusedLocationApi.setMockLocation(mGoogleApiClient, mLastLocation);
+    }
 
+    public LatLng Test_UpdateLocation()
+    {
+        LatLng ll = null;
+        if (mLastLocation != null)
+        {
+            double lat = mLastLocation.getLatitude();
+            double lon = mLastLocation.getLongitude();
+            currentTrip.addA2bMarker(new A2BMarker(new Date(), lat, lon));
+            ll = new LatLng(lat, lon);
+        }
+        return ll;
+    }
+
+    public GoogleApiClient Test_buildGoogleApiClient()
+    {
+        mGoogleApiClient = new GoogleApiClient.Builder(ctx)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+
+        mGoogleApiClient.connect();
+        return mGoogleApiClient;
+    }
+
+    @Override
+    public void onConnected(Bundle connectionHint)
+    {
+        LocationServices.FusedLocationApi.setMockMode(mGoogleApiClient,true);
+        //Set test location
+        mLastLocation=new Location("network");
+        mLastLocation.setLatitude(55.6476651);
+        mLastLocation.setLongitude(12.6244121);
+        mLastLocation.setAltitude(0);
+        mLastLocation.setAccuracy(1);
+        mLastLocation.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos());
+        mLastLocation.setTime(System.currentTimeMillis());
+
+        LocationServices.FusedLocationApi.setMockLocation(mGoogleApiClient,mLastLocation);
+        lastLoc = new a2bLoc();
+        lastLoc.setLocation(mLastLocation);
+    }
+
+    public class Test_MarkerTask extends TimerTask implements Runnable
+    {
+        @Override
+        public void run()
+        {
+            switch(mockCnt)
+            {
+                case 0:
+                {
+                    // temp
+                    mLastLocation.setLatitude(55.647223);
+                    mLastLocation.setLongitude(12.620465);
+                    break;
+                }
+                case 1:
+                {
+                    //test1
+                    mLastLocation.setLatitude(55.648610);
+                    mLastLocation.setLongitude(12.621295);
+                    break;
+                }
+            }
+            mLastLocation.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos());
+            mLastLocation.setTime(System.currentTimeMillis());
+            LocationServices.FusedLocationApi.setMockLocation(mGoogleApiClient, mLastLocation);
+            mockCnt++;
+
+            LatLng ll = Test_UpdateLocation();
+            if(mapActivity != null)
+                mapActivity.AddMarkerUI(ll, currentTrip.getNumMarkers() - 1);
+        }
+    }
+    //********************** TESTING END **********************//
+
+    /*
     public LatLng UpdateLocation()
     {
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
@@ -457,7 +601,8 @@ public class Globals implements
         }
         return ll;
     }
-
+*/
+/*
     public GoogleApiClient buildGoogleApiClient()
     {
         mGoogleApiClient = new GoogleApiClient.Builder(ctx)
@@ -475,7 +620,7 @@ public class Globals implements
 
         return mGoogleApiClient;
     }
-
+*/
     @Override
     public void onLocationChanged(Location location)
     {
@@ -531,6 +676,7 @@ public class Globals implements
         return mLocationRequest;
     }
 
+    /*
     @Override
     public void onConnected(Bundle connectionHint)
     {
@@ -542,7 +688,7 @@ public class Globals implements
         if(map != null)
             setGeofences();
     }
-
+*/
     public void startTrip()
     {
         currentTrip = new Trip();
@@ -550,7 +696,7 @@ public class Globals implements
         currentTrip.SetTimeStart(new Date());
         StartTimers();
 
-        LatLng ll = UpdateLocation();
+        LatLng ll = Test_UpdateLocation();
 
         if(mapActivity != null)
             mapActivity.SetMap(ll);
@@ -576,6 +722,7 @@ public class Globals implements
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult){}
 
+    /*
     public class MarkerTask extends TimerTask implements Runnable
     {
         @Override
@@ -586,7 +733,7 @@ public class Globals implements
                 mapActivity.AddMarkerUI(ll, currentTrip.getNumMarkers() - 1);
         }
     }
-
+*/
     public class DurationTask extends TimerTask implements Runnable
     {
         @Override
