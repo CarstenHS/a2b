@@ -81,6 +81,8 @@ public class Globals implements
             dirEntries = fileHandlerInstance.LoadDirInfos();
             settings = fileHandlerInstance.loadSettings();
             settings = (settings != null) ? settings : new Settings();
+            if(circles == null)
+                circles = new ArrayList<>();
             //settings = new Settings();
             //fileHandlerInstance.saveSettings(settings);
 /*
@@ -548,7 +550,7 @@ public class Globals implements
         mLastLocation.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos());
         mLastLocation.setTime(System.currentTimeMillis());
 
-        LocationServices.FusedLocationApi.setMockLocation(mGoogleApiClient,mLastLocation);
+        LocationServices.FusedLocationApi.setMockLocation(mGoogleApiClient, mLastLocation);
         lastLoc = new a2bLoc();
         lastLoc.setLocation(mLastLocation);
     }
