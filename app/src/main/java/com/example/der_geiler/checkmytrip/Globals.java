@@ -42,7 +42,6 @@ public class Globals implements
     private NewTripActivity mapActivity = null;
     private LocationRequest locationRequest;
     private a2bLoc lastLoc;
-    private List<LatLng> currentLatLongs;
     static private Settings settings;
     private static final int DIST_UNIT_KILOMETERS = 0;
     private static final int DIST_UNIT_MILES = 1;
@@ -427,8 +426,6 @@ public class Globals implements
 
     static public Trip GetCurrentTrip(){return currentTrip;}
 
-    public List<LatLng> GetLatLngs(){return currentLatLongs;}
-
     public void StartTimers()
     {
         MarkerTask task = new MarkerTask();
@@ -439,7 +436,6 @@ public class Globals implements
         durationTimer = new Timer();
         durationTimer.schedule(new DurationTask(), 1000, 1000);
     }
-
 
     public void SetMapVisible(NewTripActivity activity)
     {
@@ -457,8 +453,7 @@ public class Globals implements
             double lat = mLastLocation.getLatitude();
             double lon = mLastLocation.getLongitude();
             currentTrip.addA2bMarker(new A2BMarker(new Date(), lat, lon));
-            currentLatLongs.add(new LatLng(lat, lon));
-            ll = currentLatLongs.get(currentLatLongs.size()-1);
+            ll = new LatLng(lat, lon);
         }
         return ll;
     }
@@ -553,7 +548,6 @@ public class Globals implements
         currentTrip = new Trip();
         currentTrip.setA2bMarkers(new ArrayList<A2BMarker>());
         currentTrip.SetTimeStart(new Date());
-        currentLatLongs = new ArrayList<LatLng>();
         StartTimers();
 
         LatLng ll = UpdateLocation();
@@ -626,6 +620,7 @@ public class Globals implements
         {
             stopGeofences();
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+            mGoogleApiClient.disconnect();
         }
         dbHelper.close();
         instance = null;

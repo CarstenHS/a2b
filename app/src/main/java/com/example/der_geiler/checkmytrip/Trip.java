@@ -1,8 +1,11 @@
 package com.example.der_geiler.checkmytrip;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import android.text.format.*;
+
+import com.google.android.gms.maps.model.LatLng;
 
 /**
  * Created by der_geiler on 03-05-2015.
@@ -25,6 +28,13 @@ public class Trip
         topSpeedInMetPerSec = 0;
     }
 
+    public List<LatLng> getLatLngs()
+    {
+        List<LatLng> lls = new ArrayList<LatLng>();
+        for(A2BMarker m: A2BMarkers)
+            lls.add(new LatLng(m.GetLat(), m.GetLon()));
+        return lls;
+    }
     public void addA2bMarker(A2BMarker m){A2BMarkers.add(m);}
     public List<A2BMarker> getA2bMarkers() {return A2BMarkers;}
     public void setA2bMarkers(List<A2BMarker> markers) {A2BMarkers = markers;}

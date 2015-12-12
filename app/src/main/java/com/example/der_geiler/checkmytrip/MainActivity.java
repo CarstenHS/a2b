@@ -153,7 +153,9 @@ public class MainActivity extends Activity
     @Override
     protected void onDestroy()
     {
-        Globals.GetInstance(null).cleanUp();
+        Globals g = Globals.GetInstance(null);
+        if(g.GetCurrentTrip() == null)
+            g.cleanUp();
         super.onDestroy();
     }
 

@@ -164,14 +164,18 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
             map.setMyLocationEnabled(true);
             Globals.GetInstance(this.getApplicationContext()).setGeofences();  // Must call this way to avoid non-static error
         }
-        int i = 0;
-        List<LatLng> lls = globals.GetLatLngs();
-        if(lls != null)
+        Trip curTrip = Globals.GetInstance(null).GetCurrentTrip();
+        if(curTrip != null)
         {
-            for (LatLng ll : lls)
+            int i = 0;
+            List<LatLng> lls =curTrip.getLatLngs();
+            if (lls != null)
             {
-                AddMarkerUI(ll, i);
-                ++i;
+                for (LatLng ll : lls)
+                {
+                    AddMarkerUI(ll, i);
+                    ++i;
+                }
             }
         }
     }
