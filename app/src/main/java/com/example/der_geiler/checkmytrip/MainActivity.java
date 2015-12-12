@@ -138,8 +138,10 @@ public class MainActivity extends Activity
         setContentView(R.layout.activity_main);
         FileHandler fileHandler = FileHandler.GetInstance();
         fileHandler.Init(getApplicationContext());
+        /*
         fileHandler.listFiles();
         String fuck = fileHandler.readStackFile();
+        */
         Globals.GetInstance(getApplicationContext());
         NewTripActivity.GetInstance();
         setNewTripText();

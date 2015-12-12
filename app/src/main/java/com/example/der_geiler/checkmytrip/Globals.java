@@ -76,6 +76,8 @@ public class Globals implements
             dirEntries = fileHandlerInstance.LoadDirInfos();
             settings = fileHandlerInstance.loadSettings();
             settings = (settings != null) ? settings : new Settings();
+            //settings = new Settings();
+            //fileHandlerInstance.saveSettings(settings);
 /*
             dirEntries.clear();
             fileHandlerInstance.SaveDirInfos(dirEntries);
@@ -357,6 +359,11 @@ public class Globals implements
             }
         }
         resetGeoInDirInfo(name);
+        if(a2BGeofences.size() < 2)
+        {
+            settings.setAppMode(Settings.APP_MODE_MANUAL);
+            fileHandlerInstance.saveSettings(settings);
+        }
     }
 
     public List resolveGeoDir(String endGeo)
@@ -382,12 +389,13 @@ public class Globals implements
 
     public class a2bLoc
     {
-        public Location lastLocation;
-        public Date lastDate;
+        private Location lastLocation;
         public LatLng getLatlng()
         {
             return new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
         }
+        public Location getLocation(){return lastLocation;}
+        public void setLocation(Location l){lastLocation = l;}
     }
 
     public String ExtractDurationFromTicks(int ticks)
@@ -490,12 +498,12 @@ public class Globals implements
                 mapActivity.UpdateUIElement(NewTripActivity.UI_ELEMENT_DISTANCE, currentTrip.getFormattedDistance());
                 mapActivity.UpdateUIElement(NewTripActivity.UI_ELEMENT_SPEED, ConvertSpeed(speed));
             }
+            lastLoc.setLocation(location);
         }
         else
         {
             lastLoc = new a2bLoc();
-            lastLoc.lastLocation = location;
-            lastLoc.lastDate = now;
+            lastLoc.setLocation(location);
             LatLng ll = lastLoc.getLatlng();
             if(this.map != null && mapActivity != null)
                 mapActivity.zoomToPosition(ll);
@@ -619,6 +627,7 @@ public class Globals implements
             stopGeofences();
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
         }
+        dbHelper.close();
         instance = null;
         System.exit(0);
     }

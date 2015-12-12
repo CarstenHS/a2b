@@ -161,18 +161,18 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
             this.map.setOnMapLongClickListener(this);
             this.map.setOnMapClickListener(this);
             globals.setMap(map);
-            int i = 0;
-            List<LatLng> lls = globals.GetLatLngs();
             map.setMyLocationEnabled(true);
-            if(lls != null)
-            {
-                for (LatLng ll : lls)
-                {
-                    AddMarkerUI(ll, i);
-                    ++i;
-                }
-            }
             Globals.GetInstance(this.getApplicationContext()).setGeofences();  // Must call this way to avoid non-static error
+        }
+        int i = 0;
+        List<LatLng> lls = globals.GetLatLngs();
+        if(lls != null)
+        {
+            for (LatLng ll : lls)
+            {
+                AddMarkerUI(ll, i);
+                ++i;
+            }
         }
     }
 
@@ -185,12 +185,40 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
             ((MapFragment)getFragmentManager().findFragmentById(R.id.map)).getMapAsync(this);
     }
 
+    private void setInitUnitText()
+    {
+        TextView tvSpeed = (TextView) findViewById(R.id.speed);
+        TextView tvDist = (TextView) findViewById(R.id.distance);
+        switch(globals.getSettings().getAppMode())
+        {
+            case Settings.SPEED_UNIT_MS:
+            {
+                tvSpeed.setText("0m/s");
+                tvDist.setText("0m");
+                break;
+            }
+            case Settings.SPEED_UNIT_MPH:
+            {
+                tvSpeed.setText("0MPH");
+                tvDist.setText("0y");
+                break;
+            }
+            case Settings.SPEED_UNIT_KPH:
+            {
+                tvSpeed.setText("0km/h");
+                tvDist.setText("0m");
+                break;
+            }
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.new_trip);
         globals = Globals.GetInstance(this.getApplicationContext());
+        setInitUnitText();
         InitMap();
     }
 
@@ -211,7 +239,7 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
         if(g.GetCurrentTrip() != null)
             menu.add(Menu.NONE, MENU_ITEM_ID_SAVE_AND_END, Menu.NONE, R.string.end_trip);
 
-        menu.add(Menu.NONE, MENU_ITEM_ID_START, Menu.NONE, R.string.create_start_end);
+        menu.add(Menu.NONE, MENU_ITEM_ID_CREATE_START_END_POINT, Menu.NONE, R.string.create_start_end);
         return true;
     }
 

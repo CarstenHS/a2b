@@ -12,24 +12,24 @@
 
     <TableRow
         android:layout_height="wrap_content"
-        android:layout_width="fill_parent"
-        android:gravity="left">
+        android:layout_width="wrap_content">
 
         <TextView
             android:layout_width="0dp" android:layout_height="wrap_content"
-            android:textSize="18dp" android:text="App mode: "  android:layout_span="1"
+            android:minHeight="@dimen/abc_text_size_menu_material"
+            android:textSize="18dp" android:text="App mode: "
             android:padding="18dip" android:background="#b0b0b0"
             android:textColor="#000" android:gravity="left"
-            android:layout_weight="0.60" android:layout_margin="1dp"
+            android:layout_weight="0.65" android:layout_margin="1dp"
             android:id="@+id/tv_settings_AppMode"/>
 
         <Spinner
             android:layout_width="0dp" android:layout_height="wrap_content"
-            android:textSize="18dp" android:layout_span="1"
+            android:minHeight="@dimen/abc_text_size_menu_material"
+            android:textSize="18dp"
             android:padding="18dip" android:background="#b0b0b0"
             android:textColor="#000" android:gravity="right"
-            android:layout_weight="0.40" android:layout_margin="1dp"
-            android:text="Manual"
+            android:layout_weight="0.35"
             android:id="@+id/tv_settings_AppMode_spinner"/>
     </TableRow>
 
@@ -40,42 +40,39 @@
 
         <TextView
             android:layout_width="0dp" android:layout_height="wrap_content"
-            android:textSize="18dp" android:text="Speed unit: "  android:layout_span="1"
+            android:textSize="18dp" android:text="Speed unit: "
             android:padding="18dip" android:background="#b0b0b0"
             android:textColor="#000" android:gravity="left"
-            android:layout_weight="0.60" android:layout_margin="1dp"
+            android:layout_weight="0.65" android:layout_margin="1dp"
             android:id="@+id/tv_settings_unitSpeed"/>
 
         <Spinner
             android:layout_width="0dp" android:layout_height="wrap_content"
-            android:textSize="18dp" android:layout_span="1"
+            android:textSize="18dp"
             android:padding="18dip" android:background="#b0b0b0"
             android:textColor="#000" android:gravity="right"
-            android:layout_weight="0.40" android:layout_margin="1dp"
-            android:text="m/s"
+            android:layout_weight="0.35"
             android:id="@+id/tv_settings_unitSpeed_spinner"/>
     </TableRow>
 
     <TableRow
         android:layout_height="wrap_content"
-        android:layout_width="fill_parent"
-        android:gravity="left">
+        android:layout_width="fill_parent">
 
         <TextView
             android:layout_width="0dp" android:layout_height="wrap_content"
-            android:textSize="18dp" android:text="Marker interval: "  android:layout_span="1"
+            android:textSize="18dp" android:text="Marker interval: "
             android:padding="18dip" android:background="#b0b0b0"
             android:textColor="#000" android:gravity="left"
-            android:layout_weight="0.60" android:layout_margin="1dp"
+            android:layout_weight="0.65" android:layout_margin="1dp"
             android:id="@+id/tv_settings_markerInterval"/>
 
         <Spinner
             android:layout_width="0dp" android:layout_height="wrap_content"
-            android:textSize="18dp" android:layout_span="1"
+            android:textSize="18dp"
             android:padding="18dip" android:background="#b0b0b0"
             android:textColor="#000" android:gravity="right"
-            android:layout_weight="0.40" android:layout_margin="1dp"
-            android:text="m/s"
+            android:layout_weight="0.35"
             android:id="@+id/tv_settings_markerInterval_spinner"/>
     </TableRow>
 

@@ -8,9 +8,13 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Activity_settings extends Activity implements AdapterView.OnItemSelectedListener
 {
-    private static final String[] itemsAppMode      = {"Auto","Manual"};
+    private static final String strAuto = "Auto";
+    private static final String strManual = "Manual";
     private static final String[] itemsSpeedUnit    = {"m/s","mph","kph"};
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -18,9 +22,16 @@ public class Activity_settings extends Activity implements AdapterView.OnItemSel
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_activity_settings);
 
-        Settings settings = Globals.GetInstance(null).getSettings();
-
+        Globals g = Globals.GetInstance(null);
+        Settings settings = g.getSettings();
+        List<String> itemsAppMode = new ArrayList<String>();
         Spinner spinner = (Spinner) findViewById(R.id.tv_settings_AppMode_spinner);
+        spinner.setAdapter(null);
+
+        itemsAppMode.add(strManual);
+        if(g.getGeoFencesPersist().size() > 1)
+            itemsAppMode.add(strAuto);
+
         ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, itemsAppMode);
         spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(spinnerArrayAdapter);
@@ -28,6 +39,7 @@ public class Activity_settings extends Activity implements AdapterView.OnItemSel
         spinner.setOnItemSelectedListener(this);
 
         spinner = (Spinner) findViewById(R.id.tv_settings_unitSpeed_spinner);
+        spinner.setAdapter(null);
         spinnerArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, itemsSpeedUnit);
         spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(spinnerArrayAdapter);
@@ -35,6 +47,7 @@ public class Activity_settings extends Activity implements AdapterView.OnItemSel
         spinner.setOnItemSelectedListener(this);
 
         spinner = (Spinner) findViewById(R.id.tv_settings_markerInterval_spinner);
+        spinner.setAdapter(null);
         String[] itemsInterval = {"1","2","3","4","5","6","7","8","9","10"};
         spinnerArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, itemsInterval);
         spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -45,14 +58,13 @@ public class Activity_settings extends Activity implements AdapterView.OnItemSel
 
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)
     {
-        //parent.getItemAtPosition(pos)
         Settings settings = Globals.GetInstance(null).getSettings();
         switch(parent.getId())
         {
             case R.id.tv_settings_AppMode_spinner:
             {
                 String selection = ((TextView) view).getText().toString();
-                if (selection.equals(itemsAppMode[0]))
+                if (selection.equals(strAuto))
                     settings.setAppMode(Settings.APP_MODE_AUTO);
                 else
                     settings.setAppMode(Settings.APP_MODE_MANUAL);
