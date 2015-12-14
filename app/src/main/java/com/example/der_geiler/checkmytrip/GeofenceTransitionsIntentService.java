@@ -87,7 +87,7 @@ public class GeofenceTransitionsIntentService extends IntentService
                     {
                         if(g.getSettings().getAppMode() == Settings.APP_MODE_AUTO)
                         {
-                            g.Test_startTrip();
+                            g.startTrip();
                             g.GetCurrentTrip().setStartGeo(triggerIds[0]);
                         }
                     }

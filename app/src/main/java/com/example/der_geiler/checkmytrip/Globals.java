@@ -509,27 +509,27 @@ public class Globals implements
         return currentTrip;
     }
 
-    /*
-public void StartTimers()
-{
-    Test_MarkerTask task = new Test_MarkerTask();
-    TripTimer = new Timer();
-    int timeout = 1000 * 60 * settings.getMarkerTimeout();
-    TripTimer.schedule(task, timeout, timeout);
+    public void StartTimers()
+    {
+        MarkerTask task = new MarkerTask();
+        TripTimer = new Timer();
+        int timeout = 1000 * 60 * settings.getMarkerTimeout();
+        TripTimer.schedule(task, timeout, timeout);
 
-    durationTimer = new Timer();
-    durationTimer.schedule(new DurationTask(), 1000, 1000);
-}
+        durationTimer = new Timer();
+        durationTimer.schedule(new DurationTask(), 1000, 1000);
+    }
 
 
-public void SetMapVisible(NewTripActivity activity)
-{
-    mapActivity = activity;
-    if(mGoogleApiClient != null)
-        LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-}
-*/
+    public void SetMapVisible(NewTripActivity activity)
+    {
+        mapActivity = activity;
+        if(mGoogleApiClient != null)
+            LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+    }
+
     //********************** TESTING **********************//
+    /*
     public void Test_StartMarkerTimer()
     {
         Test_MarkerTask task = new Test_MarkerTask();
@@ -642,9 +642,9 @@ public void SetMapVisible(NewTripActivity activity)
         if(mapActivity != null)
             mapActivity.setMapExt(ll);
     }
+    */
     //********************** TESTING END **********************//
 
-    /*
     public LatLng UpdateLocation()
     {
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
@@ -658,8 +658,7 @@ public void SetMapVisible(NewTripActivity activity)
         }
         return ll;
     }
-*/
-/*
+
     public GoogleApiClient buildGoogleApiClient()
     {
         mGoogleApiClient = new GoogleApiClient.Builder(ctx)
@@ -677,7 +676,7 @@ public void SetMapVisible(NewTripActivity activity)
 
         return mGoogleApiClient;
     }
-*/
+
     @Override
     public void onLocationChanged(Location location)
     {
@@ -735,7 +734,6 @@ public void SetMapVisible(NewTripActivity activity)
         return mLocationRequest;
     }
 
-    /*
     @Override
     public void onConnected(Bundle connectionHint)
     {
@@ -747,8 +745,7 @@ public void SetMapVisible(NewTripActivity activity)
         if(map != null)
             setGeofences();
     }
-*/
-    /*
+
     public void startTrip()
     {
         currentTrip = new Trip();
@@ -756,12 +753,12 @@ public void SetMapVisible(NewTripActivity activity)
         currentTrip.SetTimeStart(new Date());
         StartTimers();
 
-        LatLng ll = Test_UpdateLocation();
+        LatLng ll = UpdateLocation();
 
         if(mapActivity != null)
-            mapActivity.SetMap(ll);
+            mapActivity.setMapExt(ll);
     }
-*/
+
     static public GoogleApiClient getGoogleApiClient(){return (mGoogleApiClient);}
 
     public void setGeofences()
@@ -782,7 +779,7 @@ public void SetMapVisible(NewTripActivity activity)
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult){}
 
-    /*
+
     public class MarkerTask extends TimerTask implements Runnable
     {
         @Override
@@ -793,7 +790,6 @@ public void SetMapVisible(NewTripActivity activity)
                 mapActivity.AddMarkerUI(ll, currentTrip.getNumMarkers() - 1);
         }
     }
-*/
     public class DurationTask extends TimerTask implements Runnable
     {
         @Override
