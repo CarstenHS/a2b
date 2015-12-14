@@ -57,6 +57,20 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
         }
     }
 
+    public void setMapExt(final LatLng ll)
+    {
+        runOnUiThread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                AddMarkerToMap(ll, 0);
+                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(ll, MAX_ZOOM);
+                map.animateCamera(cameraUpdate);
+            }
+        });
+    }
+
     public GoogleMap getMap(){return map;}
 
     private void EndTrip()
@@ -276,7 +290,7 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
             }
             case MENU_ITEM_ID_START:
             {
-                globals.startTrip();
+                globals.Test_startTrip();
                 break;
             }
         }

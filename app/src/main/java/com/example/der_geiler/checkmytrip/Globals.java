@@ -9,6 +9,7 @@ import android.location.*;
 //import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.SystemClock;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -64,6 +65,9 @@ public class Globals implements
     private int insertCount = 0;
     static private final String strNotSet = "Not set";
     static private int mockCnt = 0;
+    static private boolean geofenceActivated = false;
+    static private final int GEO_INACTIVITY_TIMEOUT = 1000;
+    final Handler uiHandler = new Handler();
 
     private static Globals instance;
 
@@ -101,6 +105,25 @@ public class Globals implements
         }
         return instance;
     }
+
+    /*** accessing toolkit from secondary thread ***/
+/*
+    final Runnable runStartTrip = new Runnable()
+    {
+        @Override
+        public void run()
+        {
+            Test_startTrip();
+        }
+    };
+
+    public void startTripExt()
+    {
+        ctx.
+        uiHandler.post(runStartTrip);
+    }
+*/
+    /*** accessing toolkit from secondary thread END ***/
 
     public void updateSettings(Settings settings)
     {
@@ -304,6 +327,7 @@ public class Globals implements
     {
         if (a2BGeofences != null && a2BGeofences.size() != 0)
         {
+            new Timer().schedule(new InactivityTask(), GEO_INACTIVITY_TIMEOUT);
             List<Geofence> mapGeofences = new ArrayList<>();
 
             for (A2BGeofence gf : a2BGeofences)
@@ -485,26 +509,40 @@ public class Globals implements
         return currentTrip;
     }
 
-    public void StartTimers()
+    /*
+public void StartTimers()
+{
+    Test_MarkerTask task = new Test_MarkerTask();
+    TripTimer = new Timer();
+    int timeout = 1000 * 60 * settings.getMarkerTimeout();
+    TripTimer.schedule(task, timeout, timeout);
+
+    durationTimer = new Timer();
+    durationTimer.schedule(new DurationTask(), 1000, 1000);
+}
+
+
+public void SetMapVisible(NewTripActivity activity)
+{
+    mapActivity = activity;
+    if(mGoogleApiClient != null)
+        LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+}
+*/
+    //********************** TESTING **********************//
+    public void Test_StartMarkerTimer()
     {
         Test_MarkerTask task = new Test_MarkerTask();
         TripTimer = new Timer();
         int timeout = 1000 * 60 * settings.getMarkerTimeout();
         TripTimer.schedule(task, timeout, timeout);
+    }
 
+    public void Test_StartDurationTimer()
+    {
         durationTimer = new Timer();
         durationTimer.schedule(new DurationTask(), 1000, 1000);
     }
-
-    /*
-    public void SetMapVisible(NewTripActivity activity)
-    {
-        mapActivity = activity;
-        if(mGoogleApiClient != null)
-            LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-    }
-*/
-    //********************** TESTING **********************//
     public void Test_SetMapVisible(NewTripActivity activity)
     {
         mapActivity = activity;
@@ -519,7 +557,8 @@ public class Globals implements
         {
             double lat = mLastLocation.getLatitude();
             double lon = mLastLocation.getLongitude();
-            currentTrip.addA2bMarker(new A2BMarker(new Date(), lat, lon));
+            if(currentTrip != null)
+                currentTrip.addA2bMarker(new A2BMarker(new Date(), lat, lon));
             ll = new LatLng(lat, lon);
         }
         return ll;
@@ -553,6 +592,9 @@ public class Globals implements
         LocationServices.FusedLocationApi.setMockLocation(mGoogleApiClient, mLastLocation);
         lastLoc = new a2bLoc();
         lastLoc.setLocation(mLastLocation);
+        onLocationChanged(mLastLocation);
+        Test_StartMarkerTimer();
+        initGeofences();
     }
 
     public class Test_MarkerTask extends TimerTask implements Runnable
@@ -583,9 +625,22 @@ public class Globals implements
             mockCnt++;
 
             LatLng ll = Test_UpdateLocation();
-            if(mapActivity != null)
+            if(mapActivity != null && currentTrip != null)
                 mapActivity.AddMarkerUI(ll, currentTrip.getNumMarkers() - 1);
         }
+    }
+
+    public void Test_startTrip()
+    {
+        currentTrip = new Trip();
+        currentTrip.setA2bMarkers(new ArrayList<A2BMarker>());
+        currentTrip.SetTimeStart(new Date());
+        Test_StartDurationTimer();
+
+        LatLng ll = Test_UpdateLocation();
+
+        if(mapActivity != null)
+            mapActivity.setMapExt(ll);
     }
     //********************** TESTING END **********************//
 
@@ -665,7 +720,9 @@ public class Globals implements
 
     public void onStatusChanged(String provider, int status, Bundle extras){}
 
-    public void onProviderEnabled(String provider){}
+    public void onProviderEnabled(String provider)
+    {
+    }
 
     public void onProviderDisabled(String provider){}
 
@@ -691,6 +748,7 @@ public class Globals implements
             setGeofences();
     }
 */
+    /*
     public void startTrip()
     {
         currentTrip = new Trip();
@@ -703,7 +761,7 @@ public class Globals implements
         if(mapActivity != null)
             mapActivity.SetMap(ll);
     }
-
+*/
     static public GoogleApiClient getGoogleApiClient(){return (mGoogleApiClient);}
 
     public void setGeofences()
@@ -747,6 +805,17 @@ public class Globals implements
         }
     }
 
+    public class InactivityTask extends TimerTask implements Runnable
+    {
+        @Override
+        public void run()
+        {
+            geofenceActivated = true;
+        }
+    }
+
+    public boolean getGeofenceActivated(){return geofenceActivated;}
+
     public void insertInDB(Trip trip, String dir)
     {
         new SQLiteHelperThread().execute(SQLiteHelperThread.ACTION_INSERT, trip, dir, this);
@@ -761,6 +830,7 @@ public class Globals implements
 
     public void cleanUp()
     {
+        geofenceActivated = false;
         if(TripTimer != null)
             TripTimer.cancel();
         if(durationTimer != null)
@@ -775,4 +845,5 @@ public class Globals implements
         instance = null;
         System.exit(0);
     }
+
 }
