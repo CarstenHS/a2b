@@ -22,6 +22,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
 public class NewTripActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener, GoogleMap.OnMapClickListener
 {
@@ -207,7 +209,7 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
     {
         TextView tvSpeed = (TextView) findViewById(R.id.speed);
         TextView tvDist = (TextView) findViewById(R.id.distance);
-        switch(globals.getSettings().getAppMode())
+        switch(globals.getSettings().getSpeedUnit())
         {
             case Settings.SPEED_UNIT_MS:
             {
@@ -235,6 +237,13 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.new_trip);
+
+        AdView mAdView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+
+        findViewById(R.id.tripPropsTableLayout).bringToFront();
+
         globals = Globals.GetInstance(this.getApplicationContext());
         setInitUnitText();
         InitMap();
