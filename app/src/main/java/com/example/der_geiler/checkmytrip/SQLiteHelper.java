@@ -89,50 +89,6 @@ public class SQLiteHelper extends SQLiteOpenHelper
                 values);
     }
 
-    public Cursor select(String startGeo, String endGeo)
-    {
-        SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
-
-        String[] projection =
-        {
-            TripsTableEntry.COLUMN_NAME_TRIPS_ID,
-            TripsTableEntry.COLUMN_NAME_TRIPS_DURATION
-        };
-
-        /*
-        String selection =  TripsTableEntry.COLUMN_NAME_TRIPS_START_GEO + strEQUALS + strAND +
-                            TripsTableEntry.COLUMN_NAME_TRIPS_END_GEO + strEQUALS;
-*/
-        // String selection =  "*";  WHERE *
-
-        String selection = TripsTableEntry.COLUMN_NAME_TRIPS_DIRECTORY + strEQUALS;
-/*
-        String[] selectionArgs =
-        {
-            "0",
-            endGeo
-        };
-*/
-        String[] selectionArgs =
-                {
-                        "0"
-                };
-
-        // How you want the results sorted in the resulting Cursor
-        String sortOrder = TripsTableEntry.COLUMN_NAME_TRIPS_DURATION + " ASC";
-        Cursor c = Globals.GetInstance(null).getReadableDB().query(
-                TripsTableEntry.TRIPS_TABLE_NAME,       // The table to query
-                projection,                             // The columns to return
-                selection,                              // The columns for the WHERE clause
-                selectionArgs,                          // The values for the WHERE clause
-                null,                                   // don't group the rows
-                null,                                   // don't filter by row groups
-                sortOrder                               // The sort order
-        );
-
-        return c;
-    }
-
     public Cursor select(String dir)
     {
         // Define a projection that specifies which columns from the database
