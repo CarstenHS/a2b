@@ -3,6 +3,8 @@ package com.example.der_geiler.checkmytrip;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.util.TypedValue;
+import android.widget.TableLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -93,11 +95,14 @@ public class StaticMapActivity extends FragmentActivity implements OnMapReadyCal
         UpdateBounds();
         List<A2BMarker> A2BMarkers = trip.getA2bMarkers();
 
-        String dist = trip.getFormattedDistance();
+        String dist = trip.getFormattedDistance(Globals.GetInstance(null).getSettings().getSpeedUnit());
         ((TextView) findViewById(R.id.distance)).setText(dist);
 
         String duration = Globals.GetInstance(null).ExtractDurationFromTicks(trip.getTicks());
         ((TextView) findViewById(R.id.duration)).setText(duration);
+
+        int height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 60, getResources().getDisplayMetrics());
+        ((TableLayout)findViewById(R.id.tripPropsTableLayout)).getLayoutParams().height = height;
 
         int i = 0;
         for(A2BMarker mkr : A2BMarkers)

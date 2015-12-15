@@ -6,10 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.*;
-//import android.location.LocationListener;
 import android.os.Bundle;
-import android.os.Handler;
-
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Result;
@@ -20,7 +17,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -686,10 +682,11 @@ public class Globals implements
             {
                 float dist = lastLoc.lastLocation.distanceTo(location);
                 currentTrip.UpdateDistance(dist);
+                currentTrip.UpdateSpeed(speed);
             }
             if (mapVisible)
             {
-                mapActivity.UpdateUIElement(NewTripActivity.UI_ELEMENT_DISTANCE, currentTrip.getFormattedDistance());
+                mapActivity.UpdateUIElement(NewTripActivity.UI_ELEMENT_DISTANCE, currentTrip.getFormattedDistance(settings.getSpeedUnit()));
                 mapActivity.UpdateUIElement(NewTripActivity.UI_ELEMENT_SPEED, ConvertSpeed(speed));
             }
             lastLoc.setLocation(location);
@@ -835,7 +832,10 @@ public class Globals implements
             stopGeofences();
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
             mGoogleApiClient.disconnect();
+            mGoogleApiClient = null;
         }
+        currentTrip = null;
+        mapActivity.finish();
         /*
         dbHelper.close();
         instance = null;

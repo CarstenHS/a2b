@@ -15,18 +15,13 @@ public class Trip
     private List<A2BMarker> A2BMarkers;
     private Date dateStart, dateEnd;
     private int ticks = 0;
-    private float distance;
-    private float topSpeedInMetPerSec;
-    private int unit = DIST_UNIT_KILOMETERS;
+    private float distance = 0;
+    private float topSpeedInMetPerSec = 0;
     private String startGeo = null;
     private String endGeo = null;
     private final static String strFORMAT = "yyyy-MM-dd@HH:mm";
 
-    Trip()
-    {
-        distance = 0;
-        topSpeedInMetPerSec = 0;
-    }
+    Trip(){}
 
     public List<LatLng> getLatLngs()
     {
@@ -48,22 +43,22 @@ public class Trip
     public long getEndTimestamp(){return dateEnd.getTime();}
     public float getTopSpeed(){return topSpeedInMetPerSec;}
     public float getDistance(){return distance;}
-    public String getFormattedDistance()
+    public String getFormattedDistance(int unit)
     {
         String dist;
-        if(unit == DIST_UNIT_KILOMETERS)
+        if(unit == Settings.SPEED_UNIT_KPH)
         {
             if(distance > 1000)
-                dist = String.format("%.2f", (distance / 1000)) + "km";
+                dist = String.format("%.2f", (distance / 1000)) + " km";
             else
-                dist = String.valueOf((int)distance) + "m";
+                dist = String.valueOf((int)distance) + " m";
         }
         else
         {
             if(distance > 1609)
-                dist = String.format("%.2f", (distance / 1000)) + "miles";
+                dist = String.format("%.2f", (distance / 1000)) + " miles";
             else
-                dist = String.valueOf((int)distance*1.0936) + "yards";
+                dist = String.valueOf((int)(distance*1.0936)) + " yards";
         }
         return dist;
     }
@@ -99,9 +94,4 @@ public class Trip
     {
         topSpeedInMetPerSec = (speed > topSpeedInMetPerSec) ? speed : topSpeedInMetPerSec;
     }
-
-    static final int DIST_UNIT_KILOMETERS = 0;  //TODO: use ones from globals
-    static final int DIST_UNIT_MILES = 1;       //TODO: use ones from globals
-
-    public void setUnit(int unit){this.unit = unit;}
 }
