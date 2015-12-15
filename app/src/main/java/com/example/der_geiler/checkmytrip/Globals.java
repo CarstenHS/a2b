@@ -835,7 +835,8 @@ public class Globals implements
             mGoogleApiClient = null;
         }
         currentTrip = null;
-        mapActivity.finish();
+        if(mapActivity != null)
+            mapActivity.finish();
         /*
         dbHelper.close();
         instance = null;

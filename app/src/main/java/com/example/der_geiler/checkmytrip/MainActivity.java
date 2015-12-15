@@ -136,6 +136,9 @@ public class MainActivity extends Activity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        new SimpleEula(this).show();
+
         FileHandler fileHandler = FileHandler.GetInstance();
         fileHandler.Init(getApplicationContext());
         /*
