@@ -94,6 +94,7 @@ public class Globals implements
                 setDir(di);
             }
             a2BGeofences = fileHandlerInstance.LoadGeofences();
+            a2BGeofences = (a2BGeofences != null) ? a2BGeofences : new ArrayList<A2BGeofence>();
             dbHelper = new SQLiteHelper(ctx);
         }
         return instance;
