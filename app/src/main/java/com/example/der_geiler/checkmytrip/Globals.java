@@ -7,10 +7,8 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.*;
 //import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.SystemClock;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -41,6 +39,7 @@ public class Globals implements
     public Timer durationTimer;
     private Location mLastLocation;
     static private GoogleApiClient mGoogleApiClient = null;
+    private boolean mapVisible = false;
     private NewTripActivity mapActivity = null;
     private LocationRequest locationRequest;
     private a2bLoc lastLoc;
@@ -64,10 +63,8 @@ public class Globals implements
     static private SQLiteHelper dbHelper = null;
     private int insertCount = 0;
     static private final String strNotSet = "Not set";
-    static private int mockCnt = 0;
     static private boolean geofenceActivated = false;
     static private final int GEO_INACTIVITY_TIMEOUT = 1000;
-    final Handler uiHandler = new Handler();
 
     private static Globals instance;
 
@@ -520,10 +517,11 @@ public class Globals implements
         durationTimer.schedule(new DurationTask(), 1000, 1000);
     }
 
+    public void setMapActivity(NewTripActivity activity){mapActivity = activity;}
 
-    public void SetMapVisible(NewTripActivity activity)
+    public void SetMapVisible(boolean visible)
     {
-        mapActivity = activity;
+        mapVisible = visible;
         if(mGoogleApiClient != null)
             LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
     }
@@ -545,7 +543,7 @@ public class Globals implements
     }
     public void Test_SetMapVisible(NewTripActivity activity)
     {
-        mapActivity = activity;
+        mapVisible = activity;
         if (mGoogleApiClient != null && mLastLocation != null)
             LocationServices.FusedLocationApi.setMockLocation(mGoogleApiClient, mLastLocation);
     }
@@ -625,8 +623,8 @@ public class Globals implements
             mockCnt++;
 
             LatLng ll = Test_UpdateLocation();
-            if(mapActivity != null && currentTrip != null)
-                mapActivity.AddMarkerUI(ll, currentTrip.getNumMarkers() - 1);
+            if(mapVisible != null && currentTrip != null)
+                mapVisible.AddMarkerUI(ll, currentTrip.getNumMarkers() - 1);
         }
     }
 
@@ -639,8 +637,8 @@ public class Globals implements
 
         LatLng ll = Test_UpdateLocation();
 
-        if(mapActivity != null)
-            mapActivity.setMapExt(ll);
+        if(mapVisible != null)
+            mapVisible.setMapExt(ll);
     }
     */
     //********************** TESTING END **********************//
@@ -689,7 +687,7 @@ public class Globals implements
                 float dist = lastLoc.lastLocation.distanceTo(location);
                 currentTrip.UpdateDistance(dist);
             }
-            if (mapActivity != null)
+            if (mapVisible)
             {
                 mapActivity.UpdateUIElement(NewTripActivity.UI_ELEMENT_DISTANCE, currentTrip.getFormattedDistance());
                 mapActivity.UpdateUIElement(NewTripActivity.UI_ELEMENT_SPEED, ConvertSpeed(speed));
@@ -701,7 +699,7 @@ public class Globals implements
             lastLoc = new a2bLoc();
             lastLoc.setLocation(location);
             LatLng ll = lastLoc.getLatlng();
-            if(this.map != null && mapActivity != null)
+            if(this.map != null && mapVisible)
                 mapActivity.zoomToPosition(ll);
         }
     }
@@ -738,7 +736,8 @@ public class Globals implements
     public void onConnected(Bundle connectionHint)
     {
         LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, createLocationReq(), this);
-        map = mapActivity.getMap();
+        if(mapActivity != null)
+            map = mapActivity.getMap();
         if(circles == null)
             circles = new ArrayList<>();
 
@@ -755,7 +754,7 @@ public class Globals implements
 
         LatLng ll = UpdateLocation();
 
-        if(mapActivity != null)
+        if(mapVisible)
             mapActivity.setMapExt(ll);
     }
 
@@ -786,7 +785,7 @@ public class Globals implements
         public void run()
         {
             LatLng ll = UpdateLocation();
-            if(mapActivity != null)
+            if(mapVisible)
                 mapActivity.AddMarkerUI(ll, currentTrip.getNumMarkers() - 1);
         }
     }
@@ -796,7 +795,7 @@ public class Globals implements
         public void run()
         {
             int ticks = currentTrip.IncTick();
-            if(mapActivity != null)
+            if(mapVisible)
                 mapActivity.TickUI(ticks);
         }
     }
@@ -837,9 +836,11 @@ public class Globals implements
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
             mGoogleApiClient.disconnect();
         }
+        /*
         dbHelper.close();
         instance = null;
         System.exit(0);
+        */
     }
 
 }

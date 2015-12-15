@@ -176,6 +176,7 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
             this.map = map;
             this.map.setOnMapLongClickListener(this);
             this.map.setOnMapClickListener(this);
+            globals.setMapActivity(this);
             globals.setMap(map);
             map.setMyLocationEnabled(true);
             Globals.GetInstance(this.getApplicationContext()).setGeofences();  // Must call this way to avoid non-static error
@@ -198,7 +199,7 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
 
     private void InitMap()
     {
-        globals.SetMapVisible(this);
+        globals.SetMapVisible(true);
         if(globals.getGoogleApiClient() == null)
             globals.buildGoogleApiClient();
         else
@@ -252,7 +253,7 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
     @Override
     protected void onPause()
     {
-        globals.SetMapVisible(null);
+        globals.SetMapVisible(false);
         super.onPause();
     }
 
