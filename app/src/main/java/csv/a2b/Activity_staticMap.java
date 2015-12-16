@@ -7,6 +7,8 @@ import android.util.TypedValue;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -24,7 +26,7 @@ import java.util.List;
 /**
  * Created by der_geiler on 08-08-2015.
  */
-public class StaticMapActivity extends FragmentActivity implements OnMapReadyCallback
+public class Activity_staticMap extends FragmentActivity implements OnMapReadyCallback
 {
     public GoogleMap map;
     int MAX_ZOOM = 15;
@@ -121,6 +123,12 @@ public class StaticMapActivity extends FragmentActivity implements OnMapReadyCal
         super.onCreate(savedInstanceState);
         setContentView(R.layout.new_trip);
 
+        AdView mAdView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+
+        findViewById(R.id.tripPropsTableLayout).bringToFront();
+
         FileHandler fileHandler;
 
         fileHandler = FileHandler.GetInstance();
@@ -134,6 +142,9 @@ public class StaticMapActivity extends FragmentActivity implements OnMapReadyCal
             trip = fileHandler.LoadTrip(selectedGroup, selectedTrip);
 
         }
-        ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMapAsync(this);
+        if(trip != null)
+            ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMapAsync(this);
+        else
+            finish();
     }
 }

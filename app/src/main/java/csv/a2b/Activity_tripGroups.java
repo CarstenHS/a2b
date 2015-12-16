@@ -19,12 +19,15 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+
 import java.util.List;
 
 /**
  * Created by der_geiler on 25-05-2015.
  */
-public class TripGroupsActivity extends Activity
+public class Activity_tripGroups extends Activity
 {
     private FileHandler fileHandler = null;
     private TableLayout tripGroupsTableLayout = null;
@@ -46,6 +49,12 @@ public class TripGroupsActivity extends Activity
         fileHandler = FileHandler.GetInstance();
         fileHandler.Init(context);
         ShowTripGroups();
+
+        AdView mAdView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+        mAdView.bringToFront();
+
         lastUiAction = new uiAction();
         touchRect = new Rect();
     }
@@ -81,7 +90,7 @@ public class TripGroupsActivity extends Activity
                 {
                     if (fileHandler.RenameTripGroup(oldGroupname, groupName) == false)
                     {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(TripGroupsActivity.this);
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Activity_tripGroups.this);
                         builder.setMessage("Group exists. Please choose another name.");
                         builder.setCancelable(true);
                         AlertDialog ad = builder.create();
@@ -174,7 +183,7 @@ public class TripGroupsActivity extends Activity
                                 if (lastUiAction.lastAction == MotionEvent.ACTION_DOWN)
                                 {
                                     lastUiAction.view.setBackgroundColor(Color.parseColor("#b0b0b0"));
-                                    Intent i = new Intent(getApplicationContext(), TripsActivity.class);
+                                    Intent i = new Intent(getApplicationContext(), Activity_trips.class);
                                     i.putExtra("group", pressedGroup);
                                     startActivity(i);
                                 }
@@ -199,7 +208,7 @@ public class TripGroupsActivity extends Activity
                     @Override
                     public boolean onLongClick(View v)
                     {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(TripGroupsActivity.this);
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Activity_tripGroups.this);
                         final String group = ((TextView) v).getText().toString();
                         builder.setTitle(group);
                         lastUiAction.view.setBackgroundColor(Color.parseColor("#b0b0b0"));
@@ -217,7 +226,7 @@ public class TripGroupsActivity extends Activity
                                             case INDEX_DELETE: SetDeleteAlert(group); break;
                                             case INDEX_START_END_POINT:
                                             {
-                                                Intent i = new Intent(getApplicationContext(), DirectoryGeoActivity.class);
+                                                Intent i = new Intent(getApplicationContext(), Activity_directoryGeo.class);
                                                 i.putExtra("dir", group);
                                                 startActivity(i);
                                                 break;
@@ -281,7 +290,7 @@ public class TripGroupsActivity extends Activity
                 {
                     if (fileHandler.CreateTripGroup(groupName) == false)
                     {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(TripGroupsActivity.this);
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Activity_tripGroups.this);
                         builder.setMessage("Group exists. Please choose another name.");
                         builder.setCancelable(true);
                         AlertDialog ad = builder.create();

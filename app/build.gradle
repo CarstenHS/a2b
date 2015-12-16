@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "csv.a2b"
-        minSdkVersion 21
+        minSdkVersion 15
         targetSdkVersion 21
         versionCode 1
         versionName "1.0"
@@ -21,7 +21,7 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.google.android.gms:play-services:+'
-    compile 'com.google.android.gms:play-services-ads:+'
+    compile 'com.google.android.gms:play-services:8.3.0'
+    //compile 'com.google.android.gms:play-services-ads:+'
     compile files('libs/gson-2.3.1.jar')
 }

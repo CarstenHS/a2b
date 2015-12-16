@@ -29,30 +29,30 @@
 
         <!-- Main activity -->
         <activity
-            android:name=".MainActivity"
+            android:name=".Activity_main"
             android:label="Main"
             android:screenOrientation="portrait">
         </activity>
         <activity
-            android:name=".NewTripActivity"
+            android:name=".Activity_newTrip"
             android:label="Current trip">
         </activity>
         <activity
-            android:name=".TripGroupsActivity"
+            android:name=".Activity_tripGroups"
             android:label="Trip groups"
             android:screenOrientation="portrait">
         </activity>
         <activity
-            android:name=".TripsActivity"
+            android:name=".Activity_trips"
             android:label="Trips"
             android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".DirectoryGeoActivity">
+        <activity android:name=".Activity_directoryGeo">
         </activity>
-        <activity android:name=".StaticMapActivity">
+        <activity android:name=".Activity_staticMap">
         </activity>
         <activity
-            android:name=".SplashActivity"
+            android:name=".Activity_splash"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Black.NoTitleBar">

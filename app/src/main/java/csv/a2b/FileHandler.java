@@ -218,7 +218,8 @@ public class FileHandler extends Activity
             folderName = file.getName();
             if(folderName.length() >= folderPrefixSize)
             {
-                if (folderName.substring(0, folderPrefixSize).equals(strFolderPrefix))
+                if (folderName.substring(0, folderPrefixSize).equals(strFolderPrefix)
+                    && folderName.equals(strFolderPrefix + "webview") == false) // TODO: webview quickfix, wtf!?
                     dirs.add(file.getName().substring(folderPrefixSize));
             }
         }

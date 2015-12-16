@@ -18,13 +18,16 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by der_geiler on 03-06-2015.
  */
-public class TripsActivity extends Activity implements onDBCursorReadyCallback
+public class Activity_trips extends Activity implements onDBCursorReadyCallback
 {
     private Context context;
     private TableLayout tripsTableLayout = null;
@@ -68,7 +71,15 @@ public class TripsActivity extends Activity implements onDBCursorReadyCallback
             } while (c.moveToNext());
 
             runOnUiThread(new Runnable()
-                    {@Override public void run(){ShowTrips(trips, selectedGroup);}});
+                {
+                @Override public void run()
+                {
+                    ShowTrips(trips, selectedGroup);
+                    AdView mAdView = (AdView) findViewById(R.id.adView);
+                    AdRequest adRequest = new AdRequest.Builder().build();
+                    mAdView.loadAd(adRequest);
+                    mAdView.bringToFront();
+                }});
         }
     }
 
@@ -143,7 +154,7 @@ public class TripsActivity extends Activity implements onDBCursorReadyCallback
                         {
                             lastUiAction.view.setBackgroundColor(Color.parseColor("#b0b0b0"));
 
-                            Intent i = new Intent(getApplicationContext(), StaticMapActivity.class);
+                            Intent i = new Intent(getApplicationContext(), Activity_staticMap.class);
                             i.putExtra("trip", selectedTrip);
                             i.putExtra("group", selectedGroup);
                             startActivity(i);
@@ -170,7 +181,7 @@ public class TripsActivity extends Activity implements onDBCursorReadyCallback
             @Override
             public boolean onLongClick(View v)
             {
-                AlertDialog.Builder builder = new AlertDialog.Builder(TripsActivity.this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(Activity_trips.this);
                 final String group = ((TextView) v).getText().toString();
                 builder.setTitle(group);
                 lastUiAction.view.setBackgroundColor(Color.parseColor("#b0b0b0"));

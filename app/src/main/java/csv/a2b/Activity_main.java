@@ -14,7 +14,7 @@ import android.widget.TextView;
 // https://developers.google.com/android/reference/com/google/android/gms/location/Geofence.Builder
 // https://developer.android.com/training/location/geofencing.html#HandleGeofenceTransitions
 
-public class MainActivity extends Activity
+public class Activity_main extends Activity
 {
     static final private String strNewTrip = "New trip";
     static final private String strCurrentTrip = "Current trip";
@@ -35,28 +35,28 @@ public class MainActivity extends Activity
         {
             case R.id.textView_newTrip:
             {
-                i = new Intent(MainActivity.this, NewTripActivity.GetInstance().getClass());
-                i.putExtra("class", MainActivity.class.getPackage().getName() + "." + this.getClass().getSimpleName());
+                i = new Intent(Activity_main.this, Activity_newTrip.GetInstance().getClass());
+                i.putExtra("class", Activity_main.class.getPackage().getName() + "." + this.getClass().getSimpleName());
                 break;
             }
             case R.id.textView_tripGroups:
             {
-                i = new Intent(MainActivity.this, TripGroupsActivity.class);
+                i = new Intent(Activity_main.this, Activity_tripGroups.class);
                 break;
             }
             case R.id.textView_about:
             {
-                i = new Intent(MainActivity.this, Activity_about.class);
+                i = new Intent(Activity_main.this, Activity_about.class);
                 break;
             }
             case R.id.textView_help:
             {
-                i = new Intent(MainActivity.this, Activity_help.class);
+                i = new Intent(Activity_main.this, Activity_help.class);
                 break;
             }
             case R.id.textView_settings:
             {
-                i = new Intent(MainActivity.this, Activity_settings.class);
+                i = new Intent(Activity_main.this, Activity_settings.class);
                 break;
             }
             default:
@@ -146,7 +146,7 @@ public class MainActivity extends Activity
         String fuck = fileHandler.readStackFile();
         */
         Globals.GetInstance(getApplicationContext());
-        NewTripActivity.GetInstance();
+        Activity_newTrip.GetInstance();
         setNewTripText();
         touchRect = new Rect();
         lastUiAction = new uiAction();

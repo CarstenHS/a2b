@@ -3,7 +3,7 @@ package csv.a2b;
 /**
  * Created by der_geiler on 07-04-2015.
 
-public class SplashActivity {
+public class Activity_splash {
 }
 */
 import android.app.Activity;
@@ -11,7 +11,7 @@ import android.app.Activity;
         import android.os.Bundle;
         import android.os.Handler;
 
-public class SplashActivity extends Activity {
+public class Activity_splash extends Activity {
 
     // Splash screen timer
     private static int SPLASH_TIME_OUT = 1000;
@@ -32,7 +32,7 @@ public class SplashActivity extends Activity {
             public void run() {
                 // This method will be executed once the timer is over
                 // Start your app main activity
-                Intent i = new Intent(SplashActivity.this, MainActivity.class);
+                Intent i = new Intent(Activity_splash.this, Activity_main.class);
                 startActivity(i);
 
                 // close this activity

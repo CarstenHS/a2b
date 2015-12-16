@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * Created by der_geiler on 07-11-2015.
  */
-public class DirectoryGeoActivity extends Activity
+public class Activity_directoryGeo extends Activity
 {
     uiAction lastUiAction = null;
     Rect touchRect = null;

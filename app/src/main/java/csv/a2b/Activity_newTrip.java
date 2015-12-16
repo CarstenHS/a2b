@@ -25,7 +25,7 @@ import java.util.List;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
-public class NewTripActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener, GoogleMap.OnMapClickListener
+public class Activity_newTrip extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener, GoogleMap.OnMapClickListener
 {
     public GoogleMap map;
     int MAX_ZOOM = 15;
@@ -38,11 +38,11 @@ public class NewTripActivity extends FragmentActivity implements OnMapReadyCallb
     static final int MENU_ITEM_ID_CREATE_START_END_POINT = 2;
 
     /***** SINGLETON ********/
-    public NewTripActivity(){}
-    private static NewTripActivity instance;
-    public static NewTripActivity GetInstance()
+    public Activity_newTrip(){}
+    private static Activity_newTrip instance;
+    public static Activity_newTrip GetInstance()
     {
-        instance = (instance == null) ? new NewTripActivity() : instance;
+        instance = (instance == null) ? new Activity_newTrip() : instance;
         return instance;
     }
     /***** SINGLETON END *****/

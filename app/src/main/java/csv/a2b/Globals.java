@@ -35,7 +35,7 @@ public class Globals implements
     private Location mLastLocation;
     static private GoogleApiClient mGoogleApiClient = null;
     private boolean mapVisible = false;
-    private NewTripActivity mapActivity = null;
+    private Activity_newTrip mapActivity = null;
     private LocationRequest locationRequest;
     private a2bLoc lastLoc;
     static private Settings settings;
@@ -513,7 +513,7 @@ public class Globals implements
         durationTimer.schedule(new DurationTask(), 1000, 1000);
     }
 
-    public void setMapActivity(NewTripActivity activity){mapActivity = activity;}
+    public void setMapActivity(Activity_newTrip activity){mapActivity = activity;}
 
     public void SetMapVisible(boolean visible)
     {
@@ -537,7 +537,7 @@ public class Globals implements
         durationTimer = new Timer();
         durationTimer.schedule(new DurationTask(), 1000, 1000);
     }
-    public void Test_SetMapVisible(NewTripActivity activity)
+    public void Test_SetMapVisible(Activity_newTrip activity)
     {
         mapVisible = activity;
         if (mGoogleApiClient != null && mLastLocation != null)
@@ -686,8 +686,8 @@ public class Globals implements
             }
             if (mapVisible)
             {
-                mapActivity.UpdateUIElement(NewTripActivity.UI_ELEMENT_DISTANCE, currentTrip.getFormattedDistance(settings.getSpeedUnit()));
-                mapActivity.UpdateUIElement(NewTripActivity.UI_ELEMENT_SPEED, ConvertSpeed(speed));
+                mapActivity.UpdateUIElement(Activity_newTrip.UI_ELEMENT_DISTANCE, currentTrip.getFormattedDistance(settings.getSpeedUnit()));
+                mapActivity.UpdateUIElement(Activity_newTrip.UI_ELEMENT_SPEED, ConvertSpeed(speed));
             }
             lastLoc.setLocation(location);
         }
