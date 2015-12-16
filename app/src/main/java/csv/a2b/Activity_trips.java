@@ -9,11 +9,11 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -34,7 +34,7 @@ public class Activity_trips extends Activity implements onDBCursorReadyCallback
     private FileHandler fileHandler = null;
     uiAction lastUiAction = null;
     Rect touchRect = null;
-    final CharSequence[] groupProps = {"Delete", "noget1", "noget2"};
+    final CharSequence[] groupProps = {"Delete"};
     String selectedGroup;
     String selectedTrip;
 
@@ -66,7 +66,7 @@ public class Activity_trips extends Activity implements onDBCursorReadyCallback
 
             do
             {
-                String name = Trip.convertStampToName(c.getLong(c.getColumnIndexOrThrow(TripsContract.TripsTableEntry.COLUMN_NAME_TRIPS_ID)));
+                String name = c.getString(c.getColumnIndexOrThrow(TripsContract.TripsTableEntry.COLUMN_NAME_TRIPS_TRIP_TITLE));
                 trips.add(name);
             } while (c.moveToNext());
 
@@ -81,6 +81,19 @@ public class Activity_trips extends Activity implements onDBCursorReadyCallback
                     mAdView.bringToFront();
                 }});
         }
+        else// Nothing found clear view
+        {
+            runOnUiThread(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    tripsTableLayout = (TableLayout) findViewById(R.id.tripsTableLayout);
+                    tripsTableLayout.removeAllViewsInLayout();
+                    tripsTableLayout.setVisibility(View.INVISIBLE);
+                }
+            });
+        }
     }
 
     private int Dp2Px(float dp)
@@ -93,12 +106,11 @@ public class Activity_trips extends Activity implements onDBCursorReadyCallback
         return px / context.getResources().getDisplayMetrics().density;
     }
 
-    private void SetDeleteAlert(final String group)
+    private void SetDeleteAlert(final String trip)
     {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setTitle("Delete: " + group + "? (All tripGroups will be deleted!");
-        final EditText input = new EditText(this);
-        alert.setView(input);
+        alert.setTitle("Delete: " + trip + "?");
+        final Activity_trips me = this;
 
         alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener()
         {
@@ -115,8 +127,8 @@ public class Activity_trips extends Activity implements onDBCursorReadyCallback
             {
                 //TODO: Delete trip instead of: fileHandler.DeleteGroup(group);
                 fileHandler.deleteTrip(selectedGroup, selectedTrip);
-                new SQLiteHelperThread().execute(SQLiteHelperThread.ACTION_SELECT, this, selectedGroup);
-                //ShowTrips(selectedGroup);
+                new SQLiteHelperThread().execute(SQLiteHelperThread.ACTION_DELETE_TRIP, trip);
+                new SQLiteHelperThread().execute(SQLiteHelperThread.ACTION_SELECT, me, selectedGroup);
             }
         });
         alert.show();
@@ -192,10 +204,6 @@ public class Activity_trips extends Activity implements onDBCursorReadyCallback
                             {
                                 if (which == 0)
                                     SetDeleteAlert(group);
-                                else
-                                    which = 2;
-                                // The 'which' argument contains the index position
-                                // of the selected item
                             }
                         }
                 );
@@ -210,6 +218,7 @@ public class Activity_trips extends Activity implements onDBCursorReadyCallback
     {
         setContentView(R.layout.trips);
         tripsTableLayout = (TableLayout) findViewById(R.id.tripsTableLayout);
+        tripsTableLayout.removeAllViewsInLayout();
         if (trips.size() != 0)
         {
             for (String trip : trips)

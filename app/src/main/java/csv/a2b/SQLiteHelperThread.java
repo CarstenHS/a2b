@@ -11,8 +11,9 @@ public class SQLiteHelperThread extends AsyncTask<Object, Object, Object>
 {
     static final int ACTION_INSERT = 0;
     static final int ACTION_SELECT = 1;
-    static final int ACTION_DELETE = 2;
-    static final int ACTION_UPDATE = 3;
+    static final int ACTION_DELETE_DIR = 2;
+    static final int ACTION_DELETE_TRIP = 3;
+    static final int ACTION_UPDATE = 4;
 
     public SQLiteHelperThread(){}
 
@@ -33,7 +34,8 @@ public class SQLiteHelperThread extends AsyncTask<Object, Object, Object>
                 ((onDBCursorReadyCallback) objs[1]).onDBCursorReady(c);
                 break;
             }
-            case ACTION_DELETE: Globals.GetInstance(null).getDbHelper().deleteDir((String)objs[1]); break;
+            case ACTION_DELETE_DIR: Globals.GetInstance(null).getDbHelper().deleteDir((String)objs[1]); break;
+            case ACTION_DELETE_TRIP:Globals.GetInstance(null).getDbHelper().deleteTrip((String)objs[1]);break;
             case ACTION_UPDATE: Globals.GetInstance(null).getDbHelper().updateDir((String) objs[1], (String) objs[2]); break;
             default: break;
         }

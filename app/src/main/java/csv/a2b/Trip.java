@@ -19,7 +19,7 @@ public class Trip
     private float topSpeedInMetPerSec = 0;
     private String startGeo = null;
     private String endGeo = null;
-    private final static String strFORMAT = "yyyy-MM-dd@HH:mm";
+    static public final String strFORMAT = "yyyy-MM-dd@HH:mm";
 
     Trip(){}
 

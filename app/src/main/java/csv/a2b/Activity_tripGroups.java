@@ -123,7 +123,7 @@ public class Activity_tripGroups extends Activity
             {
                 fileHandler.DeleteGroup(group);
                 Globals.GetInstance(null).removeDir(group);
-                new SQLiteHelperThread().execute(SQLiteHelperThread.ACTION_DELETE, group);
+                new SQLiteHelperThread().execute(SQLiteHelperThread.ACTION_DELETE_DIR, group);
                 ShowTripGroups();
             }
         });

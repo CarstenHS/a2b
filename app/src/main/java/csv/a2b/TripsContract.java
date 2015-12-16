@@ -22,5 +22,6 @@ public final class TripsContract
         public static final String COLUMN_NAME_TRIPS_END_GEO    = "endGeo";
         public static final String COLUMN_NAME_TRIPS_TOP_SPEED  = "topSpeed";
         public static final String COLUMN_NAME_TRIPS_DISTANCE   = "distance";
+        public static final String COLUMN_NAME_TRIPS_TRIP_TITLE = "title";
     }
 }
