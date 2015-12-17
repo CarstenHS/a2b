@@ -50,6 +50,7 @@ public class Activity_trips extends Activity implements onDBCursorReadyCallback
         if (null != intent)
             selectedGroup = intent.getStringExtra("group");
 
+        this.setTitle(selectedGroup);
         new SQLiteHelperThread().execute(SQLiteHelperThread.ACTION_SELECT, this, selectedGroup);
         lastUiAction = new uiAction();
         touchRect = new Rect();
@@ -89,8 +90,11 @@ public class Activity_trips extends Activity implements onDBCursorReadyCallback
                 public void run()
                 {
                     tripsTableLayout = (TableLayout) findViewById(R.id.tripsTableLayout);
-                    tripsTableLayout.removeAllViewsInLayout();
-                    tripsTableLayout.setVisibility(View.INVISIBLE);
+                    if(tripsTableLayout != null)
+                    {
+                        tripsTableLayout.removeAllViewsInLayout();
+                        tripsTableLayout.setVisibility(View.INVISIBLE);
+                    }
                 }
             });
         }

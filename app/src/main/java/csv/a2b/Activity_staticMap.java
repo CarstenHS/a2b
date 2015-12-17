@@ -140,7 +140,7 @@ public class Activity_staticMap extends FragmentActivity implements OnMapReadyCa
             selectedGroup = intent.getStringExtra("group");
             selectedTrip = intent.getStringExtra("trip");
             trip = fileHandler.LoadTrip(selectedGroup, selectedTrip);
-
+            this.setTitle(selectedTrip);
         }
         if(trip != null)
             ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMapAsync(this);
