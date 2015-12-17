@@ -11,6 +11,9 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+
 // https://developers.google.com/android/reference/com/google/android/gms/location/Geofence.Builder
 // https://developer.android.com/training/location/geofencing.html#HandleGeofenceTransitions
 
@@ -141,16 +144,17 @@ public class Activity_main extends Activity
 
         FileHandler fileHandler = FileHandler.GetInstance();
         fileHandler.Init(getApplicationContext());
-        /*
-        fileHandler.listFiles();
-        String fuck = fileHandler.readStackFile();
-        */
         Globals.GetInstance(getApplicationContext());
         Activity_newTrip.GetInstance();
         setNewTripText();
         touchRect = new Rect();
         lastUiAction = new uiAction();
         setUiActions();
+
+        AdView mAdView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+        mAdView.bringToFront();
     }
 
     @Override

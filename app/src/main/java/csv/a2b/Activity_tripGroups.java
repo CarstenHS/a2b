@@ -50,10 +50,13 @@ public class Activity_tripGroups extends Activity
         fileHandler.Init(context);
         ShowTripGroups();
 
-        AdView mAdView = (AdView) findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
-        mAdView.bringToFront();
+        if(tripGroupsTableLayout.getChildCount() <8)
+        {
+            AdView mAdView = (AdView) findViewById(R.id.adView);
+            AdRequest adRequest = new AdRequest.Builder().build();
+            mAdView.loadAd(adRequest);
+            mAdView.bringToFront();
+        }
 
         lastUiAction = new uiAction();
         touchRect = new Rect();
