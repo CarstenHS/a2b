@@ -17,7 +17,6 @@ class A2BCircle
         this.name = name;
     }
     Circle getCircle(){return circle;}
-    void setCircle(Circle c){circle = c;}
     String getName(){return name;}
     void setName(String name){this.name = name;}
 }

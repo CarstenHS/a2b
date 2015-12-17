@@ -48,14 +48,7 @@ public class SQLiteHelper extends SQLiteOpenHelper
 
     public SQLiteHelper(Context context)
     {
-        super(context, Environment.getExternalStorageDirectory() + File.separator + DATABASE_NAME, null, DATABASE_VERSION);
-        SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(Environment.getExternalStorageDirectory()
-                + File.separator+ DATABASE_NAME,null);
-
-        /*
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(DATABASE_NAME,null);
-        */
     }
     public void onCreate(SQLiteDatabase db)
     {

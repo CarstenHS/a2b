@@ -50,7 +50,7 @@ public class Activity_tripGroups extends Activity
         fileHandler.Init(context);
         ShowTripGroups();
 
-        if(tripGroupsTableLayout.getChildCount() <8)
+        if(tripGroupsTableLayout.getChildCount() <5)
         {
             AdView mAdView = (AdView) findViewById(R.id.adView);
             AdRequest adRequest = new AdRequest.Builder().build();

@@ -77,7 +77,7 @@ public class Activity_trips extends Activity implements onDBCursorReadyCallback
                 {
                     ShowTrips(trips, selectedGroup);
                     tripsTableLayout = (TableLayout) findViewById(R.id.tripsTableLayout);
-                    if(tripsTableLayout.getChildCount() <8)
+                    if(tripsTableLayout.getChildCount() <5)
                     {
                         AdView mAdView = (AdView) findViewById(R.id.adView);
                         AdRequest adRequest = new AdRequest.Builder().build();
