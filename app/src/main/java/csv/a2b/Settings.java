@@ -13,7 +13,6 @@ public class Settings
     public static final int SPEED_UNIT_KPH      = 2;
     public static final int APP_MODE_MANUAL     = 0;
     public static final int APP_MODE_AUTO       = 1;
-    //public static final int APP_MODE_SEMI_AUTO  = 1;
 
     public Settings()
     {

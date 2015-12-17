@@ -37,9 +37,7 @@ public class Trip
     public A2BMarker getMarker(int index){return A2BMarkers.get(index);}
     public String getStartGeo(){return startGeo;}
     public String getEndGeo(){return endGeo;}
-    public Date GetTimeStart() {return dateStart;}
     public int getTicks(){return ticks;}
-    public long getStartTimestamp(){return dateStart.getTime();}
     public long getEndTimestamp(){return dateEnd.getTime();}
     public float getTopSpeed(){return topSpeedInMetPerSec;}
     public float getDistance(){return distance;}
@@ -76,11 +74,6 @@ public class Trip
     {
         DateFormat df = new DateFormat();
         return df.format(strFORMAT, this.dateEnd).toString();
-    }
-    static public String convertStampToName(long stamp)
-    {
-        DateFormat df = new DateFormat();
-        return df.format(strFORMAT, stamp).toString();
     }
     public int IncTick()
     {

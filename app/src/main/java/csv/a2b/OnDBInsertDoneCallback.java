@@ -5,5 +5,5 @@ package csv.a2b;
  */
 public interface OnDBInsertDoneCallback
 {
-    public void onDBInsertDone();
+    void onDBInsertDone();
 }

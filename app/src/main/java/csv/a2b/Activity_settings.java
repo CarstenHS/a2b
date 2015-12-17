@@ -7,10 +7,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
-
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -97,8 +95,5 @@ public class Activity_settings extends Activity implements AdapterView.OnItemSel
     }
 
     @Override
-    public void onNothingSelected(AdapterView<?> parent)
-    {
-
-    }
+    public void onNothingSelected(AdapterView<?> parent){}
 }

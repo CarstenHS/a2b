@@ -40,8 +40,6 @@ public class Globals implements
     private a2bLoc lastLoc;
     static private Settings settings;
     private static final int DIST_UNIT_KILOMETERS = 0;
-    private static final int DIST_UNIT_MILES = 1;
-    private int distUnit = DIST_UNIT_KILOMETERS;
     private static PendingIntent mGeofencePendingIntent = null;
     static private GoogleMap map;
     private static List<A2BGeofence> a2BGeofences;
@@ -79,12 +77,6 @@ public class Globals implements
             settings = (settings != null) ? settings : new Settings();
             if(circles == null)
                 circles = new ArrayList<>();
-            //settings = new Settings();
-            //fileHandlerInstance.saveSettings(settings);
-/*
-            dirEntries.clear();
-            fileHandlerInstance.SaveDirInfos(dirEntries);
-*/
             if (dirEntries == null)
                 dirEntries = new ArrayList<>();
             if (dirEntries.size() == 0)
@@ -98,24 +90,6 @@ public class Globals implements
         }
         return instance;
     }
-
-    /*** accessing toolkit from secondary thread ***/
-/*
-    final Runnable runStartTrip = new Runnable()
-    {
-        @Override
-        public void run()
-        {
-            Test_startTrip();
-        }
-    };
-
-    public void startTripExt()
-    {
-        ctx.
-        uiHandler.post(runStartTrip);
-    }
-*/
     /*** accessing toolkit from secondary thread END ***/
 
     public void updateSettings(Settings settings)
@@ -197,7 +171,6 @@ public class Globals implements
 
     static public void renameDir(A2BdirInfo di)
     {
-        A2BdirInfo diInfo = null;
         for (Iterator<A2BdirInfo> iter = dirEntries.iterator(); iter.hasNext(); )
         {
             A2BdirInfo element = iter.next();
@@ -224,16 +197,6 @@ public class Globals implements
                 element.setGeofenceStart(strNotSet);
         }
     }
-
-    /* General todos:
-
-    2nd:
-        todo: Loading of types can be templates
-        todo: Removing entry in array should be template
-        todo: setTouchActions is used in dirGeo also. Could be made as lib
-        todo: OnConnection lost etc???
-     */
-
     /*************
      * GEOFENCING
      *****************/
@@ -245,7 +208,7 @@ public class Globals implements
         {
             geofences = new ArrayList<>();
             for (Iterator<A2BGeofence> iter = a2BGeofences.iterator(); iter.hasNext(); )
-                geofences.add((A2BGeofence) iter.next());
+                geofences.add(iter.next());
         }
         return geofences;
     }
@@ -260,10 +223,7 @@ public class Globals implements
     }
 
     @Override
-    public void onResult(Result result)
-    {
-        result = result;
-    }
+    public void onResult(Result result){}
 
     public void setMap(GoogleMap map)
     {
@@ -455,12 +415,6 @@ public class Globals implements
         {
             return new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
         }
-
-        public Location getLocation()
-        {
-            return lastLocation;
-        }
-
         public void setLocation(Location l)
         {
             lastLocation = l;
@@ -469,9 +423,9 @@ public class Globals implements
 
     public String ExtractDurationFromTicks(int ticks)
     {
-        String hours = null;
-        String mins = null;
-        String secs = null;
+        String hours;
+        String mins;
+        String secs;
         int unit = 60 * 60;
 
         int temp = ticks / unit;
@@ -522,123 +476,6 @@ public class Globals implements
             LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
     }
 
-    //********************** TESTING **********************//
-    /*
-    public void Test_StartMarkerTimer()
-    {
-        Test_MarkerTask task = new Test_MarkerTask();
-        TripTimer = new Timer();
-        int timeout = 1000 * 60 * settings.getMarkerTimeout();
-        TripTimer.schedule(task, timeout, timeout);
-    }
-
-    public void Test_StartDurationTimer()
-    {
-        durationTimer = new Timer();
-        durationTimer.schedule(new DurationTask(), 1000, 1000);
-    }
-    public void Test_SetMapVisible(Activity_newTrip activity)
-    {
-        mapVisible = activity;
-        if (mGoogleApiClient != null && mLastLocation != null)
-            LocationServices.FusedLocationApi.setMockLocation(mGoogleApiClient, mLastLocation);
-    }
-
-    public LatLng Test_UpdateLocation()
-    {
-        LatLng ll = null;
-        if (mLastLocation != null)
-        {
-            double lat = mLastLocation.getLatitude();
-            double lon = mLastLocation.getLongitude();
-            if(currentTrip != null)
-                currentTrip.addA2bMarker(new A2BMarker(new Date(), lat, lon));
-            ll = new LatLng(lat, lon);
-        }
-        return ll;
-    }
-
-    public GoogleApiClient Test_buildGoogleApiClient()
-    {
-        mGoogleApiClient = new GoogleApiClient.Builder(ctx)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build();
-
-        mGoogleApiClient.connect();
-        return mGoogleApiClient;
-    }
-
-    @Override
-    public void onConnected(Bundle connectionHint)
-    {
-        LocationServices.FusedLocationApi.setMockMode(mGoogleApiClient,true);
-        //Set test location
-        mLastLocation=new Location("network");
-        mLastLocation.setLatitude(55.6476651);
-        mLastLocation.setLongitude(12.6244121);
-        mLastLocation.setAltitude(0);
-        mLastLocation.setAccuracy(1);
-        mLastLocation.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos());
-        mLastLocation.setTime(System.currentTimeMillis());
-
-        LocationServices.FusedLocationApi.setMockLocation(mGoogleApiClient, mLastLocation);
-        lastLoc = new a2bLoc();
-        lastLoc.setLocation(mLastLocation);
-        onLocationChanged(mLastLocation);
-        Test_StartMarkerTimer();
-        initGeofences();
-    }
-
-    public class Test_MarkerTask extends TimerTask implements Runnable
-    {
-        @Override
-        public void run()
-        {
-            switch(mockCnt)
-            {
-                case 0:
-                {
-                    // temp
-                    mLastLocation.setLatitude(55.647223);
-                    mLastLocation.setLongitude(12.620465);
-                    break;
-                }
-                case 1:
-                {
-                    //test1
-                    mLastLocation.setLatitude(55.648610);
-                    mLastLocation.setLongitude(12.621295);
-                    break;
-                }
-            }
-            mLastLocation.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos());
-            mLastLocation.setTime(System.currentTimeMillis());
-            LocationServices.FusedLocationApi.setMockLocation(mGoogleApiClient, mLastLocation);
-            mockCnt++;
-
-            LatLng ll = Test_UpdateLocation();
-            if(mapVisible != null && currentTrip != null)
-                mapVisible.AddMarkerUI(ll, currentTrip.getNumMarkers() - 1);
-        }
-    }
-
-    public void Test_startTrip()
-    {
-        currentTrip = new Trip();
-        currentTrip.setA2bMarkers(new ArrayList<A2BMarker>());
-        currentTrip.SetTimeStart(new Date());
-        Test_StartDurationTimer();
-
-        LatLng ll = Test_UpdateLocation();
-
-        if(mapVisible != null)
-            mapVisible.setMapExt(ll);
-    }
-    */
-    //********************** TESTING END **********************//
-
     public LatLng UpdateLocation()
     {
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
@@ -674,7 +511,6 @@ public class Globals implements
     @Override
     public void onLocationChanged(Location location)
     {
-        Date now = new Date();
         if (lastLoc != null && currentTrip != null)
         {
             float speed = location.getSpeed();
@@ -714,9 +550,7 @@ public class Globals implements
 
     public void onStatusChanged(String provider, int status, Bundle extras){}
 
-    public void onProviderEnabled(String provider)
-    {
-    }
+    public void onProviderEnabled(String provider){}
 
     public void onProviderDisabled(String provider){}
 
@@ -837,11 +671,6 @@ public class Globals implements
         currentTrip = null;
         if(mapActivity != null)
             mapActivity.finish();
-        /*
-        dbHelper.close();
-        instance = null;
-        System.exit(0);
-        */
     }
 
 }

@@ -19,11 +19,6 @@ public class A2BMarker
         this.lon = lon;
     }
 
-    A2BMarker(double lat, double lon)
-    {
-        this.lat = lat;
-        this.lon = lon;
-    }
     double GetLat() {return lat;}
     double GetLon() {return lon;}
 }

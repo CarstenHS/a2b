@@ -9,7 +9,6 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -17,10 +16,8 @@ import android.view.View;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,7 +59,6 @@ public class Activity_trips extends Activity implements onDBCursorReadyCallback
         if(c != null && c.getCount() != 0)
         {
             c.moveToFirst();
-            long id;
             final List<String> trips = new ArrayList<>();
 
             do
@@ -125,13 +121,7 @@ public class Activity_trips extends Activity implements onDBCursorReadyCallback
         final Activity_trips me = this;
 
         alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener()
-        {
-            @Override
-            public void onClick(DialogInterface dialog, int which)
-            {
-                //input.setText("canceled");
-            }
-        });
+        {@Override public void onClick(DialogInterface dialog, int which){}});
         alert.setPositiveButton("OK", new DialogInterface.OnClickListener()
         {
             @Override

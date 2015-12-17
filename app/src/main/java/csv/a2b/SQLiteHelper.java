@@ -6,14 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
-import android.os.Environment;
-import android.text.format.DateFormat;
-import android.util.Log;
 import csv.a2b.TripsContract.*;
-import java.io.File;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 /**
  * Created by der_geiler on 19-11-2015.
@@ -26,9 +19,7 @@ public class SQLiteHelper extends SQLiteOpenHelper
     private static final String TEXT_TYPE = " TEXT";
     private static final String INT_TYPE = " INTEGER";
     private static final String COMMA_SEP = ",";
-    private static final String strAND = "AND";
     private static final String strEQUALS = "=?";
-    private static final String strGreaterThan = ">?";
 
     private static final String TRIPS_TABLE_CREATE =
             "CREATE TABLE " + TripsTableEntry.TRIPS_TABLE_NAME + " (" +

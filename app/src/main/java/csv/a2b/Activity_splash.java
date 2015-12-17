@@ -2,21 +2,16 @@ package csv.a2b;
 
 /**
  * Created by der_geiler on 07-04-2015.
-
-public class Activity_splash {
-}
 */
 import android.app.Activity;
-        import android.content.Intent;
-        import android.os.Bundle;
-        import android.os.Handler;
-
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Handler;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
 public class Activity_splash extends Activity {
 
-    // Splash screen timer
     private static int SPLASH_TIME_OUT = 3000;
 
     @Override
@@ -42,8 +37,6 @@ public class Activity_splash extends Activity {
                 // Start your app main activity
                 Intent i = new Intent(Activity_splash.this, Activity_main.class);
                 startActivity(i);
-
-                // close this activity
                 finish();
             }
         }, SPLASH_TIME_OUT);

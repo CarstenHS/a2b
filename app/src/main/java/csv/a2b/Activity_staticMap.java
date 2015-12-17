@@ -6,7 +6,6 @@ import android.support.v4.app.FragmentActivity;
 import android.util.TypedValue;
 import android.widget.TableLayout;
 import android.widget.TextView;
-
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.maps.CameraUpdate;
@@ -19,7 +18,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-
 import java.text.SimpleDateFormat;
 import java.util.List;
 
@@ -57,7 +55,7 @@ public class Activity_staticMap extends FragmentActivity implements OnMapReadyCa
         }
         else
         {
-            Marker marker = map.addMarker(new MarkerOptions()
+            map.addMarker(new MarkerOptions()
                     .position(ll)
                     .title(fmt.format(trip.getMarker(num).date))
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
@@ -104,7 +102,7 @@ public class Activity_staticMap extends FragmentActivity implements OnMapReadyCa
         ((TextView) findViewById(R.id.duration)).setText(duration);
 
         int height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 60, getResources().getDisplayMetrics());
-        ((TableLayout)findViewById(R.id.tripPropsTableLayout)).getLayoutParams().height = height;
+        findViewById(R.id.tripPropsTableLayout).getLayoutParams().height = height;
 
         int i = 0;
         for(A2BMarker mkr : A2BMarkers)

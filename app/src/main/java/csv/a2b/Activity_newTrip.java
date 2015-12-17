@@ -47,18 +47,6 @@ public class Activity_newTrip extends FragmentActivity implements OnMapReadyCall
     }
     /***** SINGLETON END *****/
 
-    public void SetMap(LatLng ll)
-    {
-        map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
-        //map.setMyLocationEnabled(true);
-        if(ll != null)
-        {
-            AddMarkerToMap(ll, 0);
-            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(ll, MAX_ZOOM);
-            map.animateCamera(cameraUpdate);
-        }
-    }
-
     public void setMapExt(final LatLng ll)
     {
         runOnUiThread(new Runnable()
@@ -74,11 +62,6 @@ public class Activity_newTrip extends FragmentActivity implements OnMapReadyCall
     }
 
     public GoogleMap getMap(){return map;}
-
-    private void EndTrip()
-    {
-        Trip currentTrip = globals.GetCurrentTrip();
-    }
 
     public void zoomToPosition(LatLng ll)
     {
@@ -118,7 +101,6 @@ public class Activity_newTrip extends FragmentActivity implements OnMapReadyCall
             {
                 AddMarkerToMap(ll, num);
                 zoomToPosition(ll);
-                //UpdateBounds();
             }
         });
     }
@@ -162,7 +144,7 @@ public class Activity_newTrip extends FragmentActivity implements OnMapReadyCall
         }
         else
         {
-            Marker marker = map.addMarker(new MarkerOptions()
+             map.addMarker(new MarkerOptions()
                     .position(ll)
                     .title(fmt.format(currentTrip.getMarker(num).date))
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
@@ -421,29 +403,4 @@ public class Activity_newTrip extends FragmentActivity implements OnMapReadyCall
             ShowDialogGeofenceKill(hitGeofence);
         }
     }
-
-    /*
-    public void UpdateBounds()
-    {
-        Trip currentTrip = ((Globals)this.getApplication()).GetCurrentTrip();
-
-        CameraUpdate cameraUpdate;
-        if(currentTrip.A2BMarkers.size() > 1)
-        {
-            LatLngBounds.Builder builder = new LatLngBounds.Builder();
-            for (A2BMarker marker : currentTrip.A2BMarkers)
-            {
-                builder.include(marker.ll);
-            }
-
-            LatLngBounds bounds = builder.build();
-            cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 50);
-        }
-        else
-        {
-            cameraUpdate = CameraUpdateFactory.newLatLngZoom(currentTrip.A2BMarkers.get(0).ll, MAX_ZOOM);
-        }
-        map.animateCamera(cameraUpdate);
-    }
-*/
 }

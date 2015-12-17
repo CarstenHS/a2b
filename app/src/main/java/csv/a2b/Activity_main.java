@@ -10,7 +10,6 @@ import android.view.View;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
@@ -100,7 +99,7 @@ public class Activity_main extends Activity
                             if (lastUiAction.lastAction == MotionEvent.ACTION_DOWN)
                             {
                                 lastUiAction.view.setBackgroundColor(Color.parseColor("#b0b0b0"));
-                                startActivity(((TextView) v).getId());
+                                startActivity(v.getId());
                             }
                             break;
                         }

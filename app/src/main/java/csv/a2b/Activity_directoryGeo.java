@@ -11,7 +11,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -85,8 +84,8 @@ public class Activity_directoryGeo extends Activity
             case R.id.endPointSub:      /* Fall-through */
             case R.id.endPointSuper:
             {
-                ((TextView)findViewById(R.id.endPointSub)).setBackgroundColor(color);
-                ((TextView)findViewById(R.id.endPointSuper)).setBackgroundColor(color);
+                findViewById(R.id.endPointSub).setBackgroundColor(color);
+                findViewById(R.id.endPointSuper).setBackgroundColor(color);
                 ret = END_GEO;
                 break;
             }
@@ -94,8 +93,8 @@ public class Activity_directoryGeo extends Activity
             case R.id.startPointSuper:  /* Fall-through */
             case R.id.startPointSub:
             {
-                ((TextView) findViewById(R.id.startPointSuper)).setBackgroundColor(color);
-                ((TextView) findViewById(R.id.startPointSub)).setBackgroundColor(color);
+                findViewById(R.id.startPointSuper).setBackgroundColor(color);
+                findViewById(R.id.startPointSub).setBackgroundColor(color);
                 ret = START_GEO;
                 break;
             }

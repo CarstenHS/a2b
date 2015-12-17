@@ -18,10 +18,8 @@ import android.widget.EditText;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
-
 import java.util.List;
 
 /**
@@ -65,11 +63,6 @@ public class Activity_tripGroups extends Activity
     private int Dp2Px(float dp)
     {
         return (int)(context.getResources().getDisplayMetrics().density * dp);
-    }
-
-    private float Px2Dp(float px)
-    {
-        return px / context.getResources().getDisplayMetrics().density;
     }
 
     private void SetRenameAlert(final String oldGroupname)

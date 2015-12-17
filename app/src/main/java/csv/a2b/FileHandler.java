@@ -2,10 +2,8 @@ package csv.a2b;
 
 import android.app.Activity;
 import android.content.Context;
-
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
@@ -155,21 +153,6 @@ public class FileHandler extends Activity
         return trip;
     }
 
-    public List<String> LoadTrips(String groupPath)
-    {
-        //File file = new File(groupPath);
-        File folder = context.getDir(groupPath, Context.MODE_PRIVATE);
-        File[] files = folder.listFiles();
-
-        List<String> fileNames = new ArrayList<>();
-
-        for (File f : files)
-        {
-            fileNames.add(f.getName());
-        }
-        return fileNames;
-    }
-
     private void DeleteRecursive(File fileOrDirectory)
     {
         if (fileOrDirectory.isDirectory())
@@ -242,8 +225,7 @@ public class FileHandler extends Activity
         boolean success = false;
         if(DirectoryExist(name) == false)
         {
-            File folder = new File(dataDir + "/" + strFolderPrefix + name);
-            boolean created = folder.mkdir();
+            new File(dataDir + "/" + strFolderPrefix + name);
             success = true;
         }
         return success;
@@ -426,61 +408,4 @@ public class FileHandler extends Activity
         }
         catch (Exception e){e.printStackTrace();}
     }
-
-    public void saveStackTrace(String stackTrace)
-    {
-        String filename = "a2bStackTrace.txt";
-        File file = new File(context.getFilesDir(), filename);
-
-        if(file.exists() == false)
-        {
-            try{ file.createNewFile();}
-            catch (Exception e) {e.printStackTrace();}
-        }
-        file.setWritable(true);
-        try
-        {
-            FileWriter writer = new FileWriter(file);
-            writer.append(stackTrace + "\n");
-            writer.close();
-        }
-        catch (Exception e){e.printStackTrace();}
-    }
-
-    public void listFiles()
-    {
-        File f = new File(context.getFilesDir().getPath());
-        File file[] = f.listFiles();
-        /*
-        Log.d("Files", "Size: " + file.length);
-        for (int i=0; i < file.length; i++)
-        {
-            Log.d("Files", "FileName:" + file[i].getName());
-        }
-        */
-    }
-
-    public String readStackFile()
-    {
-        StringBuilder stringBuilder = new StringBuilder();
-        String line;
-        BufferedReader in = null;
-
-        try
-        {
-            in = new BufferedReader(new FileReader(new File(context.getFilesDir(), "a2bStackTrace.txt")));
-            while ((line = in.readLine()) != null) stringBuilder.append(line);
-        }
-        catch (FileNotFoundException e)
-        {
-            //Logger.logError(TAG, e);
-        }
-        catch (IOException e)
-        {
-            //Logger.logError(TAG, e);
-        }
-
-        return stringBuilder.toString();
-    }
-
 }
