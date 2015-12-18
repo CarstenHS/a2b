@@ -43,7 +43,7 @@ public class FileHandler extends Activity
 
     public void Init(Context context)
     {
-        dataDir = context.getFilesDir().getParent();
+        dataDir = context.getFilesDir().getPath();
         this.context = context;
     }
 
@@ -222,7 +222,8 @@ public class FileHandler extends Activity
         boolean success = false;
         if(DirectoryExist(name) == false)
         {
-            new File(dataDir + "/" + strFolderPrefix + name);
+            File folder = new File(dataDir + "/" + strFolderPrefix + name);
+            folder.mkdir();
             success = true;
         }
         return success;

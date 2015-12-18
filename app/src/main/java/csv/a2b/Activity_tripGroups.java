@@ -274,7 +274,10 @@ public class Activity_tripGroups extends Activity
 
         alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener()
         {
-            @Override public void onClick(DialogInterface dialog, int which){}
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
+            }
         });
         alert.setPositiveButton("OK", new DialogInterface.OnClickListener()
         {
@@ -291,8 +294,7 @@ public class Activity_tripGroups extends Activity
                         builder.setCancelable(true);
                         AlertDialog ad = builder.create();
                         ad.show();
-                    }
-                    else
+                    } else
                         Globals.GetInstance(null).setDir(new A2BdirInfo(groupName));
                 }
                 ShowTripGroups();
