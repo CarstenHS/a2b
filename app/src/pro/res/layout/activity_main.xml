@@ -6,7 +6,7 @@
                 android:paddingRight="@dimen/activity_horizontal_margin"
                 android:paddingTop="@dimen/activity_vertical_margin"
                 android:paddingBottom="@dimen/activity_vertical_margin"
-                tools:context=".free.csv.a2b.Activity_main">
+                tools:context=".csv.a2b.Activity_main">
 
     <TableLayout
         android:layout_width="fill_parent"
@@ -44,7 +44,7 @@
 
             <TextView
                 android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:textSize="18dp" android:text="csv.a2b.Trip groups"  android:layout_span="1"
+                android:textSize="18dp" android:text="Trip groups"  android:layout_span="1"
                 android:padding="18dip" android:background="#b0b0b0"
                 android:textColor="#000" android:gravity="center_horizontal"
                 android:layout_weight="1" android:layout_margin="1dp"
@@ -60,7 +60,7 @@
 
             <TextView
                 android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:textSize="18dp" android:text="csv.a2b.Settings"  android:layout_span="1"
+                android:textSize="18dp" android:text="Settings"  android:layout_span="1"
                 android:padding="18dip" android:background="#b0b0b0"
                 android:textColor="#000" android:gravity="center_horizontal"
                 android:layout_weight="1" android:layout_margin="1dp"
