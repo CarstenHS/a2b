@@ -35,7 +35,8 @@ public class SQLiteHelperThread extends AsyncTask<Object, Object, Object>
                 break;
             }
             case ACTION_DELETE_DIR: Globals.GetInstance(null).getDbHelper().deleteDir((String)objs[1]); break;
-            case ACTION_DELETE_TRIP:Globals.GetInstance(null).getDbHelper().deleteTrip((String)objs[1]);break;
+            case ACTION_DELETE_TRIP:
+                Globals.GetInstance(null).getDbHelper().deleteTrip((String)objs[1]);break;
             case ACTION_UPDATE: Globals.GetInstance(null).getDbHelper().updateDir((String) objs[1], (String) objs[2]); break;
             default: break;
         }

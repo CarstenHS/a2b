@@ -150,10 +150,13 @@ public class Activity_main extends Activity
         lastUiAction = new uiAction();
         setUiActions();
 
-        AdView mAdView = (AdView) findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
-        mAdView.bringToFront();
+        if(BuildConfig.FLAVOR.equals("free"))
+        {
+            AdView mAdView = (AdView) findViewById(R.id.adView);
+            AdRequest adRequest = new AdRequest.Builder().build();
+            mAdView.loadAd(adRequest);
+            mAdView.bringToFront();
+        }
     }
 
     @Override

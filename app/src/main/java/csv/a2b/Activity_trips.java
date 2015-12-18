@@ -73,7 +73,7 @@ public class Activity_trips extends Activity implements onDBCursorReadyCallback
                 {
                     ShowTrips(trips, selectedGroup);
                     tripsTableLayout = (TableLayout) findViewById(R.id.tripsTableLayout);
-                    if(tripsTableLayout.getChildCount() <5)
+                    if(BuildConfig.FLAVOR.equals("free") && (tripsTableLayout.getChildCount() <5))
                     {
                         AdView mAdView = (AdView) findViewById(R.id.adView);
                         AdRequest adRequest = new AdRequest.Builder().build();
@@ -95,10 +95,13 @@ public class Activity_trips extends Activity implements onDBCursorReadyCallback
                         tripsTableLayout.removeAllViewsInLayout();
                         tripsTableLayout.setVisibility(View.INVISIBLE);
                     }
-                    AdView mAdView = (AdView) findViewById(R.id.adView);
-                    AdRequest adRequest = new AdRequest.Builder().build();
-                    mAdView.loadAd(adRequest);
-                    mAdView.bringToFront();
+                    if(BuildConfig.FLAVOR.equals("free"))
+                    {
+                        AdView mAdView = (AdView) findViewById(R.id.adView);
+                        AdRequest adRequest = new AdRequest.Builder().build();
+                        mAdView.loadAd(adRequest);
+                        mAdView.bringToFront();
+                    }
                 }
             });
         }

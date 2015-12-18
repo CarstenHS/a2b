@@ -7,9 +7,12 @@ import com.google.android.gms.location.GeofencingEvent;
 import java.io.IOException;
 import java.util.List;
 
+import csv.a2b.FileHandler;
+import csv.a2b.Globals;
+
 public class GeofenceTransitionsIntentService extends IntentService
 {
-    public GeofenceTransitionsIntentService (){super("GeofenceTransitionsIntentService");};
+    public GeofenceTransitionsIntentService (){super("csv.a2b.GeofenceTransitionsIntentService");};
 
     protected void onHandleIntent(Intent intent)
     {

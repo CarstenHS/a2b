@@ -7,6 +7,8 @@ import android.text.format.*;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import csv.a2b.A2BMarker;
+
 /**
  * Created by der_geiler on 03-05-2015.
  */

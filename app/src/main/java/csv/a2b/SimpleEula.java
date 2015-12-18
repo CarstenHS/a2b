@@ -14,6 +14,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import csv.a2b.R;
+
 // ressource: http://www.donnfelker.com/android-a-simple-eula-for-your-android-apps/
 
 /**

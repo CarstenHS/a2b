@@ -1,6 +1,4 @@
-package csv.a2b;
-
-/**
+package csv.a2b; /**
  * Created by der_geiler on 11-04-2015.
 */
 
@@ -11,6 +9,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import com.google.android.gms.maps.*;
@@ -221,9 +220,12 @@ public class Activity_newTrip extends FragmentActivity implements OnMapReadyCall
         super.onCreate(savedInstanceState);
         setContentView(R.layout.new_trip);
 
-        AdView mAdView = (AdView) findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
+        if(BuildConfig.FLAVOR.equals("free"))
+        {
+            AdView mAdView = (AdView) findViewById(R.id.adView);
+            AdRequest adRequest = new AdRequest.Builder().build();
+            mAdView.loadAd(adRequest);
+        }
 
         findViewById(R.id.tripPropsTableLayout).bringToFront();
 

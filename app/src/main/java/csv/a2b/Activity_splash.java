@@ -1,12 +1,11 @@
-package csv.a2b;
-
-/**
+package csv.a2b; /**
  * Created by der_geiler on 07-04-2015.
 */
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.View;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
@@ -19,10 +18,13 @@ public class Activity_splash extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        AdView mAdView = (AdView) findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
-        mAdView.bringToFront();
+        if(BuildConfig.FLAVOR.equals("free"))
+        {
+            AdView mAdView = (AdView) findViewById(R.id.adView);
+            AdRequest adRequest = new AdRequest.Builder().build();
+            mAdView.loadAd(adRequest);
+            mAdView.bringToFront();
+        }
 
         new Handler().postDelayed(new Runnable() {
 

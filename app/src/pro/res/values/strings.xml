@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">A2B</string>
+    <string name="end_trip">End trip</string>
+    <string name="create_start_end">Create Start/End point</string>
+    <string name="start_trip">Start trip</string>
+    <string name="title_activity_activity_about">About</string>
+    <string name="title_activity_activity_help">Help</string>
+    <string name="title_activity_activity_settings">csv.a2b.Settings</string>
+    <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="updates">The EULA applies to the above version of A2B.</string>
+</resources>

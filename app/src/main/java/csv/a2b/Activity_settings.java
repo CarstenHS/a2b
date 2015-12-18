@@ -56,9 +56,12 @@ public class Activity_settings extends Activity implements AdapterView.OnItemSel
         spinner.setSelection(settings.getMarkerTimeout() - 1);
         spinner.setOnItemSelectedListener(this);
 
-        AdView mAdView = (AdView) findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
+        if(BuildConfig.FLAVOR.equals("free"))
+        {
+            AdView mAdView = (AdView) findViewById(R.id.adView);
+            AdRequest adRequest = new AdRequest.Builder().build();
+            mAdView.loadAd(adRequest);
+        }
     }
 
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)

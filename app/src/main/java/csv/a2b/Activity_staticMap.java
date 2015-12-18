@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.TypedValue;
-import android.widget.TableLayout;
+import android.view.View;
 import android.widget.TextView;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -121,15 +121,15 @@ public class Activity_staticMap extends FragmentActivity implements OnMapReadyCa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.new_trip);
 
-        AdView mAdView = (AdView) findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
-
+        if(BuildConfig.FLAVOR.equals("free"))
+        {
+            AdView mAdView = (AdView) findViewById(R.id.adView);
+            AdRequest adRequest = new AdRequest.Builder().build();
+            mAdView.loadAd(adRequest);
+        }
         findViewById(R.id.tripPropsTableLayout).bringToFront();
 
-        FileHandler fileHandler;
-
-        fileHandler = FileHandler.GetInstance();
+        FileHandler fileHandler = FileHandler.GetInstance();
         Intent intent = getIntent();
         if (null != intent)
         {
