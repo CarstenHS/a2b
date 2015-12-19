@@ -26,7 +26,7 @@ public class FileHandler extends Activity
     final String fileExtension = ".a2b";
     final String strFolderPrefix = "app_";
     final int folderPrefixSize = strFolderPrefix.length();
-    private String dataDir = null;
+    private String strDataDir = null;
     private Context context = null;
     private final String strDirUnCategorized = "Uncategorized";
     private final String strGeofences = "Geofences";
@@ -43,7 +43,7 @@ public class FileHandler extends Activity
 
     public void Init(Context context)
     {
-        dataDir = context.getFilesDir().getPath();
+        strDataDir = context.getFilesDir().getParent();
         this.context = context;
     }
 
@@ -52,7 +52,7 @@ public class FileHandler extends Activity
     public Settings loadSettings()
     {
         String filename = strSettings + fileExtension;
-        File file = new File(context.getFilesDir(), filename);
+        File file = new File(strDataDir, filename);
         Settings settings = null;
         if(file.exists() == true)
         {
@@ -90,7 +90,7 @@ public class FileHandler extends Activity
     public void saveSettings(Settings settings)
     {
         String filename = strSettings + fileExtension;
-        File file = new File(context.getFilesDir(), filename);
+        File file = new File(strDataDir, filename);
 
         if(file.exists() == false)
         {
@@ -112,7 +112,7 @@ public class FileHandler extends Activity
 
     public Trip LoadTrip(String strGroup, String strTrip)
     {
-        File folder = context.getDir(strGroup, Context.MODE_PRIVATE);
+        File folder = context.getDir(strGroup, Context.MODE_PRIVATE); // prefixes automatically
         File file = new File(folder, filePrefix + strTrip);
         Trip trip = null;
         if(file.exists() == true)
@@ -180,7 +180,7 @@ public class FileHandler extends Activity
 
     public List<String> GetDirectories()
     {
-        File myDirectory = new File(dataDir);
+        File myDirectory = new File(strDataDir);
         File[] directories = myDirectory.listFiles(new FileFilter()
         {
             @Override
@@ -222,7 +222,7 @@ public class FileHandler extends Activity
         boolean success = false;
         if(DirectoryExist(name) == false)
         {
-            File folder = new File(dataDir + "/" + strFolderPrefix + name);
+            File folder = new File(strDataDir, strFolderPrefix + name);
             folder.mkdir();
             success = true;
         }
@@ -234,8 +234,8 @@ public class FileHandler extends Activity
         boolean success = false;
         if(DirectoryExist(newName) == false)
         {
-            File oldFolder = new File(dataDir + "/" + strFolderPrefix + oldName);
-            File newFolder = new File(dataDir + "/" + strFolderPrefix + newName);
+            File oldFolder = new File(strDataDir, strFolderPrefix + oldName);
+            File newFolder = new File(strDataDir, strFolderPrefix + newName);
             oldFolder.renameTo(newFolder);
             success = true;
         }
@@ -244,7 +244,7 @@ public class FileHandler extends Activity
 
     public void SaveTrip(List dirs, Trip trip) throws IOException
     {
-        if(dirs == null || dirs.size() == 0)    // for testing the save from options
+        if(dirs == null || dirs.size() == 0)
         {
             dirs = new ArrayList<>();
             dirs.add(strDirUnCategorized);
@@ -252,7 +252,9 @@ public class FileHandler extends Activity
 
         for (String dir : (List<String>)dirs)
         {
-            File folder = context.getDir(dir, Context.MODE_PRIVATE);
+            File folder = new File(strDataDir, strFolderPrefix + dir);
+            if(folder.exists() == false)
+                folder.mkdir();
             String fileName = filePrefix + trip.getFormattedTimeEnd();
 
             File file = new File(folder, fileName);
@@ -286,7 +288,7 @@ public class FileHandler extends Activity
     public void SaveGeofences(List<A2BGeofence> gfsPersist)
     {
         String filename = strGeofences + fileExtension;
-        File file = new File(context.getFilesDir(), filename);
+        File file = new File(strDataDir, filename);
 
         if(file.exists() == false)
         {
@@ -309,7 +311,7 @@ public class FileHandler extends Activity
     public List<A2BGeofence> LoadGeofences()
     {
         String filename = strGeofences + fileExtension;
-        File file = new File(context.getFilesDir(), filename);
+        File file = new File(strDataDir, filename);
         List<A2BGeofence> gfPersist = null;
         if(file.exists() == true)
         {
@@ -348,7 +350,7 @@ public class FileHandler extends Activity
     public List<A2BdirInfo> LoadDirInfos()
     {
         String filename = strDirInfos + fileExtension;
-        File file = new File(context.getFilesDir(), filename);
+        File file = new File(strDataDir, filename);
         List<A2BdirInfo> dirInfos = null;
         if(file.exists() == true)
         {
@@ -387,7 +389,7 @@ public class FileHandler extends Activity
     public void SaveDirInfos(List<A2BdirInfo> dirInfos)
     {
         String filename = strDirInfos + fileExtension;
-        File file = new File(context.getFilesDir(), filename);
+        File file = new File(strDataDir, filename);
 
         if(file.exists() == false)
         {

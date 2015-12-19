@@ -75,7 +75,10 @@ public class Activity_tripGroups extends Activity
 
         alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener()
         {
-            @Override public void onClick(DialogInterface dialog, int which){}
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
+            }
         });
         alert.setPositiveButton("OK", new DialogInterface.OnClickListener()
         {
@@ -209,13 +212,16 @@ public class Activity_tripGroups extends Activity
                         builder.setTitle(group);
                         lastUiAction.view.setBackgroundColor(Color.parseColor("#b0b0b0"));
                         lastUiAction.lastAction = uiAction.ACTION_LONG_CSV;
-                        CharSequence props[] = {"Delete"};
-                        if(Globals.GetInstance(null).getGeoFencesPersist() != null)
+                        CharSequence props[] = {"Rename","Delete"};
+                        if(Globals.GetInstance(null).getGeoFencesPersist().size() > 1)
                             props = groupProps;
                         builder.setItems(props , new DialogInterface.OnClickListener()
                                 {
                                     public void onClick(DialogInterface dialog, int which)
                                     {
+                                        // need to correct index for dynamic list geoFencing
+                                        if(Globals.GetInstance(null).getGeoFencesPersist().size() < 2)
+                                            which++;
                                         switch(which)
                                         {
                                             case INDEX_RENAME: SetRenameAlert(group); break;
