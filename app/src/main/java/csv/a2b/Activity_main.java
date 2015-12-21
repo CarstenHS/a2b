@@ -152,7 +152,7 @@ public class Activity_main extends Activity
 
         if(BuildConfig.FLAVOR.equals("free"))
         {
-            AdView mAdView = (AdView) findViewById(R.id.adView);
+            AdView mAdView = (AdView) findViewById(R.id.adViewMain);
             AdRequest adRequest = new AdRequest.Builder().build();
             mAdView.loadAd(adRequest);
             mAdView.bringToFront();

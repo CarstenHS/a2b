@@ -123,7 +123,7 @@ public class Activity_staticMap extends FragmentActivity implements OnMapReadyCa
 
         if(BuildConfig.FLAVOR.equals("free"))
         {
-            AdView mAdView = (AdView) findViewById(R.id.adView);
+            AdView mAdView = (AdView) findViewById(R.id.adViewNewTrip);
             AdRequest adRequest = new AdRequest.Builder().build();
             mAdView.loadAd(adRequest);
         }

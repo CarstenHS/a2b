@@ -50,7 +50,7 @@ public class Activity_tripGroups extends Activity
 
         if(BuildConfig.FLAVOR.equals("free") && (tripGroupsTableLayout.getChildCount() <5))
         {
-            AdView mAdView = (AdView) findViewById(R.id.adView);
+            AdView mAdView = (AdView) findViewById(R.id.adViewTripGroups);
             AdRequest adRequest = new AdRequest.Builder().build();
             mAdView.loadAd(adRequest);
             mAdView.bringToFront();

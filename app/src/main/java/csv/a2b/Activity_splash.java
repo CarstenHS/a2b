@@ -20,7 +20,7 @@ public class Activity_splash extends Activity {
 
         if(BuildConfig.FLAVOR.equals("free"))
         {
-            AdView mAdView = (AdView) findViewById(R.id.adView);
+            AdView mAdView = (AdView) findViewById(R.id.adViewSplash);
             AdRequest adRequest = new AdRequest.Builder().build();
             mAdView.loadAd(adRequest);
             mAdView.bringToFront();

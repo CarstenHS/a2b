@@ -222,7 +222,7 @@ public class Activity_newTrip extends FragmentActivity implements OnMapReadyCall
 
         if(BuildConfig.FLAVOR.equals("free"))
         {
-            AdView mAdView = (AdView) findViewById(R.id.adView);
+            AdView mAdView = (AdView) findViewById(R.id.adViewNewTrip);
             AdRequest adRequest = new AdRequest.Builder().build();
             mAdView.loadAd(adRequest);
         }
