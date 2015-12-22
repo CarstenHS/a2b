@@ -19,7 +19,6 @@ public class SQLiteHelperThread extends AsyncTask<Object, Object, Object>
 
     protected Object doInBackground(Object... objs)
     {
-        Thread t = Looper.getMainLooper().getThread();
         switch((int) objs[0])
         {
             case ACTION_INSERT:

@@ -20,15 +20,14 @@ public class Activity_main extends Activity
 {
     static final private String strNewTrip = "New trip";
     static final private String strCurrentTrip = "Current trip";
+    private Rect touchRect = null;
+    private uiAction lastUiAction = null;
 
     private class uiAction
     {
         public int lastAction = 0;
         public View view;
     }
-
-    private Rect touchRect = null;
-    private uiAction lastUiAction = null;
 
     private void startActivity(int id)
     {
@@ -114,7 +113,7 @@ public class Activity_main extends Activity
                             break;
                         }
                     }
-                    return true; //TODO: Problem is here.
+                    return true;
                 }
             });
         }
@@ -143,7 +142,14 @@ public class Activity_main extends Activity
 
         FileHandler fileHandler = FileHandler.GetInstance();
         fileHandler.Init(getApplicationContext());
-        Globals.GetInstance(getApplicationContext());
+        Globals g = Globals.GetInstance(getApplicationContext());
+
+        if(g.isServiceStarted() == false)
+        {
+            Intent in = new Intent(this, Globals.GetInstance(null).getClass());
+            startService(in);
+        }
+
         Activity_newTrip.GetInstance();
         setNewTripText();
         touchRect = new Rect();

@@ -1,11 +1,17 @@
 package csv.a2b;
 
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.*;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.support.annotation.Nullable;
+import android.support.v7.app.NotificationCompat;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -27,7 +33,7 @@ import java.util.Date;
 /**
  * Created by der_geiler on 13-05-2015.
  */
-public class Globals implements
+public class Globals extends Service implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, ResultCallback, OnDBInsertDoneCallback
 {
     static private Trip currentTrip = null;
@@ -59,11 +65,62 @@ public class Globals implements
     static private final String strNotSet = "Not set";
     static private boolean geofenceActivated = false;
     static private final int GEO_INACTIVITY_TIMEOUT = 1000;
+    static private NotificationManager mNM;
+    private int NOTIFICATION = 1;
+    static private IBinder mBinder = null;
+    private Service serviceRef = null;
+    private boolean isServStarted = false;
 
     private static Globals instance;
 
-    public Globals()
+    public Globals(){}
+
+    public void setService(Service s){serviceRef = s;}
+    public boolean isServiceStarted(){return isServStarted;}
+
+    private Notification createNotification()
     {
+        mNM = (NotificationManager)ctx.getSystemService(NOTIFICATION_SERVICE);
+        // In this sample, we'll use the same text for the ticker and the expanded notification
+        CharSequence text = "A2B";
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(ctx);
+        builder.setSmallIcon(R.drawable.notif)
+                .setContentTitle("A2B")
+                .setTicker(text)
+                .setContentText("Return to A2B.")
+                .setWhen(System.currentTimeMillis());
+
+        Intent startIntent = new Intent(ctx, Activity_main.class);
+        // The PendingIntent to launch our activity if the user selects this notification
+        PendingIntent contentIntent = PendingIntent.getActivity(ctx, 0, startIntent, 0);
+        builder.setContentIntent(contentIntent);
+        Notification notif = builder.build();
+        return notif;
+    }
+
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent)
+    {
+        return mBinder;
+    }
+
+     @Override
+    public int onStartCommand(Intent intent, int flags, int startId)
+    {
+        if(instance.isServiceStarted() == false)
+        {
+            Globals.GetInstance(null).setService(this);
+            //startForeground(NOTIFICATION, createNotification());
+        }
+        return START_NOT_STICKY;
+    }
+
+    @Override
+    public void onDestroy() {
+        // Cancel the persistent notification.
+        mNM.cancel(NOTIFICATION);
     }
 
     public static Globals GetInstance(Context c)
@@ -72,6 +129,7 @@ public class Globals implements
         if (instance == null)
         {
             instance = new Globals();
+
             fileHandlerInstance = FileHandler.GetInstance();
             dirEntries = fileHandlerInstance.LoadDirInfos();
             settings = fileHandlerInstance.loadSettings();
@@ -588,6 +646,12 @@ public class Globals implements
 
         if(mapVisible)
             mapActivity.setMapExt(ll);
+
+        if(isServStarted == false)
+        {
+            isServStarted = true;
+            serviceRef.startForeground(NOTIFICATION, createNotification());
+        }
     }
 
     static public GoogleApiClient getGoogleApiClient(){return (mGoogleApiClient);}
@@ -652,7 +716,7 @@ public class Globals implements
     public void onDBInsertDone()
     {
         if(--insertCount == 0)
-            cleanUp();
+            instance.cleanUp();
     }
 
     public void cleanUp()
@@ -672,6 +736,12 @@ public class Globals implements
         currentTrip = null;
         if(mapActivity != null)
             mapActivity.finish();
+        if(isServStarted == true)
+        {
+            serviceRef.stopForeground(true);
+            isServStarted = false;
+        }
+        //Globals.GetInstance(null).setService(null);
     }
 
 }
