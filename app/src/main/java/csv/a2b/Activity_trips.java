@@ -39,7 +39,7 @@ public class Activity_trips extends Activity implements onDBCursorReadyCallback
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.trip_groups);
+        setContentView(R.layout.trips);
         context = getApplicationContext();
         tripsTableLayout = (TableLayout) findViewById(R.id.tripsTableLayout);
         fileHandler = FileHandler.GetInstance();

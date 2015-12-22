@@ -9,7 +9,6 @@
     <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
     <!--
     <string name="banner_settings_id">ca-app-pub-2777249826009779/3205718755</string>
-    <string name="banner_staticMap_id">ca-app-pub-2777249826009779/1728985555</string>
     <string name="banner_tripGroups_id">ca-app-pub-2777249826009779/4682451954</string>
     <string name="banner_trips_id">ca-app-pub-2777249826009779/7635918352</string>
     <string name="banner_main_id">ca-app-pub-2777249826009779/9252252350</string>
@@ -17,7 +16,6 @@
     <string name="banner_splash_id">ca-app-pub-2777249826009779/4822052759</string>
     -->
     <string name="banner_settings_id">ca-app-pub-3940256099942544/6300978111</string>
-    <string name="banner_staticMap_id">ca-app-pub-3940256099942544/6300978111</string>
     <string name="banner_tripGroups_id">ca-app-pub-3940256099942544/6300978111</string>
     <string name="banner_trips_id">ca-app-pub-3940256099942544/6300978111</string>
     <string name="banner_main_id">ca-app-pub-3940256099942544/6300978111</string>

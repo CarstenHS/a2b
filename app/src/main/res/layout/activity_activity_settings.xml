@@ -1,7 +1,6 @@
 <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:ads="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.der_geiler.a2b.Activity_settings">
@@ -80,15 +79,10 @@
             android:id="@+id/tv_settings_markerInterval_spinner"/>
     </TableRow>
 </TableLayout>
-
-    <com.google.android.gms.ads.AdView
+    <TextView
         android:id="@+id/adViewSettings"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"
-        ads:adSize="BANNER"
-        ads:adUnitId="@string/banner_ad_unit_id">
-    </com.google.android.gms.ads.AdView>
+        android:visibility="gone"/>
 
 </RelativeLayout>
