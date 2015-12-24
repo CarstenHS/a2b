@@ -69,14 +69,14 @@ public class Globals extends Service implements
     private int NOTIFICATION = 1;
     static private IBinder mBinder = null;
     private Service serviceRef = null;
-    private boolean isServStarted = false;
+    static private boolean isServStarted = false;
 
     private static Globals instance;
 
     public Globals(){}
 
     public void setService(Service s){serviceRef = s;}
-    public boolean isServiceStarted(){return isServStarted;}
+    static public boolean isServiceStarted(){return isServStarted;}
 
     private Notification createNotification()
     {
@@ -635,6 +635,15 @@ public class Globals extends Service implements
             setGeofences();
     }
 
+    public void startA2bService()
+    {
+        if(isServStarted == false)
+        {
+            isServStarted = true;
+            serviceRef.startForeground(NOTIFICATION, createNotification());
+        }
+    }
+
     public void startTrip()
     {
         currentTrip = new Trip();
@@ -647,11 +656,7 @@ public class Globals extends Service implements
         if(mapVisible)
             mapActivity.setMapExt(ll);
 
-        if(isServStarted == false)
-        {
-            isServStarted = true;
-            serviceRef.startForeground(NOTIFICATION, createNotification());
-        }
+        startA2bService();
     }
 
     static public GoogleApiClient getGoogleApiClient(){return (mGoogleApiClient);}
@@ -741,7 +746,6 @@ public class Globals extends Service implements
             serviceRef.stopForeground(true);
             isServStarted = false;
         }
-        //Globals.GetInstance(null).setService(null);
     }
 
 }

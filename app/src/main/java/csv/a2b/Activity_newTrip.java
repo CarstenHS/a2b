@@ -35,6 +35,7 @@ public class Activity_newTrip extends FragmentActivity implements OnMapReadyCall
     static final int MENU_ITEM_ID_START = 0;
     static final int MENU_ITEM_ID_SAVE_AND_END = 1;
     static final int MENU_ITEM_ID_CREATE_START_END_POINT = 2;
+    static final int MENU_ITEM_ID_END_SESSION = 3;
 
     /***** SINGLETON ********/
     public Activity_newTrip(){}
@@ -152,6 +153,7 @@ public class Activity_newTrip extends FragmentActivity implements OnMapReadyCall
 
     public void onMapReady(GoogleMap map)
     {
+        Globals g = Globals.GetInstance(null);
         if(this.map == null)
         {
             this.map = map;
@@ -160,9 +162,9 @@ public class Activity_newTrip extends FragmentActivity implements OnMapReadyCall
             globals.setMapActivity(this);
             globals.setMap(map);
             map.setMyLocationEnabled(true);
-            Globals.GetInstance(this.getApplicationContext()).setGeofences();  // Must call this way to avoid non-static error
+            Globals.GetInstance(this.getApplicationContext()).setGeofences();
         }
-        Trip curTrip = Globals.GetInstance(null).GetCurrentTrip();
+        Trip curTrip = g.GetCurrentTrip();
         if(curTrip != null)
         {
             int i = 0;
@@ -176,6 +178,8 @@ public class Activity_newTrip extends FragmentActivity implements OnMapReadyCall
                 }
             }
         }
+        if(g.getSettings().getAppMode() == Settings.APP_MODE_AUTO)
+            g.startA2bService();
     }
 
     private void InitMap()
@@ -250,6 +254,8 @@ public class Activity_newTrip extends FragmentActivity implements OnMapReadyCall
             menu.add(Menu.NONE, MENU_ITEM_ID_START, Menu.NONE, R.string.start_trip);
         if(g.GetCurrentTrip() != null)
             menu.add(Menu.NONE, MENU_ITEM_ID_SAVE_AND_END, Menu.NONE, R.string.end_trip);
+        else if(g.getSettings().getAppMode() == Settings.APP_MODE_AUTO)
+            menu.add(Menu.NONE, MENU_ITEM_ID_END_SESSION, Menu.NONE, R.string.end_session);
 
         menu.add(Menu.NONE, MENU_ITEM_ID_CREATE_START_END_POINT, Menu.NONE, R.string.create_start_end);
         return true;
@@ -285,6 +291,18 @@ public class Activity_newTrip extends FragmentActivity implements OnMapReadyCall
             case MENU_ITEM_ID_START:
             {
                 globals.startTrip();
+                break;
+            }
+            case MENU_ITEM_ID_END_SESSION:
+            {
+                globals.cleanUp();
+                try
+                {
+                    Activity_newTrip.GetInstance().finalize();
+                } catch (Throwable throwable)
+                {
+                    throwable.printStackTrace();
+                }
                 break;
             }
         }

@@ -122,14 +122,10 @@ public class Activity_main extends Activity
     private void setNewTripText()
     {
         TextView tv = (TextView) findViewById(R.id.textView_newTrip);
-        if(Globals.GetCurrentTrip() != null)
-        {
+        if(Globals.isServiceStarted() == true)
             tv.setText(strCurrentTrip);
-        }
         else
-        {
             tv.setText(strNewTrip);
-        }
     }
 
     @Override

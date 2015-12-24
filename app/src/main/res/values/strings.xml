@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">A2B</string>
     <string name="end_trip">End trip</string>
+    <string name="end_session">End session</string>
     <string name="create_start_end">Create Start/End point</string>
     <string name="start_trip">Start trip</string>
     <string name="title_activity_activity_about">About</string>
