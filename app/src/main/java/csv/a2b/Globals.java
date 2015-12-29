@@ -110,10 +110,8 @@ public class Globals extends Service implements
     public int onStartCommand(Intent intent, int flags, int startId)
     {
         if(instance.isServiceStarted() == false)
-        {
             Globals.GetInstance(null).setService(this);
-            //startForeground(NOTIFICATION, createNotification());
-        }
+
         return START_NOT_STICKY;
     }
 
