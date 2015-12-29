@@ -315,13 +315,7 @@ public class Globals extends Service implements
 
     private PendingIntent getGeofencePendingIntent()
     {
-        // Reuse the PendingIntent if we already have it.
-        //if (mGeofencePendingIntent != null)
-        //return mGeofencePendingIntent;
-
         Intent intent = new Intent(ctx, GeofenceTransitionsIntentService.class);
-        // We use FLAG_UPDATE_CURRENT so that we get the same pending intent back when
-        // calling addGeofences() and removeGeofences().
         return PendingIntent.getService(ctx, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 

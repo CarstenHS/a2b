@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -127,16 +128,6 @@ public class Activity_newTrip extends FragmentActivity implements OnMapReadyCall
             Marker marker = map.addMarker(new MarkerOptions()
                     .position(ll)
                     .title("Start")
-                    .snippet(fmt.format(currentTrip.getMarker(num).date))
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
-
-            marker.showInfoWindow();
-        }
-        else if(num == currentTrip.getNumMarkers() - 1)
-        {
-            Marker marker = map.addMarker(new MarkerOptions()
-                    .position(ll)
-                    .title("End")
                     .snippet(fmt.format(currentTrip.getMarker(num).date))
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
 
@@ -342,7 +333,9 @@ public class Activity_newTrip extends FragmentActivity implements OnMapReadyCall
         alert.setPositiveButton("OK", new DialogInterface.OnClickListener()
         {
             @Override
-            public void onClick(DialogInterface dialog, int which){}
+            public void onClick(DialogInterface dialog, int which)
+            {
+            }
         });
         alert.show();
     }
@@ -422,5 +415,19 @@ public class Activity_newTrip extends FragmentActivity implements OnMapReadyCall
             globals.getCircle(hitGeofence.getName()).setFillColor(Color.RED);
             ShowDialogGeofenceKill(hitGeofence);
         }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event)
+    {
+        if(keyCode==KeyEvent.KEYCODE_HOME)
+            try
+            {
+                finalize();
+            } catch (Throwable throwable)
+            {
+                throwable.printStackTrace();
+            }
+        return super.onKeyDown(keyCode, event);
     }
 }

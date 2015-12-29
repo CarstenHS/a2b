@@ -49,7 +49,7 @@ public class Activity_staticMap extends FragmentActivity implements OnMapReadyCa
                     .position(ll)
                     .title("End")
                     .snippet(fmt.format(trip.getMarker(num).date))
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
 
             marker.showInfoWindow();
         }

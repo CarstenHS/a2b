@@ -14,6 +14,12 @@ public class GeofenceTransitionsIntentService extends IntentService
 {
     public GeofenceTransitionsIntentService (){super("csv.a2b.GeofenceTransitionsIntentService");};
 
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId)
+    {
+        return super.onStartCommand(intent, flags, startId);
+    }
+
     protected void onHandleIntent(Intent intent)
     {
         GeofencingEvent geofencingEvent = GeofencingEvent.fromIntent(intent);
