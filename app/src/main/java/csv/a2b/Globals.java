@@ -47,7 +47,7 @@ public class Globals extends Service implements
     private a2bLoc lastLoc;
     static private Settings settings;
     private static final int DIST_UNIT_KILOMETERS = 0;
-    private static PendingIntent mGeofencePendingIntent = null;
+    //private static PendingIntent mGeofencePendingIntent = null;
     static private GoogleMap map;
     private static List<A2BGeofence> a2BGeofences;
     static public List<A2BCircle> circles;
@@ -318,8 +318,8 @@ public class Globals extends Service implements
     private PendingIntent getGeofencePendingIntent()
     {
         // Reuse the PendingIntent if we already have it.
-        if (mGeofencePendingIntent != null)
-            return mGeofencePendingIntent;
+        //if (mGeofencePendingIntent != null)
+        //return mGeofencePendingIntent;
 
         Intent intent = new Intent(ctx, GeofenceTransitionsIntentService.class);
         // We use FLAG_UPDATE_CURRENT so that we get the same pending intent back when
@@ -344,6 +344,7 @@ public class Globals extends Service implements
 
             for (A2BGeofence gf : a2BGeofences)
                 mapGeofences.add(createMapGeofence(gf));
+
             LocationServices.GeofencingApi.addGeofences(
                     mGoogleApiClient,
                     getGeofencingRequest(mapGeofences),
