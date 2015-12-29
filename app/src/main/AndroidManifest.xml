@@ -16,7 +16,8 @@
         <uses-library android:name="com.google.android.maps"/>
 
         <!-- Main activity -->
-        <service android:name=".Globals"></service>
+        <service android:name=".Globals"
+            android:exported="false"></service>
         <activity
             android:name=".Activity_main"
             android:label="Main"

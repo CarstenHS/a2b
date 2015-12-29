@@ -67,7 +67,6 @@ public class Globals extends Service implements
     static private final int GEO_INACTIVITY_TIMEOUT = 1000;
     static private NotificationManager mNM;
     private int NOTIFICATION = 1;
-    static private IBinder mBinder = null;
     private Service serviceRef = null;
     static private boolean isServStarted = false;
 
@@ -103,7 +102,8 @@ public class Globals extends Service implements
     @Override
     public IBinder onBind(Intent intent)
     {
-        return mBinder;
+        // not bindable, hence return null
+        return null;
     }
 
      @Override
