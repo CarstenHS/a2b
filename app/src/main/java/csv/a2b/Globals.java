@@ -69,6 +69,7 @@ public class Globals extends Service implements
     private int NOTIFICATION = 1;
     private Service serviceRef = null;
     static private boolean isServStarted = false;
+    static private boolean isUsingGeofences = false;
 
     private static Globals instance;
 
@@ -76,6 +77,7 @@ public class Globals extends Service implements
 
     public void setService(Service s){serviceRef = s;}
     static public boolean isServiceStarted(){return isServStarted;}
+    public boolean getIsUsingGeofences(){return isUsingGeofences;}
 
     private Notification createNotification()
     {
@@ -656,7 +658,7 @@ public class Globals extends Service implements
 
     public void setGeofences()
     {
-        if(mGoogleApiClient.isConnected() == true)
+        if(mGoogleApiClient.isConnected() == true && isUsingGeofences == true)
         {
             initGeofences();
             createAndDrawGeofenceCircles();

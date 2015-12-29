@@ -250,7 +250,7 @@ public class Activity_tripGroups extends Activity
         else
             tripGroupsTableLayout.setVisibility(View.INVISIBLE);
     }
-
+/*
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
@@ -308,4 +308,5 @@ public class Activity_tripGroups extends Activity
         });
         alert.show();
     }
+    */
 }
