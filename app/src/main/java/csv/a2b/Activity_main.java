@@ -142,7 +142,7 @@ public class Activity_main extends Activity
 
         if(g.isServiceStarted() == false)
         {
-            Intent in = new Intent(this, Globals.GetInstance(null).getClass());
+            Intent in = new Intent(this, g.getClass());
             startService(in);
         }
 

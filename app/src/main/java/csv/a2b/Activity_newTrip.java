@@ -10,7 +10,6 @@ import android.support.v4.app.FragmentActivity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import com.google.android.gms.maps.*;
@@ -240,7 +239,7 @@ public class Activity_newTrip extends FragmentActivity implements OnMapReadyCall
     public boolean onPrepareOptionsMenu(Menu menu)
     {
         menu.clear();
-        Globals g = globals.GetInstance(null);
+        Globals g = Globals.GetInstance(null);
         if(g.getSettings().getAppMode() == Settings.APP_MODE_MANUAL && g.GetCurrentTrip() == null)
             menu.add(Menu.NONE, MENU_ITEM_ID_START, Menu.NONE, R.string.start_trip);
         if(g.GetCurrentTrip() != null)
@@ -397,7 +396,8 @@ public class Activity_newTrip extends FragmentActivity implements OnMapReadyCall
         alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener()
         {
             @Override
-            public void onClick(DialogInterface dialog, int which){globals.getCircle(gf.getName()).setFillColor(Globals.COLOR_BASIC_GEOFENCE);}
+            public void onClick(DialogInterface dialog, int which){
+                globals.getCircle(gf.getName()).setFillColor(Globals.COLOR_BASIC_GEOFENCE);}
         });
         alert.setPositiveButton("OK", new DialogInterface.OnClickListener()
         {

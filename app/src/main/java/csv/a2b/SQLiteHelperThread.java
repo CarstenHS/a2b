@@ -2,7 +2,6 @@ package csv.a2b;
 
 import android.database.Cursor;
 import android.os.AsyncTask;
-import android.os.Looper;
 
 /**
  * Created by der_geiler on 20-11-2015.
