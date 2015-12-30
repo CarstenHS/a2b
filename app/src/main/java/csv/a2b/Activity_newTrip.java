@@ -195,8 +195,8 @@ public class Activity_newTrip extends FragmentActivity implements OnMapReadyCall
             }
             case Settings.SPEED_UNIT_MPH:
             {
-                tvSpeed.setText("0MPH");
-                tvDist.setText("0y");
+                tvSpeed.setText("0mph");
+                tvDist.setText("0 yards");
                 break;
             }
             case Settings.SPEED_UNIT_KPH:
