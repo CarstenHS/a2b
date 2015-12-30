@@ -15,10 +15,8 @@ public class Activity_help extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_activity_help);
         TextView tv = (TextView) findViewById(R.id.linkHelp);
-        // market://details?id=<package_name>
-        tv.setText(Html.fromHtml("<a href=\"http://play.google.com/store/apps/details?id=csv.a2b\">A2B at google play< / a > "));
-
-                tv.setMovementMethod(LinkMovementMethod.getInstance());
+        tv.setText(Html.fromHtml("<a href=\"http://play.google.com/store/apps/details?id=csv.a2b\">A2B at google play</a>"));
+        tv.setMovementMethod(LinkMovementMethod.getInstance());
         tv.setLinksClickable(true);
     }
 

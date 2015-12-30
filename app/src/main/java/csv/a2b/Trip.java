@@ -46,7 +46,7 @@ public class Trip
     public String getFormattedDistance(int unit)
     {
         String dist;
-        if(unit == Settings.SPEED_UNIT_KPH)
+        if(unit == Settings.SPEED_UNIT_KPH || unit == Settings.SPEED_UNIT_MS)
         {
             if(distance > 1000)
                 dist = String.format("%.2f", (distance / 1000)) + " km";
