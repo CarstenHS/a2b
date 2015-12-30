@@ -32,6 +32,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="00:00:00"
+                android:textColor="#FFFFFF"
                 android:padding="5dp"
                 android:background="#66000000"
                 android:layout_centerInParent="true"
@@ -48,6 +49,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="5dp"
+                android:textColor="#FFFFFF"
                 android:background="#66000000"
                 android:gravity="right"
                 android:layout_alignParentBottom="true"/>
@@ -64,6 +66,7 @@
                 android:layout_height="wrap_content"
                 android:padding="5dp"
                 android:background="#66000000"
+                android:textColor="#FFFFFF"
                 android:gravity="right"
                 android:layout_alignParentBottom="true"/>
         </TableRow>

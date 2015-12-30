@@ -32,7 +32,7 @@ public class Activity_staticMap extends FragmentActivity implements OnMapReadyCa
     public void AddMarkerToMap(LatLng ll, int num)
     {
         SimpleDateFormat fmt = new SimpleDateFormat("HH:mm");
-        if((num == 0))
+        if(num == 0)
         {
             Marker marker = map.addMarker(new MarkerOptions()
                     .position(ll)
@@ -69,9 +69,7 @@ public class Activity_staticMap extends FragmentActivity implements OnMapReadyCa
         {
             LatLngBounds.Builder builder = new LatLngBounds.Builder();
             for (A2BMarker marker : a2bMarkers)
-            {
                 builder.include(new LatLng(marker.GetLat(), marker.GetLon()));
-            }
 
             LatLngBounds bounds = builder.build();
             cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 200);
@@ -107,10 +105,7 @@ public class Activity_staticMap extends FragmentActivity implements OnMapReadyCa
         for(A2BMarker mkr : A2BMarkers)
         {
             LatLng ll = new LatLng(mkr.GetLat(), mkr.GetLon());
-            AddMarkerToMap(ll, i);
-            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(ll, MAX_ZOOM);
-            map.animateCamera(cameraUpdate);
-            ++i;
+            AddMarkerToMap(ll, i++);
         }
     }
 
