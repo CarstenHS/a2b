@@ -50,11 +50,13 @@ public class Activity_main extends Activity
                 i = new Intent(Activity_main.this, Activity_about.class);
                 break;
             }
+            /*
             case R.id.textView_help:
             {
                 i = new Intent(Activity_main.this, Activity_help.class);
                 break;
             }
+            */
             case R.id.textView_settings:
             {
                 i = new Intent(Activity_main.this, Activity_settings.class);

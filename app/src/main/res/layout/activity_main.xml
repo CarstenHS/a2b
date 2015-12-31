@@ -68,7 +68,7 @@
 
         </TableRow>
 
-        <!-- Row 4 with single column -->
+        <!--
         <TableRow
             android:layout_height="wrap_content"
             android:layout_width="fill_parent"
@@ -83,6 +83,7 @@
                 android:id="@+id/textView_help"/>
 
         </TableRow>
+        -->
 
         <!-- Row 5 with single column -->
         <TableRow

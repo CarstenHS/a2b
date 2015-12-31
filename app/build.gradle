@@ -27,12 +27,14 @@ android
                         pro
                                 {
                                     applicationId = "csv.a2b.pro"
+                                    versionCode 1
                                     versionName "1.0-pro"
                                 }
                         free
                                 {
                                     applicationId = "csv.a2b.free"
-                                    versionName "1.0-free"
+                                    versionCode 2
+                                    versionName "1.1-free"
                                 }
                     }
             buildTypes
