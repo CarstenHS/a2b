@@ -23,7 +23,7 @@
         android:textSize="18dp"
 
         android:text="Thanks for using the A2B application! This application is intended for use by commuters commuting from A to B who want to figure out if their choice of transportation is the right. This can be done by realtime measurement of the trip going from A to B and then by analyzing the time it takes to go from A to B. transportation is stochastic by nature and the transport time may vary according
-        to trip start, day of week, etc. The commuter can try different routes and means of transportation and by this app analyze the impact in time of transportation."
+to trip start, day of week, etc. The commuter can try different routes and means of transportation and by this app analyze the impact in time of transportation."
 
         android:layout_span="1"
         android:padding="18dip" android:background="#b0b0b0"
