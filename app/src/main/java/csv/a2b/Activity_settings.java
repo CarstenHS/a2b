@@ -30,7 +30,7 @@ public class Activity_settings extends Activity implements AdapterView.OnItemSel
         spinner.setAdapter(null);
 
         itemsAppMode.add(strManual);
-        if(g.getGeoFencesPersist().size() > 1)
+        if(DelegGeofence.getInstance().getGeoFencesPersist().size() > 1)
             itemsAppMode.add(strAuto);
 
         ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, itemsAppMode);

@@ -32,6 +32,7 @@ public class Activity_newTrip extends FragmentActivity implements OnMapReadyCall
     public static final int UI_ELEMENT_DISTANCE = 1;
     private Globals globals = null;
     private boolean removeGeoCircle = true;
+    private DelegGeofence geoDeleg = null;
     static final int MENU_ITEM_ID_START = 0;
     static final int MENU_ITEM_ID_SAVE_AND_END = 1;
     static final int MENU_ITEM_ID_CREATE_START_END_POINT = 2;
@@ -214,6 +215,8 @@ public class Activity_newTrip extends FragmentActivity implements OnMapReadyCall
         super.onCreate(savedInstanceState);
         setContentView(R.layout.new_trip);
 
+        geoDeleg = DelegGeofence.getInstance();
+
         if(BuildConfig.FLAVOR.equals("free"))
         {
             AdView mAdView = (AdView) findViewById(R.id.adViewNewTrip);
@@ -247,7 +250,6 @@ public class Activity_newTrip extends FragmentActivity implements OnMapReadyCall
         else if(g.getSettings().getAppMode() == Settings.APP_MODE_AUTO)
             menu.add(Menu.NONE, MENU_ITEM_ID_END_SESSION, Menu.NONE, R.string.end_session);
 
-        if(globals.getIsUsingGeofences())
             menu.add(Menu.NONE, MENU_ITEM_ID_CREATE_START_END_POINT, Menu.NONE, R.string.create_start_end);
         return true;
     }
@@ -281,7 +283,7 @@ public class Activity_newTrip extends FragmentActivity implements OnMapReadyCall
             }
             case MENU_ITEM_ID_START:
             {
-                globals.startTrip();
+                globals.startTrip(null);
                 break;
             }
             case MENU_ITEM_ID_END_SESSION:
@@ -343,50 +345,47 @@ public class Activity_newTrip extends FragmentActivity implements OnMapReadyCall
     @Override
     public void onMapLongClick(final LatLng latLng)
     {
-        if(globals.getIsUsingGeofences())
-        {
-            removeGeoCircle = true;
-            final Circle circle = globals.createAndDrawGeofenceCircle(latLng.latitude, latLng.longitude);
-            AlertDialog.Builder alert = new AlertDialog.Builder(this);
-            alert.setTitle("Create and name Start or End point at this location:");
-            final EditText input = new EditText(this);
-            alert.setView(input);
+        removeGeoCircle = true;
+        final Circle circle = geoDeleg.createAndDrawGeofenceCircle(latLng.latitude, latLng.longitude, map);
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setTitle("Create and name Start or End point at this location:");
+        final EditText input = new EditText(this);
+        alert.setView(input);
 
-            alert.setOnDismissListener(new DialogInterface.OnDismissListener()
+        alert.setOnDismissListener(new DialogInterface.OnDismissListener()
+        {
+            @Override
+            public void onDismiss(DialogInterface dialog)
             {
-                @Override
-                public void onDismiss(DialogInterface dialog)
-                {
-                    if (removeGeoCircle == true)
-                        circle.remove();
-                }
-            });
-            alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener()
-            {
-                @Override
-                public void onClick(DialogInterface dialog, int which)
-                {
+                if (removeGeoCircle == true)
                     circle.remove();
-                }
-            });
-            alert.setPositiveButton("OK", new DialogInterface.OnClickListener()
+            }
+        });
+        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener()
+        {
+            @Override
+            public void onClick(DialogInterface dialog, int which)
             {
-                @Override
-                public void onClick(DialogInterface dialog, int which)
+                circle.remove();
+            }
+        });
+        alert.setPositiveButton("OK", new DialogInterface.OnClickListener()
+        {
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
+                String name = input.getText().toString();
+                if (geoDeleg.nameOk(name) != Globals.RES_OK)
+                    showDialogSaveFail();
+                else
                 {
-                    String name = input.getText().toString();
-                    if (globals.nameOk(name) != Globals.RES_OK)
-                        showDialogSaveFail();
-                    else
-                    {
-                        removeGeoCircle = false;
-                        globals.addCircle(new A2BCircle(circle, name));
-                        globals.saveGeofence(new A2BGeofence(latLng.latitude, latLng.longitude, name));
-                    }
+                    removeGeoCircle = false;
+                    geoDeleg.addCircle(new A2BCircle(circle, name));
+                    geoDeleg.saveGeofence(new A2BGeofence(latLng.latitude, latLng.longitude, name));
                 }
-            });
-            alert.show();
-        }
+            }
+        });
+        alert.show();
     }
 
     private void ShowDialogGeofenceKill(final A2BGeofence gf)
@@ -397,14 +396,14 @@ public class Activity_newTrip extends FragmentActivity implements OnMapReadyCall
         {
             @Override
             public void onClick(DialogInterface dialog, int which){
-                globals.getCircle(gf.getName()).setFillColor(Globals.COLOR_BASIC_GEOFENCE);}
+                geoDeleg.getCircle(gf.getName()).setFillColor(DelegGeofence.COLOR_BASIC_GEOFENCE);}
         });
         alert.setPositiveButton("OK", new DialogInterface.OnClickListener()
         {
             @Override
             public void onClick(DialogInterface dialog, int which)
             {
-                globals.removeGeofence(gf.getName());
+                geoDeleg.removeGeofence(gf.getName());
             }
         });
         alert.show();
@@ -413,14 +412,11 @@ public class Activity_newTrip extends FragmentActivity implements OnMapReadyCall
     @Override
     public void onMapClick(LatLng latLng)
     {
-        if(globals.getIsUsingGeofences())
+        A2BGeofence hitGeofence = geoDeleg.anyGeofenceHit(latLng);
+        if (hitGeofence != null)
         {
-            A2BGeofence hitGeofence = Globals.anyGeofenceHit(latLng);
-            if (hitGeofence != null)
-            {
-                globals.getCircle(hitGeofence.getName()).setFillColor(Color.RED);
-                ShowDialogGeofenceKill(hitGeofence);
-            }
+            geoDeleg.getCircle(hitGeofence.getName()).setFillColor(Color.RED);
+            ShowDialogGeofenceKill(hitGeofence);
         }
     }
 

@@ -7,10 +7,9 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
-import android.location.*;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.v7.app.NotificationCompat;
 
@@ -18,25 +17,29 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Result;
 import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.location.*;
+import com.google.android.gms.location.Geofence;
+import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.Date;
 
 /**
  * Created by der_geiler on 13-05-2015.
  */
-/*
-public class Globals_test extends Service implements
-        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, ResultCallback, OnDBInsertDoneCallback
+public class Globals extends Service implements
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, ResultCallback, OnDBInsertDoneCallback, IA2BGeofenceCallbacks
 {
     static private Trip currentTrip = null;
     public Timer TripTimer;
@@ -49,38 +52,27 @@ public class Globals_test extends Service implements
     private a2bLoc lastLoc;
     static private Settings settings;
     private static final int DIST_UNIT_KILOMETERS = 0;
-    //private static PendingIntent mGeofencePendingIntent = null;
     static private GoogleMap map;
-    private static List<A2BGeofence> a2BGeofences;
-    static public List<A2BCircle> circles;
     static public List<A2BdirInfo> dirEntries;
     public static final int RES_OK = 0;
     public static final int RES_EXISTS = -1;
     public static final int RES_INVALID = -2;
     public static final int RES_EMPTY = -3;
-    public static final int GEO_FENCE_RADIUS = 100;
-    public static final int COLOR_BASIC_GEOFENCE = 0xB2A9F6;
     static private Context ctx = null;
     static private FileHandler fileHandlerInstance = null;
     static private SQLiteHelper dbHelper = null;
     private int insertCount = 0;
-    static private final String strNotSet = "Not set";
-    static private boolean geofenceActivated = false;
-    static private final int GEO_INACTIVITY_TIMEOUT = 1000;
     static private NotificationManager mNM;
     private int NOTIFICATION = 1;
     private Service serviceRef = null;
     static private boolean isServStarted = false;
-    static private boolean isUsingGeofences = false;
-    private int mockCnt = 0;
 
-    private static Globals_test instance;
+    private static Globals instance;
 
-    public Globals_test(){}
+    public Globals(){}
 
     public void setService(Service s){serviceRef = s;}
     static public boolean isServiceStarted(){return isServStarted;}
-    public boolean getIsUsingGeofences(){return isUsingGeofences;}
 
     private Notification createNotification()
     {
@@ -115,7 +107,7 @@ public class Globals_test extends Service implements
     public int onStartCommand(Intent intent, int flags, int startId)
     {
         if(instance.isServiceStarted() == false)
-            Globals_test.GetInstance(null).setService(this);
+            Globals.GetInstance(null).setService(this);
 
         return START_NOT_STICKY;
     }
@@ -126,19 +118,17 @@ public class Globals_test extends Service implements
         mNM.cancel(NOTIFICATION);
     }
 
-    public static Globals_test GetInstance(Context c)
+    static public Globals GetInstance(Context c)
     {
         ctx = (c != null) ? c : ctx;
         if (instance == null)
         {
-            instance = new Globals_test();
+            instance = new Globals();
 
             fileHandlerInstance = FileHandler.GetInstance();
             dirEntries = fileHandlerInstance.LoadDirInfos();
             settings = fileHandlerInstance.loadSettings();
             settings = (settings != null) ? settings : new Settings();
-            if(circles == null)
-                circles = new ArrayList<>();
             if (dirEntries == null)
                 dirEntries = new ArrayList<>();
             if (dirEntries.size() == 0)
@@ -146,12 +136,12 @@ public class Globals_test extends Service implements
                 A2BdirInfo di = new A2BdirInfo(FileHandler.GetInstance().getUncategorizedString());
                 setDir(di);
             }
-            a2BGeofences = fileHandlerInstance.LoadGeofences();
-            a2BGeofences = (a2BGeofences != null) ? a2BGeofences : new ArrayList<A2BGeofence>();
             dbHelper = new SQLiteHelper(ctx);
+            DelegGeofence.getInstance().Init(settings, instance);
         }
         return instance;
     }
+    /*** accessing toolkit from secondary thread END ***/
 
     public void updateSettings(Settings settings)
     {
@@ -247,39 +237,6 @@ public class Globals_test extends Service implements
         fileHandlerInstance.SaveDirInfos(dirEntries);
     }
 
-    private void resetGeoInDirInfo(String geo)
-    {
-        for (Iterator<A2BdirInfo> iter = dirEntries.iterator(); iter.hasNext(); )
-        {
-            A2BdirInfo element = iter.next();
-            if (element.getGeofenceEnd().equals(geo))
-                element.setGeofenceEnd(strNotSet);
-            if (element.getGeofenceStart().equals(geo))
-                element.setGeofenceStart(strNotSet);
-        }
-    }
-
-    List<A2BGeofence> getGeoFencesPersist()
-    {
-        List<A2BGeofence> geofences = null;
-        if (a2BGeofences != null)
-        {
-            geofences = new ArrayList<>();
-            for (Iterator<A2BGeofence> iter = a2BGeofences.iterator(); iter.hasNext(); )
-                geofences.add(iter.next());
-        }
-        return geofences;
-    }
-
-    static public void createAndDrawGeofenceCircles()
-    {
-        if (a2BGeofences != null && a2BGeofences.size() != 0)
-        {
-            for (A2BGeofence gf : a2BGeofences)
-                circles.add(new A2BCircle(createAndDrawGeofenceCircle(gf.getLat(), gf.getLon()), gf.getName()));
-        }
-    }
-
     @Override
     public void onResult(Result result){}
 
@@ -288,173 +245,52 @@ public class Globals_test extends Service implements
         this.map = map;
     }
 
-    static private GeofencingRequest getGeofencingRequest(List<Geofence> geofences)
+    @Override
+    public void A2BGeofenceChange(int action, String geo)
     {
-        GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
-        builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_DWELL);
-        builder.addGeofences(geofences);
-        return builder.build();
-    }
-
-    static public Circle createAndDrawGeofenceCircle(double lat, double lon)
-    {
-        return map.addCircle(new CircleOptions()
-                .center(new LatLng(lat, lon)).radius(100)
-                .fillColor(COLOR_BASIC_GEOFENCE));
-    }
-
-    static private Geofence createMapGeofence(A2BGeofence a2bGeofence)
-    {
-        Geofence g = new Geofence.Builder()
-                .setRequestId(a2bGeofence.name)
-                .setCircularRegion(a2bGeofence.lat, a2bGeofence.lon, GEO_FENCE_RADIUS)
-                .setExpirationDuration(Geofence.NEVER_EXPIRE)
-                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT)
-                .build();
-        return g;
-    }
-
-
-    private PendingIntent getGeofencePendingIntent()
-    {
-        Intent intent = new Intent(ctx, GeofenceTransitionsIntentService.class);
-        return PendingIntent.getService(ctx, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-    }
-
-    private void stopGeofences()
-    {
-        LocationServices.GeofencingApi.removeGeofences(mGoogleApiClient,
-                // This is the same pending intent that was used in addGeofences().
-                getGeofencePendingIntent()
-        ).setResultCallback(this); // Result processed in onResult().
-    }
-
-    public void initGeofences()
-    {
-        if (a2BGeofences != null && a2BGeofences.size() != 0)
+        switch(action)
         {
-            new Timer().schedule(new InactivityTask(), GEO_INACTIVITY_TIMEOUT);
-            List<Geofence> mapGeofences = new ArrayList<>();
-
-            for (A2BGeofence gf : a2BGeofences)
-                mapGeofences.add(createMapGeofence(gf));
-
-            LocationServices.GeofencingApi.addGeofences(
-                    mGoogleApiClient,
-                    getGeofencingRequest(mapGeofences),
-                    getGeofencePendingIntent()
-            ).setResultCallback(this);
-
-            createAndDrawGeofenceCircles();
-        }
-    }
-
-    public int saveGeofence(A2BGeofence a2bGf)
-    {
-        a2BGeofences.add(a2bGf);
-        FileHandler.GetInstance().SaveGeofences(getGeoFencesPersist());
-        return RES_OK;
-    }
-
-    public int nameOk(String name)
-    {
-        if (name.equals(""))
-            return RES_EMPTY;
-        if (a2BGeofences.size() != 0)
-        {
-            for (A2BGeofence gf : a2BGeofences)
-                if (name.equals(gf.name))
-                    return RES_EXISTS;
-        }
-        return RES_OK;
-    }
-
-    public static A2BGeofence anyGeofenceHit(LatLng llPress)
-    {
-        float results[] = new float[3];
-        if (a2BGeofences.size() != 0)
-        {
-            for (A2BGeofence gf : a2BGeofences)
+            case DelegGeofence.GEOFENCE_ENTER:
             {
-                Location.distanceBetween(llPress.latitude, llPress.longitude, gf.lat, gf.lon, results);
-                if (results[0] < GEO_FENCE_RADIUS)
-                    return gf;
+                if(currentTrip != null)
+                {
+                    try
+                    {
+                        if(currentTrip.getStartGeo().equals(geo) == false) // no re-entrent
+                        {
+                            currentTrip.setEndGeo(geo);
+
+                            FileHandler fh = FileHandler.GetInstance();
+                            setEndTimestamp();
+                            List dirsToSaveIn = DelegGeofence.getInstance().resolveGeoDir(geo, currentTrip.getStartGeo());
+                            FileHandler.GetInstance().SaveTrip(dirsToSaveIn, currentTrip);
+                            String saveDir;
+                            if (dirsToSaveIn.size() == 0)
+                            {
+                                saveDir = fh.getUncategorizedString();
+                                setInsertCount(1);
+                                insertInDB(currentTrip, saveDir);
+                            } else
+                            {
+                                setInsertCount(dirsToSaveIn.size());
+                                for (String s : (List<String>) dirsToSaveIn)
+                                    insertInDB(currentTrip, s); // this results in end on callback
+                            }
+                        }
+                    } catch (IOException e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+                break;
             }
-        }
-        return null;
-    }
-
-    public void removeCircle(String name)
-    {
-        for (Iterator<A2BCircle> iter = circles.iterator(); iter.hasNext(); )
-        {
-            A2BCircle element = iter.next();
-            if (element.getName().equals(name))
+            case DelegGeofence.GEOFENCE_EXIT:
             {
-                element.getCircle().remove();           // remove from map
-                iter.remove();                          // remove from list circles list
-            }
-        }
-    }
-
-    public Circle getCircle(String name)
-    {
-        for (Iterator<A2BCircle> iter = circles.iterator(); iter.hasNext(); )
-        {
-            A2BCircle element = iter.next();
-            if (element.getName().equals(name))
-                return element.getCircle();
-        }
-        return null;
-    }
-
-    public void addCircle(A2BCircle c)
-    {
-        circles.add(c);
-    }
-
-    public void removeGeofence(String name)
-    {
-        for (Iterator<A2BGeofence> iter = a2BGeofences.iterator(); iter.hasNext(); )
-        {
-            A2BGeofence element = iter.next();
-            if (element.name.equals(name))
-            {
-                List<String> names = new ArrayList<>(1);
-                names.add(name);
-                removeCircle(name);
-                iter.remove();                          // remove from list circles list
-                // remove from geofence framework
-                LocationServices.GeofencingApi.removeGeofences(mGoogleApiClient, names);
-                FileHandler.GetInstance().SaveGeofences(a2BGeofences);
+                if(currentTrip == null)
+                    startTrip(geo);
                 break;
             }
         }
-        resetGeoInDirInfo(name);
-        if (a2BGeofences.size() < 2)
-        {
-            settings.setAppMode(Settings.APP_MODE_MANUAL);
-            fileHandlerInstance.saveSettings(settings);
-        }
-    }
-
-    public List resolveGeoDir(String endGeo)
-    {
-        List<String> dirs = new ArrayList<>();
-        if (dirEntries != null)
-        {
-            for (Iterator<A2BdirInfo> iter = dirEntries.iterator(); iter.hasNext(); )
-            {
-                A2BdirInfo element = iter.next();
-                if (element.getGeofenceStart().equals(currentTrip.getStartGeo())
-                        &&
-                        (element.getGeofenceEnd().equals(endGeo)))
-                {
-                    dirs.add(element.getDir());
-                }
-            }
-        }
-        return dirs;
     }
 
     public class a2bLoc
@@ -508,8 +344,7 @@ public class Globals_test extends Service implements
 
     public void StartTimers()
     {
-        //MarkerTask task = new MarkerTask();
-        Test_MarkerTask task = new Test_MarkerTask();
+        MarkerTask task = new MarkerTask();
         TripTimer = new Timer();
         int timeout = 1000 * 60 * settings.getMarkerTimeout();
         TripTimer.schedule(task, timeout, timeout);
@@ -520,7 +355,6 @@ public class Globals_test extends Service implements
 
     public void setMapActivity(Activity_newTrip activity){mapActivity = activity;}
 
-    /*
     public void SetMapVisible(boolean visible)
     {
         mapVisible = visible;
@@ -528,172 +362,6 @@ public class Globals_test extends Service implements
             LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
     }
 
-
-    //TESTING
-
-    public void Test_StartMarkerTimer()
-    {
-        Test_MarkerTask task = new Test_MarkerTask();
-        TripTimer = new Timer();
-        int timeout = 1000 * 60 * settings.getMarkerTimeout();
-        TripTimer.schedule(task, timeout, timeout);
-    }
-
-    public void Test_StartDurationTimer()
-    {
-        durationTimer = new Timer();
-        durationTimer.schedule(new DurationTask(), 1000, 1000);
-    }
-    public void Test_SetMapVisible(Activity_newTrip activity)
-    {
-        mapActivity = activity;
-        if (mGoogleApiClient != null && mLastLocation != null)
-            LocationServices.FusedLocationApi.setMockLocation(mGoogleApiClient, mLastLocation);
-    }
-
-    public LatLng Test_UpdateLocation()
-    {
-        LatLng ll = null;
-        if (mLastLocation != null)
-        {
-            double lat = mLastLocation.getLatitude();
-            double lon = mLastLocation.getLongitude();
-            if(currentTrip != null)
-                currentTrip.addA2bMarker(new A2BMarker(new Date(), lat, lon));
-            ll = new LatLng(lat, lon);
-        }
-        return ll;
-    }
-
-    public GoogleApiClient Test_buildGoogleApiClient()
-    {
-        mGoogleApiClient = new GoogleApiClient.Builder(ctx)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build();
-
-        mGoogleApiClient.connect();
-        return mGoogleApiClient;
-    }
-
-    @Override
-    public void onConnected(Bundle connectionHint)
-    {
-        LocationServices.FusedLocationApi.setMockMode(mGoogleApiClient,true);
-        //Set test location
-        mLastLocation=new Location("network");
-        mLastLocation.setLatitude(51.553889);
-        mLastLocation.setLongitude(-0.293616);
-        mLastLocation.setAltitude(0);
-        mLastLocation.setAccuracy(1);
-        mLastLocation.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos());
-        mLastLocation.setTime(System.currentTimeMillis());
-
-        LocationServices.FusedLocationApi.setMockLocation(mGoogleApiClient, mLastLocation);
-        lastLoc = new a2bLoc();
-        lastLoc.setLocation(mLastLocation);
-        Test_startTrip();
-        onLocationChanged(mLastLocation);
-        //initGeofences();
-    }
-
-    public class Test_MarkerTask extends TimerTask implements Runnable
-    {
-        @Override
-        public void run()
-        {
-            switch(mockCnt)
-            {
-                case 0:
-                {
-                    // temp
-                    mLastLocation.setLatitude(51.547247);
-                    mLastLocation.setLongitude(-0.274680);
-                    break;
-                }
-                case 1:
-                {
-                    //test1
-                    mLastLocation.setLatitude(51.540302);
-                    mLastLocation.setLongitude(-0.254287);
-                    break;
-                }
-                case 2:
-                {
-                    //test1
-                    mLastLocation.setLatitude(51.532148);
-                    mLastLocation.setLongitude(-0.236808);
-                    break;
-                }
-                case 3:
-                {
-                    //test1
-                    mLastLocation.setLatitude(51.527919);
-                    mLastLocation.setLongitude(-0.215445);
-                    break;
-                }
-                case 4:
-                {
-                    //test1
-                    mLastLocation.setLatitude(51.520064);
-                    mLastLocation.setLongitude(-0.189712);
-                    break;
-                }
-                case 5:
-                {
-                    //test1
-                    mLastLocation.setLatitude(51.520064);
-                    mLastLocation.setLongitude(-0.169319);
-                    break;
-                }
-                case 6:
-                {
-                    //test1
-                    mLastLocation.setLatitude(51.509791);
-                    mLastLocation.setLongitude(-0.156696);
-                    break;
-                }
-                case 7:
-                {
-                    //test1
-                    mLastLocation.setLatitude(51.502689);
-                    mLastLocation.setLongitude(-0.150141);
-                    break;
-                }
-                case 8:
-                {
-                    //test1
-                    mLastLocation.setLatitude(51.501934);
-                    mLastLocation.setLongitude(-0.141159);
-                    break;
-                }
-            }
-            mLastLocation.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos());
-            mLastLocation.setTime(System.currentTimeMillis());
-            LocationServices.FusedLocationApi.setMockLocation(mGoogleApiClient, mLastLocation);
-            mockCnt++;
-
-            LatLng ll = Test_UpdateLocation();
-            if(mapActivity != null && currentTrip != null)
-                mapActivity.AddMarkerUI(ll, currentTrip.getNumMarkers() - 1);
-        }
-    }
-
-    public void Test_startTrip()
-    {
-        currentTrip = new Trip();
-        currentTrip.setA2bMarkers(new ArrayList<A2BMarker>());
-        currentTrip.SetTimeStart(new Date());
-        Test_StartDurationTimer();
-        Test_StartMarkerTimer();
-        LatLng ll = Test_UpdateLocation();
-
-        if(mapActivity != null)
-            mapActivity.setMapExt(ll);
-    }
-
-    // TESTING END
     public LatLng UpdateLocation()
     {
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
@@ -752,6 +420,9 @@ public class Globals_test extends Service implements
             LatLng ll = lastLoc.getLatlng();
             if(this.map != null && mapVisible)
                 mapActivity.zoomToPosition(ll);
+
+            if(settings.getAppMode() == Settings.APP_MODE_AUTO)
+                DelegGeofence.getInstance().locationUpdate(ll);
         }
     }
 
@@ -787,9 +458,6 @@ public class Globals_test extends Service implements
         LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, createLocationReq(), this);
         if(mapActivity != null)
             map = mapActivity.getMap();
-        if(circles == null)
-            circles = new ArrayList<>();
-
         if(map != null)
             setGeofences();
     }
@@ -803,7 +471,7 @@ public class Globals_test extends Service implements
         }
     }
 
-    public void startTrip()
+    public void startTrip(String geo)
     {
         currentTrip = new Trip();
         currentTrip.setA2bMarkers(new ArrayList<A2BMarker>());
@@ -816,17 +484,17 @@ public class Globals_test extends Service implements
             mapActivity.setMapExt(ll);
 
         startA2bService();
+
+        if(settings.getAppMode() == Settings.APP_MODE_AUTO)
+            currentTrip.setStartGeo(geo);
     }
 
     static public GoogleApiClient getGoogleApiClient(){return (mGoogleApiClient);}
 
     public void setGeofences()
     {
-        if(mGoogleApiClient.isConnected() == true && isUsingGeofences == true)
-        {
-            initGeofences();
-            createAndDrawGeofenceCircles();
-        }
+        if(mGoogleApiClient.isConnected() == true)
+            DelegGeofence.getInstance().initGeofences(map);
     }
 
     @Override
@@ -855,21 +523,10 @@ public class Globals_test extends Service implements
         public void run()
         {
             int ticks = currentTrip.IncTick();
-            if(mapActivity != null)
+            if(mapVisible)
                 mapActivity.TickUI(ticks);
         }
     }
-
-    public class InactivityTask extends TimerTask implements Runnable
-    {
-        @Override
-        public void run()
-        {
-            geofenceActivated = true;
-        }
-    }
-
-    public boolean getGeofenceActivated(){return geofenceActivated;}
 
     public void insertInDB(Trip trip, String dir)
     {
@@ -885,14 +542,12 @@ public class Globals_test extends Service implements
 
     public void cleanUp()
     {
-        geofenceActivated = false;
         if(TripTimer != null)
             TripTimer.cancel();
         if(durationTimer != null)
             durationTimer.cancel();
         if(mGoogleApiClient != null)
         {
-            stopGeofences();
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
             mGoogleApiClient.disconnect();
             mGoogleApiClient = null;
@@ -908,4 +563,3 @@ public class Globals_test extends Service implements
     }
 
 }
-*/

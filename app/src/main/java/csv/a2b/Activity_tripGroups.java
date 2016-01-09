@@ -10,6 +10,8 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
@@ -211,14 +213,14 @@ public class Activity_tripGroups extends Activity
                         lastUiAction.view.setBackgroundColor(Color.parseColor("#b0b0b0"));
                         lastUiAction.lastAction = uiAction.ACTION_LONG_CSV;
                         CharSequence props[] = {"Rename","Delete"};
-                        if(Globals.GetInstance(null).getGeoFencesPersist().size() > 1)
+                        if(DelegGeofence.getInstance().getGeoFencesPersist().size() > 1)
                             props = groupProps;
                         builder.setItems(props , new DialogInterface.OnClickListener()
                                 {
                                     public void onClick(DialogInterface dialog, int which)
                                     {
                                         // need to correct index for dynamic list geoFencing
-                                        if(Globals.GetInstance(null).getGeoFencesPersist().size() < 2)
+                                        if(DelegGeofence.getInstance().getGeoFencesPersist().size() < 2)
                                             which++;
                                         switch(which)
                                         {
@@ -248,7 +250,7 @@ public class Activity_tripGroups extends Activity
         else
             tripGroupsTableLayout.setVisibility(View.INVISIBLE);
     }
-/*
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
@@ -306,5 +308,4 @@ public class Activity_tripGroups extends Activity
         });
         alert.show();
     }
-    */
 }

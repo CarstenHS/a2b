@@ -6,7 +6,7 @@ import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingEvent;
 import java.io.IOException;
 import java.util.List;
-
+/*
 public class GeofenceTransitionsIntentService extends IntentService
 {
     public GeofenceTransitionsIntentService (){super("csv.a2b.GeofenceTransitionsIntentService");};
@@ -16,7 +16,6 @@ public class GeofenceTransitionsIntentService extends IntentService
     {
         return super.onStartCommand(intent, flags, startId);
     }
-
     protected void onHandleIntent(Intent intent)
     {
         GeofencingEvent geofencingEvent = GeofencingEvent.fromIntent(intent);
@@ -87,4 +86,6 @@ public class GeofenceTransitionsIntentService extends IntentService
             }
         }
     }
+
 }
+    */

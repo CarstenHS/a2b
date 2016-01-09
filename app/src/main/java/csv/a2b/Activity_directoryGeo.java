@@ -104,7 +104,7 @@ public class Activity_directoryGeo extends Activity
 
     private void selectGeofence(final String point)
     {
-        List<A2BGeofence> geofences =  Globals.GetInstance(null).getGeoFencesPersist();
+        List<A2BGeofence> geofences =  DelegGeofence.getInstance().getGeoFencesPersist();
         if(geofences != null)
         {
             List<String> geoNames = new ArrayList<>();
