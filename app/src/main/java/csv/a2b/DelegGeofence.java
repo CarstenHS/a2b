@@ -210,11 +210,12 @@ public class DelegGeofence
 
     public void locationUpdate(LatLng ll)
     {
-        String geo = anyGeofenceHit(ll).getName();
-        if(geo != null)
+        A2BGeofence a2b_geo = anyGeofenceHit(ll);
+        if(a2b_geo != null)
         {
             if(currGeofence == null)
             {
+                String geo = a2b_geo.getName();
                 listener.A2BGeofenceChange(GEOFENCE_ENTER, geo);
                 currGeofence = geo;
             }

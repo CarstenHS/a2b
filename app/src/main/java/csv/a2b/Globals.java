@@ -10,6 +10,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.v7.app.NotificationCompat;
 
@@ -66,6 +67,8 @@ public class Globals extends Service implements
     private int NOTIFICATION = 1;
     private Service serviceRef = null;
     static private boolean isServStarted = false;
+
+    private int mockCnt = 0;
 
     private static Globals instance;
 
@@ -256,7 +259,8 @@ public class Globals extends Service implements
                 {
                     try
                     {
-                        if(currentTrip.getStartGeo().equals(geo) == false) // no re-entrent
+                        String startGeo = currentTrip.getStartGeo();
+                        if(startGeo != null && startGeo.equals(geo) == false) // no re-entrent
                         {
                             currentTrip.setEndGeo(geo);
 
@@ -287,7 +291,7 @@ public class Globals extends Service implements
             case DelegGeofence.GEOFENCE_EXIT:
             {
                 if(currentTrip == null)
-                    startTrip(geo);
+                    Test_startTrip(geo);
                 break;
             }
         }
@@ -342,6 +346,184 @@ public class Globals extends Service implements
         return currentTrip;
     }
 
+    /******************** testing *****************/
+
+    public void Test_StartTimers()
+    {
+        Test_MarkerTask task = new Test_MarkerTask();
+        TripTimer = new Timer();
+        int timeout = 500 * 60 * settings.getMarkerTimeout();
+        TripTimer.schedule(task, timeout, timeout);
+
+        durationTimer = new Timer();
+        durationTimer.schedule(new DurationTask(), 1000, 1000);
+    }
+
+    public void Test_StartMarkerTimer()
+    {
+        Test_MarkerTask task = new Test_MarkerTask();
+        TripTimer = new Timer();
+        int timeout = 500 * 60 * settings.getMarkerTimeout();
+        TripTimer.schedule(task, timeout, timeout);
+    }
+
+    public void Test_StartDurationTimer()
+    {
+        durationTimer = new Timer();
+        durationTimer.schedule(new DurationTask(), 1000, 1000);
+    }
+    public void Test_SetMapVisible(Activity_newTrip activity)
+    {
+        mapActivity = activity;
+        if (mGoogleApiClient != null && mLastLocation != null)
+            LocationServices.FusedLocationApi.setMockLocation(mGoogleApiClient, mLastLocation);
+    }
+
+    public LatLng Test_UpdateLocation()
+    {
+        LatLng ll = null;
+        if (mLastLocation != null)
+        {
+            double lat = mLastLocation.getLatitude();
+            double lon = mLastLocation.getLongitude();
+            if(currentTrip != null)
+                currentTrip.addA2bMarker(new A2BMarker(new Date(), lat, lon));
+            ll = new LatLng(lat, lon);
+        }
+        return ll;
+    }
+
+    @Override
+    public void onConnected(Bundle connectionHint)
+    {
+        LocationServices.FusedLocationApi.setMockMode(mGoogleApiClient,true);
+        //Set test location
+        mLastLocation=new Location("network");
+        mLastLocation.setLatitude(51.553889);
+        mLastLocation.setLongitude(-0.293616);
+        mLastLocation.setAltitude(0);
+        mLastLocation.setAccuracy(1);
+        mLastLocation.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos());
+        mLastLocation.setTime(System.currentTimeMillis());
+
+        LocationServices.FusedLocationApi.setMockLocation(mGoogleApiClient, mLastLocation);
+        lastLoc = new a2bLoc();
+        lastLoc.setLocation(mLastLocation);
+        Test_StartMarkerTimer();
+        onLocationChanged(mLastLocation);
+        setGeofences();
+        if(settings.getAppMode() == Settings.APP_MODE_AUTO)
+            DelegGeofence.getInstance().locationUpdate(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()));
+
+    }
+
+    public class Test_MarkerTask extends TimerTask implements Runnable
+    {
+        @Override
+        public void run()
+        {
+            switch(mockCnt)
+            {
+                case 0:
+                {
+                    // temp
+                    mLastLocation.setLatitude(51.547247);
+                    mLastLocation.setLongitude(-0.274680);
+                    break;
+                }
+                case 1:
+                {
+                    //test1
+                    mLastLocation.setLatitude(51.540302);
+                    mLastLocation.setLongitude(-0.254287);
+                    break;
+                }
+                case 2:
+                {
+                    //test1
+                    mLastLocation.setLatitude(51.532148);
+                    mLastLocation.setLongitude(-0.236808);
+                    break;
+                }
+                case 3:
+                {
+                    //test1
+                    mLastLocation.setLatitude(51.527919);
+                    mLastLocation.setLongitude(-0.215445);
+                    break;
+                }
+                case 4:
+                {
+                    //test1
+                    mLastLocation.setLatitude(51.520064);
+                    mLastLocation.setLongitude(-0.189712);
+                    break;
+                }
+                case 5:
+                {
+                    //test1
+                    mLastLocation.setLatitude(51.520064);
+                    mLastLocation.setLongitude(-0.169319);
+                    break;
+                }
+                case 6:
+                {
+                    //test1
+                    mLastLocation.setLatitude(51.509791);
+                    mLastLocation.setLongitude(-0.156696);
+                    break;
+                }
+                case 7:
+                {
+                    //test1
+                    mLastLocation.setLatitude(51.502689);
+                    mLastLocation.setLongitude(-0.150141);
+                    break;
+                }
+                case 8:
+                {
+                    //test1
+                    mLastLocation.setLatitude(51.501934);
+                    mLastLocation.setLongitude(-0.141159);
+                    break;
+                }
+            }
+            mLastLocation.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos());
+            mLastLocation.setTime(System.currentTimeMillis());
+            LocationServices.FusedLocationApi.setMockLocation(mGoogleApiClient, mLastLocation);
+            mockCnt++;
+
+            LatLng ll = Test_UpdateLocation();
+            if(mapActivity != null && currentTrip != null)
+                mapActivity.AddMarkerUI(ll, currentTrip.getNumMarkers() - 1);
+            if(settings.getAppMode() == Settings.APP_MODE_AUTO)
+                DelegGeofence.getInstance().locationUpdate(ll);
+        }
+    }
+
+    public void Test_startTrip(String geo)
+    {
+        currentTrip = new Trip();
+        currentTrip.setA2bMarkers(new ArrayList<A2BMarker>());
+        currentTrip.SetTimeStart(new Date());
+        Test_StartDurationTimer();
+        //Test_StartMarkerTimer();
+        LatLng ll = Test_UpdateLocation();
+
+        if(mapActivity != null)
+            mapActivity.setMapExt(ll);
+
+        startA2bService();
+
+        if(settings.getAppMode() == Settings.APP_MODE_AUTO)
+            currentTrip.setStartGeo(geo);
+    }
+
+    /******************** testing END *****************/
+    public void setMapActivity(Activity_newTrip activity){mapActivity = activity;}
+
+/*
+
     public void StartTimers()
     {
         MarkerTask task = new MarkerTask();
@@ -352,8 +534,6 @@ public class Globals extends Service implements
         durationTimer = new Timer();
         durationTimer.schedule(new DurationTask(), 1000, 1000);
     }
-
-    public void setMapActivity(Activity_newTrip activity){mapActivity = activity;}
 
     public void SetMapVisible(boolean visible)
     {
@@ -375,6 +555,45 @@ public class Globals extends Service implements
         }
         return ll;
     }
+
+    @Override
+    public void onConnected(Bundle connectionHint)
+    {
+        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, createLocationReq(), this);
+        if(mapActivity != null)
+            map = mapActivity.getMap();
+        if(map != null)
+            setGeofences();
+    }
+    public void startTrip(String geo)
+    {
+        currentTrip = new Trip();
+        currentTrip.setA2bMarkers(new ArrayList<A2BMarker>());
+        currentTrip.SetTimeStart(new Date());
+        StartTimers();
+
+        LatLng ll = UpdateLocation();
+
+        if(mapVisible)
+            mapActivity.setMapExt(ll);
+
+        startA2bService();
+
+        if(settings.getAppMode() == Settings.APP_MODE_AUTO)
+            currentTrip.setStartGeo(geo);
+    }
+
+    public class MarkerTask extends TimerTask implements Runnable
+    {
+        @Override
+        public void run()
+        {
+            LatLng ll = UpdateLocation();
+            if(mapVisible)
+                mapActivity.AddMarkerUI(ll, currentTrip.getNumMarkers() - 1);
+        }
+    }
+*/
 
     public GoogleApiClient buildGoogleApiClient()
     {
@@ -452,16 +671,6 @@ public class Globals extends Service implements
         return mLocationRequest;
     }
 
-    @Override
-    public void onConnected(Bundle connectionHint)
-    {
-        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, createLocationReq(), this);
-        if(mapActivity != null)
-            map = mapActivity.getMap();
-        if(map != null)
-            setGeofences();
-    }
-
     public void startA2bService()
     {
         if(isServStarted == false)
@@ -469,24 +678,6 @@ public class Globals extends Service implements
             isServStarted = true;
             serviceRef.startForeground(NOTIFICATION, createNotification());
         }
-    }
-
-    public void startTrip(String geo)
-    {
-        currentTrip = new Trip();
-        currentTrip.setA2bMarkers(new ArrayList<A2BMarker>());
-        currentTrip.SetTimeStart(new Date());
-        StartTimers();
-
-        LatLng ll = UpdateLocation();
-
-        if(mapVisible)
-            mapActivity.setMapExt(ll);
-
-        startA2bService();
-
-        if(settings.getAppMode() == Settings.APP_MODE_AUTO)
-            currentTrip.setStartGeo(geo);
     }
 
     static public GoogleApiClient getGoogleApiClient(){return (mGoogleApiClient);}
@@ -506,17 +697,6 @@ public class Globals extends Service implements
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult){}
 
-
-    public class MarkerTask extends TimerTask implements Runnable
-    {
-        @Override
-        public void run()
-        {
-            LatLng ll = UpdateLocation();
-            if(mapVisible)
-                mapActivity.AddMarkerUI(ll, currentTrip.getNumMarkers() - 1);
-        }
-    }
     public class DurationTask extends TimerTask implements Runnable
     {
         @Override

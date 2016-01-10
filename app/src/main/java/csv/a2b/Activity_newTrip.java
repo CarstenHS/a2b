@@ -175,7 +175,7 @@ public class Activity_newTrip extends FragmentActivity implements OnMapReadyCall
 
     private void InitMap()
     {
-        globals.SetMapVisible(true);
+        globals.Test_SetMapVisible(this);
         if(globals.getGoogleApiClient() == null)
             globals.buildGoogleApiClient();
         else
@@ -234,7 +234,7 @@ public class Activity_newTrip extends FragmentActivity implements OnMapReadyCall
     @Override
     protected void onPause()
     {
-        globals.SetMapVisible(false);
+        globals.Test_SetMapVisible(null);
         super.onPause();
     }
 
@@ -283,7 +283,7 @@ public class Activity_newTrip extends FragmentActivity implements OnMapReadyCall
             }
             case MENU_ITEM_ID_START:
             {
-                globals.startTrip(null);
+                globals.Test_startTrip(null);
                 break;
             }
             case MENU_ITEM_ID_END_SESSION:
