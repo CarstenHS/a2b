@@ -10,24 +10,17 @@ import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.v7.app.NotificationCompat;
-
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Result;
 import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.location.Geofence;
-import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.Circle;
-import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -67,8 +60,6 @@ public class Globals extends Service implements
     private int NOTIFICATION = 1;
     private Service serviceRef = null;
     static private boolean isServStarted = false;
-
-    private int mockCnt = 0;
 
     private static Globals instance;
 
@@ -291,7 +282,7 @@ public class Globals extends Service implements
             case DelegGeofence.GEOFENCE_EXIT:
             {
                 if(currentTrip == null)
-                    Test_startTrip(geo);
+                    startTrip(geo);
                 break;
             }
         }
@@ -346,183 +337,7 @@ public class Globals extends Service implements
         return currentTrip;
     }
 
-    /******************** testing *****************/
-
-    public void Test_StartTimers()
-    {
-        Test_MarkerTask task = new Test_MarkerTask();
-        TripTimer = new Timer();
-        int timeout = 500 * 60 * settings.getMarkerTimeout();
-        TripTimer.schedule(task, timeout, timeout);
-
-        durationTimer = new Timer();
-        durationTimer.schedule(new DurationTask(), 1000, 1000);
-    }
-
-    public void Test_StartMarkerTimer()
-    {
-        Test_MarkerTask task = new Test_MarkerTask();
-        TripTimer = new Timer();
-        int timeout = 500 * 60 * settings.getMarkerTimeout();
-        TripTimer.schedule(task, timeout, timeout);
-    }
-
-    public void Test_StartDurationTimer()
-    {
-        durationTimer = new Timer();
-        durationTimer.schedule(new DurationTask(), 1000, 1000);
-    }
-    public void Test_SetMapVisible(Activity_newTrip activity)
-    {
-        mapActivity = activity;
-        if (mGoogleApiClient != null && mLastLocation != null)
-            LocationServices.FusedLocationApi.setMockLocation(mGoogleApiClient, mLastLocation);
-    }
-
-    public LatLng Test_UpdateLocation()
-    {
-        LatLng ll = null;
-        if (mLastLocation != null)
-        {
-            double lat = mLastLocation.getLatitude();
-            double lon = mLastLocation.getLongitude();
-            if(currentTrip != null)
-                currentTrip.addA2bMarker(new A2BMarker(new Date(), lat, lon));
-            ll = new LatLng(lat, lon);
-        }
-        return ll;
-    }
-
-    @Override
-    public void onConnected(Bundle connectionHint)
-    {
-        LocationServices.FusedLocationApi.setMockMode(mGoogleApiClient,true);
-        //Set test location
-        mLastLocation=new Location("network");
-        mLastLocation.setLatitude(51.553889);
-        mLastLocation.setLongitude(-0.293616);
-        mLastLocation.setAltitude(0);
-        mLastLocation.setAccuracy(1);
-        mLastLocation.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos());
-        mLastLocation.setTime(System.currentTimeMillis());
-
-        LocationServices.FusedLocationApi.setMockLocation(mGoogleApiClient, mLastLocation);
-        lastLoc = new a2bLoc();
-        lastLoc.setLocation(mLastLocation);
-        Test_StartMarkerTimer();
-        onLocationChanged(mLastLocation);
-        setGeofences();
-        if(settings.getAppMode() == Settings.APP_MODE_AUTO)
-            DelegGeofence.getInstance().locationUpdate(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()));
-
-    }
-
-    public class Test_MarkerTask extends TimerTask implements Runnable
-    {
-        @Override
-        public void run()
-        {
-            switch(mockCnt)
-            {
-                case 0:
-                {
-                    // temp
-                    mLastLocation.setLatitude(51.547247);
-                    mLastLocation.setLongitude(-0.274680);
-                    break;
-                }
-                case 1:
-                {
-                    //test1
-                    mLastLocation.setLatitude(51.540302);
-                    mLastLocation.setLongitude(-0.254287);
-                    break;
-                }
-                case 2:
-                {
-                    //test1
-                    mLastLocation.setLatitude(51.532148);
-                    mLastLocation.setLongitude(-0.236808);
-                    break;
-                }
-                case 3:
-                {
-                    //test1
-                    mLastLocation.setLatitude(51.527919);
-                    mLastLocation.setLongitude(-0.215445);
-                    break;
-                }
-                case 4:
-                {
-                    //test1
-                    mLastLocation.setLatitude(51.520064);
-                    mLastLocation.setLongitude(-0.189712);
-                    break;
-                }
-                case 5:
-                {
-                    //test1
-                    mLastLocation.setLatitude(51.520064);
-                    mLastLocation.setLongitude(-0.169319);
-                    break;
-                }
-                case 6:
-                {
-                    //test1
-                    mLastLocation.setLatitude(51.509791);
-                    mLastLocation.setLongitude(-0.156696);
-                    break;
-                }
-                case 7:
-                {
-                    //test1
-                    mLastLocation.setLatitude(51.502689);
-                    mLastLocation.setLongitude(-0.150141);
-                    break;
-                }
-                case 8:
-                {
-                    //test1
-                    mLastLocation.setLatitude(51.501934);
-                    mLastLocation.setLongitude(-0.141159);
-                    break;
-                }
-            }
-            mLastLocation.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos());
-            mLastLocation.setTime(System.currentTimeMillis());
-            LocationServices.FusedLocationApi.setMockLocation(mGoogleApiClient, mLastLocation);
-            mockCnt++;
-
-            LatLng ll = Test_UpdateLocation();
-            if(mapActivity != null && currentTrip != null)
-                mapActivity.AddMarkerUI(ll, currentTrip.getNumMarkers() - 1);
-            if(settings.getAppMode() == Settings.APP_MODE_AUTO)
-                DelegGeofence.getInstance().locationUpdate(ll);
-        }
-    }
-
-    public void Test_startTrip(String geo)
-    {
-        currentTrip = new Trip();
-        currentTrip.setA2bMarkers(new ArrayList<A2BMarker>());
-        currentTrip.SetTimeStart(new Date());
-        Test_StartDurationTimer();
-        //Test_StartMarkerTimer();
-        LatLng ll = Test_UpdateLocation();
-
-        if(mapActivity != null)
-            mapActivity.setMapExt(ll);
-
-        startA2bService();
-
-        if(settings.getAppMode() == Settings.APP_MODE_AUTO)
-            currentTrip.setStartGeo(geo);
-    }
-
-    /******************** testing END *****************/
     public void setMapActivity(Activity_newTrip activity){mapActivity = activity;}
-
-/*
 
     public void StartTimers()
     {
@@ -593,7 +408,6 @@ public class Globals extends Service implements
                 mapActivity.AddMarkerUI(ll, currentTrip.getNumMarkers() - 1);
         }
     }
-*/
 
     public GoogleApiClient buildGoogleApiClient()
     {
