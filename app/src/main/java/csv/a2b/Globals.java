@@ -52,7 +52,7 @@ public class Globals extends Service implements
     public static final int RES_EXISTS = -1;
     public static final int RES_INVALID = -2;
     public static final int RES_EMPTY = -3;
-    static private Context ctx = null;
+    static public Context ctx = null;
     static private FileHandler fileHandlerInstance = null;
     static private SQLiteHelper dbHelper = null;
     private int insertCount = 0;
@@ -246,15 +246,19 @@ public class Globals extends Service implements
         {
             case DelegGeofence.GEOFENCE_ENTER:
             {
+                Logger.getInstance().log("ENTER A2BGeofenceChange");
+                Logger.getInstance().log("currentTrip:" + currentTrip);
                 if(currentTrip != null)
                 {
                     try
                     {
                         String startGeo = currentTrip.getStartGeo();
+                        Logger.getInstance().log("startGeo:" + startGeo);
                         if(startGeo != null && startGeo.equals(geo) == false) // no re-entrent
                         {
-                            currentTrip.setEndGeo(geo);
+                            Logger.getInstance().log("Setting Snd Geo");
 
+                            currentTrip.setEndGeo(geo);
                             FileHandler fh = FileHandler.GetInstance();
                             setEndTimestamp();
                             List dirsToSaveIn = DelegGeofence.getInstance().resolveGeoDir(geo, currentTrip.getStartGeo());
@@ -281,6 +285,8 @@ public class Globals extends Service implements
             }
             case DelegGeofence.GEOFENCE_EXIT:
             {
+                Logger.getInstance().log("EXIT A2BGeofenceChange");
+                Logger.getInstance().log("currentTrip:" + currentTrip);
                 if(currentTrip == null)
                     startTrip(geo);
                 break;
@@ -392,10 +398,10 @@ public class Globals extends Service implements
         if(mapVisible)
             mapActivity.setMapExt(ll);
 
-        startA2bService();
-
-        if(settings.getAppMode() == Settings.APP_MODE_AUTO)
+        if(settings.getAppMode() == Settings.APP_MODE_AUTO) // service already started from newTrip
             currentTrip.setStartGeo(geo);
+        else
+            startA2bService();
     }
 
     public class MarkerTask extends TimerTask implements Runnable
@@ -530,12 +536,15 @@ public class Globals extends Service implements
     @Override
     public void onDBInsertDone()
     {
+        Logger.getInstance().log("onDBInsertDone, insertCount:" + String.valueOf(insertCount));
         if(--insertCount == 0)
             instance.cleanUp();
     }
 
     public void cleanUp()
     {
+        Logger.getInstance().log("cleanUp");
+
         if(TripTimer != null)
             TripTimer.cancel();
         if(durationTimer != null)

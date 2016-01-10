@@ -211,10 +211,13 @@ public class DelegGeofence
     public void locationUpdate(LatLng ll)
     {
         A2BGeofence a2b_geo = anyGeofenceHit(ll);
+        Logger.getInstance().log("locationUpdate, a2b_geo:" + a2b_geo);
         if(a2b_geo != null)
         {
+            Logger.getInstance().log("locationUpdate, A");
             if(currGeofence == null)
             {
+                Logger.getInstance().log("locationUpdate, B");
                 String geo = a2b_geo.getName();
                 listener.A2BGeofenceChange(GEOFENCE_ENTER, geo);
                 currGeofence = geo;
@@ -222,8 +225,10 @@ public class DelegGeofence
         }
         else
         {
+            Logger.getInstance().log("locationUpdate, C");
             if(currGeofence != null) // exited geoFence ?
             {
+                Logger.getInstance().log("locationUpdate, D");
                 listener.A2BGeofenceChange(GEOFENCE_EXIT, currGeofence);
                 currGeofence = null;
             }
