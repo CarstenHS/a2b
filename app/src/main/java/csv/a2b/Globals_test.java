@@ -542,7 +542,7 @@ public class Globals extends Service implements
             LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
     }
 
-    public LatLng UpdateLocation()
+    public LatLng addMarker2CurrentTrip()
     {
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         LatLng ll = null;
@@ -572,7 +572,7 @@ public class Globals extends Service implements
         currentTrip.SetTimeStart(new Date());
         StartTimers();
 
-        LatLng ll = UpdateLocation();
+        LatLng ll = addMarker2CurrentTrip();
 
         if(mapVisible)
             mapActivity.setMapExt(ll);
@@ -588,7 +588,7 @@ public class Globals extends Service implements
         @Override
         public void run()
         {
-            LatLng ll = UpdateLocation();
+            LatLng ll = addMarker2CurrentTrip();
             if(mapVisible)
                 mapActivity.AddMarkerUI(ll, currentTrip.getNumMarkers() - 1);
         }

@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
@@ -418,19 +417,5 @@ public class Activity_newTrip extends FragmentActivity implements OnMapReadyCall
             geoDeleg.getCircle(hitGeofence.getName()).setFillColor(Color.RED);
             ShowDialogGeofenceKill(hitGeofence);
         }
-    }
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event)
-    {
-        if(keyCode==KeyEvent.KEYCODE_HOME)
-            try
-            {
-                finalize();
-            } catch (Throwable throwable)
-            {
-                throwable.printStackTrace();
-            }
-        return super.onKeyDown(keyCode, event);
     }
 }

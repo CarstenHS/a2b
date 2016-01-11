@@ -42,7 +42,7 @@ public class DelegGeofence
     {
     }
 
-    public void Init(Settings set, IA2BGeofenceCallbacks cb)
+    public void Init(Settings set, IA2BGeofenceCallbacks cb, List<A2BdirInfo> dirEntries)
     {
         listener = cb;
         if(circles == null)
@@ -53,6 +53,7 @@ public class DelegGeofence
         settings = set;
         if(circles == null)
             circles = new ArrayList<>();
+        this.dirEntries = dirEntries;
     }
 
     List<A2BGeofence> getGeoFencesPersist()
