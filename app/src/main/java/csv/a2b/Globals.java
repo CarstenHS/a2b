@@ -456,13 +456,11 @@ public class Globals extends Service implements
         {
             lastLoc = new a2bLoc();
             lastLoc.setLocation(location);
-            LatLng ll = lastLoc.getLatlng();
             if(this.map != null && mapVisible)
-                mapActivity.zoomToPosition(ll);
-
-            if(settings.getAppMode() == Settings.APP_MODE_AUTO)
-                DelegGeofence.getInstance().locationUpdate(ll);
+                mapActivity.zoomToPosition(lastLoc.getLatlng());
         }
+        if(settings.getAppMode() == Settings.APP_MODE_AUTO)
+            DelegGeofence.getInstance().locationUpdate(lastLoc.getLatlng());
     }
 
     private String ConvertSpeed(float speed)
@@ -545,23 +543,26 @@ public class Globals extends Service implements
     {
         Logger.getInstance().log("cleanUp");
 
-        if(TripTimer != null)
-            TripTimer.cancel();
-        if(durationTimer != null)
-            durationTimer.cancel();
-        if(mGoogleApiClient != null)
+        if(insertCount == 0)    // only end if we have no pending inserts
         {
-            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
-            mGoogleApiClient.disconnect();
-            mGoogleApiClient = null;
-        }
-        currentTrip = null;
-        if(mapActivity != null)
-            mapActivity.finish();
-        if(isServStarted == true)
-        {
-            serviceRef.stopForeground(true);
-            isServStarted = false;
+            if (TripTimer != null)
+                TripTimer.cancel();
+            if (durationTimer != null)
+                durationTimer.cancel();
+            if (mGoogleApiClient != null)
+            {
+                LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+                mGoogleApiClient.disconnect();
+                mGoogleApiClient = null;
+            }
+            currentTrip = null;
+            if (mapActivity != null)
+                mapActivity.finish();
+            if (isServStarted == true)
+            {
+                serviceRef.stopForeground(true);
+                isServStarted = false;
+            }
         }
     }
 
