@@ -6,51 +6,73 @@ android
             buildToolsVersion "21.1.2"
             defaultConfig
                     {
-                        applicationId "csv.a2b"
-                        minSdkVersion 17
-                        targetSdkVersion 21
-                        versionCode 1
-                        versionName "1.0"
+                    applicationId "csv.a2b"
+                    minSdkVersion 17
+                    targetSdkVersion 21
+                    versionCode 1
+                    versionName "1.0"
                     }
             signingConfigs
                     {
-                        release
-                                {
-                                    storeFile file('C:/Users/der_geiler/keystores/android.jks')
-                                    storePassword 'Superlem5abesuperlem5abe'
-                                    keyAlias 'Android'
-                                    keyPassword 'nokiena5e'
-                                }
+                    release
+                        {
+                        storeFile file('C:/Users/der_geiler/keystores/android.jks')
+                        storePassword 'Superlem5abesuperlem5abe'
+                        keyAlias 'Android'
+                        keyPassword 'nokiena5e'
+                        }
                     }
             productFlavors
                     {
-                        pro
-                                {
-                                    applicationId = "csv.a2b.pro"
-                                    versionCode 1
-                                    versionName "1.0-pro"
-                                }
-                        free
-                                {
-                                    applicationId = "csv.a2b.free"
-                                    versionCode 2
-                                    versionName "1.1-free"
-                                }
+                    pro
+                        {
+                        applicationId = "csv.a2b.pro"
+                        versionCode 1
+                        versionName "1.0-pro"
+                        }
+                    free
+                        {
+                        applicationId = "csv.a2b.free"
+                        versionCode 2
+                        versionName "1.1-free"
+                        }
                     }
             buildTypes
                     {
-                        release
-                                {
-                                    minifyEnabled false
-                                    proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-                                    signingConfig signingConfigs.release
-                                }
-                        debug
-                                {
-                                    applicationIdSuffix ".debug"
-                                    debuggable true
-                                }
+                    release
+                        {
+                        minifyEnabled false
+                        proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+                        signingConfig signingConfigs.release
+                        }
+                    debug
+                        {
+                        applicationIdSuffix ".debug"
+                        debuggable true
+                        }
                     }
+            sourceSets
+                    {
+                    main
+                        {
+                        java
+                            {
+                            exclude '**/Logger.java'
+                            exclude '**/GeofenceTransitionsIntentService.java'
+                            exclude '**/Globals_test.java'
+                            exclude '**/zOldGeoGlobals.java'
+                            }
+                        }
+                        /*
+                    androidTest
+                        {
+                        java
+                            {
+                            exclude ''
+                            }
+                        }
+                        */
+            }
         }
 
 dependencies

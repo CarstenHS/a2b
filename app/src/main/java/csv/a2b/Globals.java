@@ -246,17 +246,13 @@ public class Globals extends Service implements
         {
             case DelegGeofence.GEOFENCE_ENTER:
             {
-                Logger.getInstance().log("ENTER A2BGeofenceChange");
-                Logger.getInstance().log("currentTrip:" + currentTrip);
                 if(currentTrip != null)
                 {
                     try
                     {
                         String startGeo = currentTrip.getStartGeo();
-                        Logger.getInstance().log("startGeo:" + startGeo);
                         if(startGeo != null && startGeo.equals(geo) == false) // no re-entrent
                         {
-                            Logger.getInstance().log("Setting Snd Geo");
                             addMarker2CurrentTrip();
                             currentTrip.setEndGeo(geo);
                             FileHandler fh = FileHandler.GetInstance();
@@ -285,8 +281,6 @@ public class Globals extends Service implements
             }
             case DelegGeofence.GEOFENCE_EXIT:
             {
-                Logger.getInstance().log("EXIT A2BGeofenceChange");
-                Logger.getInstance().log("currentTrip:" + currentTrip);
                 if(currentTrip == null)
                     startTrip(geo);
                 break;
@@ -534,15 +528,12 @@ public class Globals extends Service implements
     @Override
     public void onDBInsertDone()
     {
-        Logger.getInstance().log("onDBInsertDone, insertCount:" + String.valueOf(insertCount));
         if(--insertCount == 0)
             instance.cleanUp();
     }
 
     public void cleanUp()
     {
-        Logger.getInstance().log("cleanUp");
-
         if(insertCount == 0)    // only end if we have no pending inserts
         {
             if (TripTimer != null)

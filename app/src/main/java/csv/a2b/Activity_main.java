@@ -161,7 +161,6 @@ public class Activity_main extends Activity
             mAdView.loadAd(adRequest);
             mAdView.bringToFront();
         }
-        Logger.getInstance().init();
     }
 
     @Override
