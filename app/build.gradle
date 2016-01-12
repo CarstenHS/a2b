@@ -33,8 +33,8 @@ android
                     free
                         {
                         applicationId = "csv.a2b.free"
-                        versionCode 2
-                        versionName "1.1-free"
+                        versionCode 3
+                        versionName "1.2-free"
                         }
                     }
             buildTypes

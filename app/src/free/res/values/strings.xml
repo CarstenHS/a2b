@@ -6,7 +6,6 @@
     <string name="title_activity_activity_help">Help</string>
     <string name="title_activity_activity_settings">Settings</string>
     <!-- REAL ID's -->
-    <!--
     <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
     <string name="banner_settings_id">ca-app-pub-2777249826009779/3205718755</string>
     <string name="banner_tripGroups_id">ca-app-pub-2777249826009779/4682451954</string>
@@ -14,14 +13,15 @@
     <string name="banner_main_id">ca-app-pub-2777249826009779/9252252350</string>
     <string name="banner_newTrip_id">ca-app-pub-2777249826009779/7775519159</string>
     <string name="banner_splash_id">ca-app-pub-2777249826009779/4822052759</string>
-    -->
-    <!-- TEST ID's -->
 
+    <!-- TEST ID's -->
+    <!--
     <string name="banner_settings_id">ca-app-pub-3940256099942544/6300978111</string>
     <string name="banner_tripGroups_id">ca-app-pub-3940256099942544/6300978111</string>
     <string name="banner_trips_id">ca-app-pub-3940256099942544/6300978111</string>
     <string name="banner_main_id">ca-app-pub-3940256099942544/6300978111</string>
     <string name="banner_newTrip_id">ca-app-pub-3940256099942544/6300978111</string>
     <string name="banner_splash_id">ca-app-pub-3940256099942544/6300978111</string>
-<string name="updates">Removed help section as it brought no value.</string>
+    -->
+<string name="updates">Enabled the Auto feature.</string>
 </resources>
